@@ -1,4 +1,4 @@
-import { login, signup } from '../../util/supabase/actions'
+import { login, signup } from '@/lib/auth-actions'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
