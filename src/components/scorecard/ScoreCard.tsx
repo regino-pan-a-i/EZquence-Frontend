@@ -127,7 +127,7 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
       </div>
       <div className="p-4">
-        <div className="flex flex-wrap flex-row gap-4">
+        <div className="flex flex-wrap content-center justify-center flex-row gap-4">
           {dataArray.map((item, index) => renderDataItem(item, index))}
         </div>
       </div>
