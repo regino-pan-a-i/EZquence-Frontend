@@ -1,9 +1,10 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { jwtDecode } from 'jwt-decode';
 
-import { createClient } from "@/utils/supabase/supabaseServer";
+import { createClient } from '@/utils/supabase/supabaseServer';
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
@@ -11,19 +12,31 @@ export async function login(formData: FormData) {
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
   };
 
-  const { error } = await supabase.auth.signInWithPassword(data);
+  const { data: authData, error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
     console.log(error);
-    redirect("/error");
+    redirect('/error');
   }
 
-  revalidatePath("/", "layout");
-  redirect("/dashboard");
+  let path = '/';
+  const token = authData?.session?.access_token;
+  const decoded = jwtDecode(token) as any;
+  const role = decoded?.user_role;
+  console.log(role);
+  if (role === 'ADMIN') {
+    path = '/admin';
+  } else if (role === 'WORKER') {
+    path = '/production';
+  }
+
+  path += '/dashboard';
+  revalidatePath('/', 'layout');
+  redirect(path);
 }
 
 export async function signup(formData: FormData) {
@@ -31,16 +44,16 @@ export async function signup(formData: FormData) {
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
-  const firstName = formData.get("firstName") as string;
-  const lastName = formData.get("lastName") as string;
+  const firstName = formData.get('firstName') as string;
+  const lastName = formData.get('lastName') as string;
   const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
     options: {
       data: {
         firstName: firstName,
         lastName: lastName,
-        email: formData.get("email") as string,
+        email: formData.get('email') as string,
       },
     },
   };
@@ -52,8 +65,8 @@ export async function signup(formData: FormData) {
     redirect(`/error`);
   }
 
-  revalidatePath("/", "layout");
-  redirect("/login");
+  revalidatePath('/', 'layout');
+  redirect('/login');
 }
 
 export async function signout() {
@@ -61,32 +74,31 @@ export async function signout() {
   const { error } = await supabase.auth.signOut();
   if (error) {
     console.log(error);
-    redirect("/error");
+    redirect('/error');
   }
 
-  redirect("/logout");
+  redirect('/logout');
 }
 
 export async function signInWithGoogle() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
+    provider: 'google',
     options: {
       queryParams: {
-        access_type: "offline",
-        prompt: "consent",
+        access_type: 'offline',
+        prompt: 'consent',
       },
     },
   });
 
   if (error) {
     console.log(error);
-    redirect("/error");
+    redirect('/error');
   }
 
   redirect(data.url);
 }
-
 
 export async function getAccessToken() {
   const supabase = await createClient();
