@@ -1,16 +1,10 @@
 import Sidebar from '@/components/sidebar/Sidebar';
 
-export default function ProductionLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ProductionLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen">
       <Sidebar variant="production" />
-      <main className="flex-1 overflow-auto m-4">
-        {children}
-      </main>
+      <main className="flex-1 overflow-auto m-4">{children}</main>
     </div>
   );
 }

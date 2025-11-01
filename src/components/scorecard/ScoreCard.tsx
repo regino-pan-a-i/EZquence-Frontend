@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import React from 'react';
 
@@ -39,13 +39,13 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
   title,
   data,
   className = '',
-  variant = 'default'
+  variant = 'default',
 }) => {
   const dataArray = Array.isArray(data) ? data : [data];
 
   const renderDataItem = (item: ScoreCardData, index: number) => {
     const colorClass = item.color ? colorVariants[item.color] : colorVariants.gray;
-    
+
     return (
       <div
         key={index}
@@ -56,34 +56,24 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              {item.icon && (
-                <div className="text-lg">{item.icon}</div>
-              )}
-              {item.label && (
-                <span className="text-sm font-medium opacity-75">
-                  {item.label}
-                </span>
-              )}
+              {item.icon && <div className="text-lg">{item.icon}</div>}
+              {item.label && <span className="text-sm font-medium opacity-75">{item.label}</span>}
             </div>
-            
-            <div className={`font-bold ${
-              variant === 'compact' ? 'text-xl' : 'text-2xl'
-            }`}>
+
+            <div className={`font-bold ${variant === 'compact' ? 'text-xl' : 'text-2xl'}`}>
               {item.value}
             </div>
-            
+
             {item.trend && variant !== 'compact' && (
-              <div className={`text-sm mt-2 ${
-                item.trend.isPositive ? trendColors.positive : trendColors.negative
-              }`}>
+              <div
+                className={`text-sm mt-2 ${
+                  item.trend.isPositive ? trendColors.positive : trendColors.negative
+                }`}
+              >
                 <span className="font-medium">
                   {item.trend.isPositive ? '↗' : '↘'} {Math.abs(item.trend.value)}%
                 </span>
-                {item.trend.period && (
-                  <span className="opacity-75 ml-1">
-                    {item.trend.period}
-                  </span>
-                )}
+                {item.trend.period && <span className="opacity-75 ml-1">{item.trend.period}</span>}
               </div>
             )}
           </div>
