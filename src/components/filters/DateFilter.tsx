@@ -14,7 +14,7 @@ interface DateFilterProps {
   defaultEndDate?: string;
 }
 
-export default function DateFilter({
+function DateFilter({
   onDateChange,
   onDateRangeChange,
   type = 'single',
@@ -22,8 +22,8 @@ export default function DateFilter({
   className = '',
   placeholder,
   defaultValue = '',
-  defaultStartDate = '',
-  defaultEndDate = ''
+  defaultStartDate = new Date().toISOString().split('T')[0], // Today's date by default
+  defaultEndDate = new Date().toISOString().split('T')[0], // Today's date by default
 }: DateFilterProps) {
   const [selectedDate, setSelectedDate] = useState(defaultValue);
   const [startDate, setStartDate] = useState(defaultStartDate);
@@ -66,9 +66,7 @@ export default function DateFilter({
     return (
       <div className={`flex flex-col space-y-2 ${className}`}>
         {label && (
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {label}
-          </label>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
         )}
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
           <div className="flex flex-col">
@@ -91,14 +89,6 @@ export default function DateFilter({
               placeholder="End date"
             />
           </div>
-          {(startDate || endDate) && (
-            <button
-              onClick={clearFilters}
-              className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 border border-gray-300 rounded-md hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors"
-            >
-              Clear
-            </button>
-          )}
         </div>
       </div>
     );
@@ -107,9 +97,7 @@ export default function DateFilter({
   return (
     <div className={`flex flex-col space-y-2 ${className}`}>
       {label && (
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          {label}
-        </label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
       )}
       <div className="flex space-x-2">
         <input
@@ -119,15 +107,9 @@ export default function DateFilter({
           placeholder={placeholder}
           className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white flex-1"
         />
-        {selectedDate && (
-          <button
-            onClick={clearFilters}
-            className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 border border-gray-300 rounded-md hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors"
-          >
-            Clear
-          </button>
-        )}
       </div>
     </div>
   );
 }
+
+export default DateFilter;
