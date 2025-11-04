@@ -16,12 +16,12 @@ export type Order = {
 };
 
 export enum OrderStatus {
-  RECEIVED,
-  COMPLETED,
-  STARTED,
-  PAID,
-  DELAYED,
-  IN_PROGRESS,
+  RECEIVED = 'RECEIVED',
+  COMPLETED = 'COMPLETED',
+  STARTED = 'STARTED',
+  PAID = 'PAID',
+  DELAYED = 'DELAYED',
+  IN_PROGRESS = 'IN_PROGRESS',
 }
 
 export type Product = {
