@@ -19,6 +19,8 @@ export interface ScoreCardProps {
   data: ScoreCardData | ScoreCardData[];
   className?: string;
   variant?: 'default' | 'compact' | 'detailed';
+  isLoading?: boolean;
+  skeletonCount?: number;
 }
 
 const colorVariants = {
@@ -40,8 +42,39 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
   data,
   className = '',
   variant = 'default',
+  isLoading = false,
+  skeletonCount = 1,
 }) => {
   const dataArray = Array.isArray(data) ? data : [data];
+
+    const renderSkeletonItem = (index: number) => {
+    return (
+      <div
+        key={`skeleton-${index}`}
+        className={`p-4 rounded-lg border bg-gray-50 border-gray-200 animate-pulse min-w-3xs ${
+          variant === 'compact' ? 'p-3' : ''
+        }`}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-5 h-5 bg-gray-300 rounded"></div>
+              <div className="h-4 bg-gray-300 rounded w-20"></div>
+            </div>
+
+            <div className={`bg-gray-300 rounded ${variant === 'compact' ? 'h-7 w-24' : 'h-8 w-32'}`}></div>
+
+            {variant !== 'compact' && (
+              <div className="mt-2 flex items-center gap-2">
+                <div className="h-4 bg-gray-300 rounded w-16"></div>
+                <div className="h-4 bg-gray-300 rounded w-12"></div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderDataItem = (item: ScoreCardData, index: number) => {
     const colorClass = item.color ? colorVariants[item.color] : colorVariants.gray;
@@ -114,11 +147,17 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
   return (
     <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>
       <div className="p-4 border-b border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        {isLoading ? (
+          <div className="h-6 bg-gray-300 rounded w-32 animate-pulse"></div>
+        ) : (
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        )}
       </div>
       <div className="p-4">
         <div className="flex flex-wrap content-center justify-center flex-row gap-4">
-          {dataArray.map((item, index) => renderDataItem(item, index))}
+          {isLoading
+            ? Array.from({ length: skeletonCount }).map((_, index) => renderSkeletonItem(index))
+            : dataArray.map((item, index) => renderDataItem(item, index))}
         </div>
       </div>
     </div>
