@@ -54,17 +54,13 @@ export default function DashboardPage() {
     if (orders) {
       let orderData = orderList.data;
 
-      console.log('Order data:', orderData); // Debug: Check if data exists
-      console.log('Order count:', orderData.length);
       const revenueData = orderData
         .map((order: Order) => {
-          console.log('Processing order:', order);
           return {
             date: new Date(order.dateCreated).toISOString().split('T')[0],
             revenue: order.status === OrderStatus.COMPLETED ? order.orderTotal : 0,
           };
         }).reduce((acc: Record<string, number>, curr) => {
-          console.log('Reducing:', curr);
           acc[curr.date] = (acc[curr.date] || 0) + curr.revenue;
           return acc;
         }, {});
@@ -170,7 +166,10 @@ export default function DashboardPage() {
         {orders && <RevenueChart data={RevenueByDay(orders)} />}
       </div>
 
-      {/* <div>{orders && JSON.stringify(RevenueByDay(orders))}</div> */}
+      <div>Orders Summary (bar chart: completed vs pending)</div>   
+      <div>Top-Selling Products (mini leaderboard list)</div>
+      <div>Table: "Top Selling Products"</div>
+      <div>| Columns: Product | Units Sold | Revenue | Profit % </div>
     </>
   );
 }
