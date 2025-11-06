@@ -76,7 +76,7 @@ export default function Sidebar({ variant = 'admin' }: { variant?: SidebarVarian
 
   return (
     <aside
-      className={`${open ? 'w-[15%]' : 'w-[7%]'} h-screen bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-neutral-800 transition-all duration-200 flex flex-col justify-between`}
+      className={`${open ? 'w-[15%] lg:w-[9%]' : 'w-[7%] lg:w-[4%]'} h-screen bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-neutral-800 transition-all duration-200 flex flex-col justify-between`}
     >
       <div className="flex flex-col">
         {/* Logo area */}
