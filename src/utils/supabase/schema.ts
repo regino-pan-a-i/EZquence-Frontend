@@ -30,4 +30,14 @@ export type Product = {
   price: number;
   details: string;
   companyId: number;
+  productImage: [{
+      productId: number;
+      imageURL: string;
+    }
+  ]
+};
+
+export type ProductResponse = {
+  success: boolean;
+  data: Product[];
 };
