@@ -1,26 +1,24 @@
 'use client';
 
 import ProductCard from '@/components/product/ProductCard';
+import ProductModal from '@/components/product/ProductModal';
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ProductResponse, Product } from '@/utils/supabase/schema'
+import { ProductListResponse, Product } from '@/utils/supabase/schema'
 import { supabase } from '@/utils/supabase/supabaseClient';
 
 
 export default function ProductsPage() {
 
-  const [products, setProducts] = useState<Product[]>();
-  // Example product data - replace with your actual data source
-  //   {
-  //     id: '1',
-  //     name: 'Premium Wooden Chair',
-  //     image: 'https://weviqfepjkdmhurznegf.supabase.co/storage/v1/object/sign/productImages/IMG_3923.JPG?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hZWJhNGUwMC03MTMyLTRmOTAtYTdhYS01YzVkMjRlOTllYmYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0SW1hZ2VzL0lNR18zOTIzLkpQRyIsImlhdCI6MTc2MjIyODY5NSwiZXhwIjoxNzkzNzY0Njk1fQ.p7g4RYktv5nZseBw1fQWcYtMcsh7G-cBdSy004fneSU',
-  //     details: 'A beautifully crafted wooden chair with ergonomic design. Perfect for dining rooms and offices. Features a comfortable seat and sturdy construction.',
-  //     materials: ['Oak Wood', 'Steel Screws', 'Fabric Cushion', 'Wood Varnish'],
-  //   }
-  // ]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const { data: prodResponse, isLoading: loadingProducts } = useQuery<ProductResponse>({
+
+
+
+  const { data: prodResponse, isLoading: loadingProducts } = useQuery<ProductListResponse>({
     queryKey: ['products'],
     queryFn: async () => {
       // Get the session token
@@ -49,14 +47,26 @@ export default function ProductsPage() {
     }
   }, [prodResponse]);
 
+  const handleOpenModal = (productId: number) => {
+    setSelectedProductId(productId);
+    setIsModalOpen(true);
+    setTimeout(() => setIsAnimating(true), 10);
+  };
+
+  const handleCloseModal = () => {
+    setIsAnimating(false);
+    setTimeout(() => {
+      setIsModalOpen(false);
+      setSelectedProductId(null);
+    }, 300);
+  };
 
   const handleSaveProduct = (updatedProduct: Product) => {
-
-    
     setProducts(
       products?.map((p) => (p.productId === updatedProduct.productId ? updatedProduct : p))
     );
     console.log('Product updated:', updatedProduct);
+    handleCloseModal();
     // Add your API call here to save the product
   };
 
@@ -69,10 +79,43 @@ export default function ProductsPage() {
           <ProductCard
             key={product.productId}
             product={product}
-            onSave={handleSaveProduct}
+            onDetailsClick={handleOpenModal}
           />
         ))}
       </div>
+
+      {/* Modal */}
+      {isModalOpen && selectedProductId && (
+        <div 
+          className={`fixed inset-0 backdrop-blur-xs flex items-center justify-center z-50 p-4 transition-opacity duration-300 ${
+            isAnimating ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={handleCloseModal}
+          >
+          <div 
+            className={`bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col transform transition-transform duration-300 ease-out ${
+              isAnimating ? 'translate-y-0' : 'translate-y-full'
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex-shrink-0 bg-white border-b px-4 py-3 flex justify-between items-center">
+              <h2 className="text-xl font-semibold">Product Details</h2>
+              <button
+                onClick={handleCloseModal}
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto">
+              <ProductModal
+                productId={selectedProductId}
+                onSave={handleSaveProduct}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
