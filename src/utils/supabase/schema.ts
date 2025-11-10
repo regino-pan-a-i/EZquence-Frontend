@@ -37,7 +37,39 @@ export type Product = {
   ]
 };
 
-export type ProductResponse = {
+export type ProductListResponse = {
   success: boolean;
   data: Product[];
+};
+
+export type material = {
+  materialId: number;
+  materialUnits: string;
+  name: string;
+  processId: number;
+  quantity: number;
+  quantityinStock: number;
+  units: string;
+  expirationDate: Date;
+  unitsNeeded: string;
+
+}
+
+export type ProductResponse = {
+  success: boolean;
+  data: Product;
+};
+
+export type Process = {
+  processId: number;
+  name: string;
+  details: string;
+  productId: number;
+  productsPerBatch: number;
+  materials: material[];
+};
+
+export type ProcessResponse = {
+  success: boolean;
+  data: Process;
 };
