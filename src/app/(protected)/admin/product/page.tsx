@@ -93,7 +93,7 @@ export default function ProductsPage() {
           onClick={handleCloseModal}
           >
           <div 
-            className={`bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col transform transition-transform duration-300 ease-out ${
+            className={`bg-white rounded-lg w-full max-w-6xl h-auto max-h-[90vh] min-h-[500px] overflow-hidden flex flex-col transform transition-transform duration-300 ease-out ${
               isAnimating ? 'translate-y-0' : 'translate-y-full'
             }`}
             onClick={(e) => e.stopPropagation()}
