@@ -47,7 +47,7 @@ export type material = {
   materialUnits: string;
   name: string;
   processId: number;
-  quantity: number;
+  quantityNeeded: number;
   quantityinStock: number;
   units: string;
   expirationDate: Date;
