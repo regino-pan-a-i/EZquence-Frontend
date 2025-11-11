@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ProductResponse, Product, Process, ProcessResponse } from '@/utils/supabase/schema'
+import { ProductResponse, Product, Process, ProcessResponse, material } from '@/utils/supabase/schema'
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
 
@@ -90,18 +90,37 @@ const ProductModal: React.FC<ProductCardProps> = ({
   const [editedProduct, setEditedProduct] = useState<Product | undefined>(product);
   const [editedProcess, setEditedProcess] = useState<Process | undefined>(process);
   const [imagePreview, setImagePreview] = useState<string>('https://placehold.co/600x400');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current && isEditing) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [editedProcess?.details, isEditing]);
 
+  // Function to parse process details into steps
+  const parseProcessSteps = (details: string): string[] => {
+    if (!details) return [];
+    
+    // Split by numbered patterns like "1.", "2.", etc.
+    const steps = details.split(/(?=\d+\.)/).filter(step => step.trim());
+    
+    return steps;
+  };
 
   const handleEdit = () => {
     setIsEditing(true);
     setEditedProduct(product);
+    setEditedProcess(process);
     setImagePreview(product?.productImage[0]?.imageURL || 'https://placehold.co/600x400');
   };
 
   const handleCancel = () => {
     setIsEditing(false);
     setEditedProduct(product);
+    setEditedProcess(process);
     setImagePreview(product?.productImage[0]?.imageURL || 'https://placehold.co/600x400');
   };
 
@@ -118,32 +137,46 @@ const ProductModal: React.FC<ProductCardProps> = ({
     setImagePreview(value);
   };
 
-  // const handleMaterialChange = (index: number, value: string) => {
-  //   const newMaterials = [...editedProduct.materials];
-  //   newMaterials[index] = value;
-  //   setEditedProduct({ ...editedProduct, materials: newMaterials });
-  // };
+  const handleMaterialChange = (index: number, field: keyof material, value: string | number) => {
+    if (!editedProcess) return;
+    const newMaterials = [...editedProcess.materials];
+    newMaterials[index] = { ...newMaterials[index], [field]: value };
+    setEditedProcess({ ...editedProcess, materials: newMaterials });
+  };
 
-  // const handleAddMaterial = () => {
-  //   setEditedProduct({
-  //     ...editedProduct,
-  //     materials: [...editedProduct.materials, ''],
-  //   });
-  // };
+  const handleAddMaterial = () => {
+    if (!editedProcess) return;
+    const newMaterial: material = {
+      materialId: 0, // Will be assigned by backend
+      name: '',
+      quantityNeeded: 0,
+      units: '',
+      materialUnits: '',
+      processId: editedProcess.processId,
+      quantityinStock: 0,
+      expirationDate: new Date(),
+      unitsNeeded: '',
+    };
+    setEditedProcess({
+      ...editedProcess,
+      materials: [...editedProcess.materials, newMaterial],
+    });
+  };
 
-  // const handleRemoveMaterial = (index: number) => {
-  //   const newMaterials = editedProduct.materials.filter((_, i) => i !== index);
-  //   setEditedProduct({ ...editedProduct, materials: newMaterials });
-  // };
+  const handleRemoveMaterial = (index: number) => {
+    if (!editedProcess) return;
+    const newMaterials = editedProcess.materials.filter((_, i) => i !== index);
+    setEditedProcess({ ...editedProcess, materials: newMaterials });
+  };
 
   return (
     <div
-      className={`bg-white border border-gray-200 h-full p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden ${className}`}
+      className={`bg-white border border-gray-200 h-full p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-auto ${className}`}
     >
-      <div className='flex flex-col md:flex-row gap-4 overflow-hidden'>
-        <div className="w-1/2 overflow-hidden">
+      <div className='flex flex-col md:flex-row gap-4 min-h-0'>
+        <div className="w-full md:w-1/2 overflow-y-auto">
           {/* Product Image Section */}
-          <div className="relative w-full h-64 bg-gray-100 overflow-hidden rounded-lg">
+          <div className="relative w-full h-64 min-h-[256px] bg-gray-100 overflow-hidden rounded-lg flex-shrink-0">
             {!isEditing ? (
               <Image
                 src={imagePreview || 'https://placehold.co/600x400'}
@@ -175,7 +208,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Product Content Section */}
-          <div className="p-6">
+          <div className="p-4">
             {/* Product Name */}
             <div className="mb-4">
               {!isEditing ? (
@@ -211,44 +244,74 @@ const ProductModal: React.FC<ProductCardProps> = ({
               )}
             </div>
           </div>
-                    {/* Product Materials */}
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">
-              Materials
+          {/* Product Materials */}
+          <div className="p-4 mb-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-3">
+              Materials Required
             </h3>
-            {!isEditing ? (
-              <div className="flex flex-wrap gap-2">
+            {!process && !editedProcess ? (
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <p className="text-gray-500 text-sm text-center italic">
+                  No process defined - materials information unavailable
+                </p>
+              </div>
+            ) : !isEditing ? (
+              <div className="space-y-3">
                 {process && process?.materials.map((material, index) => (
-                  <span
+                  <div
                     key={index}
-                    className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full"
+                    className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
                   >
-                    {material.name}
-                  </span>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">{material.name}</p>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <span className="font-semibold text-blue-600">{material.quantityNeeded}</span>
+                      <span>{material.units}</span>
+                    </div>
+                  </div>
                 ))}
+                {process && process?.materials.length === 0 && (
+                  <p className="text-gray-500 text-sm italic">No materials added yet</p>
+                )}
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {editedProcess && editedProcess?.materials.map((material, index) => (
-                  <div key={index} className="flex gap-2">
+                  <div key={index} className="flex gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
                     <input
                       type="text"
                       value={material.name}
-                      // onChange={(e) => handleMaterialChange(index, e.target.value)}
+                      onChange={(e) => handleMaterialChange(index, 'name', e.target.value)}
                       placeholder="Material name"
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
+                    <input
+                      type="number"
+                      value={material.quantityNeeded}
+                      onChange={(e) => handleMaterialChange(index, 'quantityNeeded', parseFloat(e.target.value) || 0)}
+                      placeholder="Qty"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <input
+                      type="text"
+                      value={material.units}
+                      onChange={(e) => handleMaterialChange(index, 'units', e.target.value)}
+                      placeholder="Units"
+                      className="w-28 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
                     <button
-                      // onClick={() => handleRemoveMaterial(index)}
-                      className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200"
+                      onClick={() => handleRemoveMaterial(index)}
+                      className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 flex-shrink-0"
+                      title="Remove material"
                     >
-                      Remove
+                      ×
                     </button>
                   </div>
                 ))}
                 <button
-                  // onClick={handleAddMaterial}
-                  className="w-full px-3 py-2 border-2 border-dashed border-gray-300 text-gray-600 rounded-md hover:border-blue-500 hover:text-blue-500 transition-colors duration-200"
+                  onClick={handleAddMaterial}
+                  className="w-full px-3 py-2 border-2 border-dashed border-gray-300 text-gray-600 rounded-md hover:border-blue-500 hover:text-blue-500 transition-colors duration-200 font-medium"
                 >
                   + Add Material
                 </button>
@@ -256,13 +319,89 @@ const ProductModal: React.FC<ProductCardProps> = ({
             )}
           </div>
         </div>
-        <div className="w-1/2">
-          <div>
-            {process && (
+        <div className="w-full md:w-1/2 overflow-y-auto">
+          <div className="p-4">
+            {(process || editedProcess) ? (
               <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">{process.name}</h3>
-                <p className="font-semibold text-gray-700 leading-relaxed">Products Per batch: {process.productsPerBatch}</p>
-                <p className="p-4 text-gray-600 leading-relaxed">{process.details}</p>
+                {/* Process Name */}
+                {!isEditing ? (
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">{process?.name}</h3>
+                ) : (
+                  <input
+                    type="text"
+                    value={editedProcess?.name}
+                    onChange={(e) =>
+                      setEditedProcess(prev => prev ? { ...prev, name: e.target.value } : undefined)
+                    }
+                    placeholder="Process Name"
+                    className="w-full text-lg font-semibold px-3 py-2 mb-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                )}
+                
+                {/* Products Per Batch */}
+                {!isEditing ? (
+                  <p className="font-semibold text-gray-700 leading-relaxed mb-4">
+                    Products Per batch: {process?.productsPerBatch}
+                  </p>
+                ) : (
+                  <div className="mb-4 flex items-center gap-2">
+                    <label className="font-semibold text-gray-700">Products Per batch:</label>
+                    <input
+                      type="number"
+                      value={editedProcess?.productsPerBatch}
+                      onChange={(e) =>
+                        setEditedProcess(prev => prev ? { ...prev, productsPerBatch: parseInt(e.target.value) || 0 } : undefined)
+                      }
+                      placeholder="0"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                )}
+                
+                {/* Process Steps */}
+                <div className="space-y-2 h-fit">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Process Steps:</h4>
+                  {!isEditing ? (
+                    <>
+                      {process && parseProcessSteps(process.details).map((step, index) => (
+                        <div key={index} className="pl-2 text-gray-600 leading-relaxed">
+                          {step.trim()}
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <textarea
+                      ref={textareaRef}
+                      value={editedProcess?.details}
+                      onChange={(e) => {
+                        setEditedProcess(prev => prev ? { ...prev, details: e.target.value } : undefined);
+                      }}
+                      placeholder="Enter process steps (e.g., 1. First step 2. Second step 3. Third step)"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm overflow-hidden resize-none"
+                      style={{ minHeight: '100px' }}
+                    />
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <svg
+                  className="w-16 h-16 text-gray-400 mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">No Process Defined</h3>
+                <p className="text-sm text-gray-500 text-center mb-4">
+                  This product doesn't have a manufacturing process yet.
+                </p>
               </div>
             )}
           </div>
