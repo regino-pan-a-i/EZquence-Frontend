@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ProductResponse, Product, Process, ProcessResponse, material } from '@/utils/supabase/schema'
+import { ProductResponse, Product, Process, ProcessResponse, Material } from '@/utils/supabase/schema'
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
 
@@ -137,7 +137,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
     setImagePreview(value);
   };
 
-  const handleMaterialChange = (index: number, field: keyof material, value: string | number) => {
+  const handleMaterialChange = (index: number, field: keyof Material, value: string | number) => {
     if (!editedProcess) return;
     const newMaterials = [...editedProcess.materials];
     newMaterials[index] = { ...newMaterials[index], [field]: value };
@@ -146,7 +146,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
   const handleAddMaterial = () => {
     if (!editedProcess) return;
-    const newMaterial: material = {
+    const newMaterial: Material = {
       materialId: 0, // Will be assigned by backend
       name: '',
       quantityNeeded: 0,
