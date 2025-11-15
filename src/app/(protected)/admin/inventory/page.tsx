@@ -108,7 +108,7 @@ export default function InventoryPage() {
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
         <p className="text-gray-600 mt-2">
-          Track and manage your materials inventory
+          The status is based on the amount of materials in stock compared to the required quantity for today's production.
         </p>
       </div>
 
