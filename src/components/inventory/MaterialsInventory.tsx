@@ -234,7 +234,7 @@ export default function MaterialsInventory({ materials, inventoryNeeded }: Mater
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {getQuantityNeeded(material).toLocaleString()}
+                          {material.quantityInStock.toLocaleString()}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
