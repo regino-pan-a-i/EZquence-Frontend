@@ -42,7 +42,7 @@ export type ProductListResponse = {
   data: Product[];
 };
 
-export type material = {
+export type Material = {
   materialId: number;
   materialUnits: string;
   name: string;
@@ -66,10 +66,49 @@ export type Process = {
   details: string;
   productId: number;
   productsPerBatch: number;
-  materials: material[];
+  materials: Material[];
 };
 
 export type ProcessResponse = {
   success: boolean;
   data: Process;
+};
+
+export type DailyProductNeed = {
+  productId: number;
+  productName: string;
+  quantityNeeded: number;
+};
+
+export type DailyProductNeedResponse = {
+  success: boolean;
+  data: DailyProductNeed[];
+};
+
+
+export type InventoryItem = {
+  materialId: number;
+  name: string;
+  quantityInStock: number;
+  units: string;
+  companyId: number;
+  expirationDate: Date | null;
+};
+
+export type InventoryResponse = {
+  success: boolean;
+  data: InventoryItem[];
+};
+
+export type InventoryNeed = {
+  materialId: number;
+  materialName: string;
+  quantityInStock: number;
+  quantityNeeded: number;
+  units: string;
+}
+
+export type InventoryNeedResponse = {
+  success: boolean;
+  data: InventoryNeed[];
 };
