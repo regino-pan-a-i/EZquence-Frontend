@@ -1,3 +1,17 @@
+// Auth Types
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  WORKER = 'WORKER',
+}
+
+export interface DecodedToken {
+  user_role: UserRole;
+  sub: string;
+  email?: string;
+  exp?: number;
+  iat?: number;
+}
+
 export type OrderResponse = {
   success: boolean;
   data: Order[];
