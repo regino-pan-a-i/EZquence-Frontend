@@ -12,6 +12,7 @@ interface DateFilterProps {
   defaultValue?: string;
   defaultStartDate?: string;
   defaultEndDate?: string;
+  defaultPreset?: PresetOption;
 }
 
 type PresetOption = 'today' | 'last7days' | 'last30days' | 'custom';
@@ -27,11 +28,12 @@ function DateFilter({
   defaultValue = '',
   defaultStartDate = new Date().toISOString().split('T')[0], // Today's date by default
   defaultEndDate = new Date().toISOString().split('T')[0], // Today's date by default
+  defaultPreset = 'today',
 }: DateFilterProps) {
   const [selectedDate, setSelectedDate] = useState(defaultValue);
   const [startDate, setStartDate] = useState(defaultStartDate);
   const [endDate, setEndDate] = useState(defaultEndDate);
-  const [selectedPreset, setSelectedPreset] = useState<PresetOption>('today');
+  const [selectedPreset, setSelectedPreset] = useState<PresetOption>(defaultPreset);
 
   const getTodayDate = () => {
     return new Date().toISOString().split('T')[0];

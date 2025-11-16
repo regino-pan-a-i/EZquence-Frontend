@@ -50,7 +50,7 @@ export default function DashboardPage() {
     return orderList.data.length;
   };
 
-  const RevenueByDay = (orderList: OrderResponse) => {
+  const RevenueByDateRange = (orderList: OrderResponse) => {
     if (orders) {
       let orderData = orderList.data;
 
@@ -65,10 +65,11 @@ export default function DashboardPage() {
           return acc;
         }, {});
 
+      console.log(revenueData);
       return Object.entries(revenueData).map(([date, revenue]) => ({
-      date,
-      revenue,
-    }));
+        date,
+        revenue,
+      }));
     }
     return [];
   };
@@ -115,6 +116,7 @@ export default function DashboardPage() {
           onDateRangeChange={handleDateRangeChange}
           defaultStartDate={dateRange.start}
           defaultEndDate={dateRange.end}
+          defaultPreset="custom"
         />
       </div>
 
@@ -163,7 +165,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="w-full">
-        {orders && <RevenueChart data={RevenueByDay(orders)} />}
+        {orders && <RevenueChart data={RevenueByDateRange(orders)} />}
       </div>
 
       <div>Orders Summary (bar chart: completed vs pending)</div>   
