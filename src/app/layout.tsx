@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { SupabaseProvider } from './supabase-provider';
+import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
 const geistSans = Geist({
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Toaster position="top-center" />
         <SupabaseProvider>{children}</SupabaseProvider>
       </body>
     </html>
