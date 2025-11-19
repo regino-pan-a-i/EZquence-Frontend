@@ -45,6 +45,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Name */}
         <div className="mb-4">
           <h2 className="text-2xl font-bold text-gray-900">{product.name}</h2>
+          <p className="text-xl font-semibold text-green-600 mt-2">
+            ${product.price.toFixed(2)}
+          </p>
         </div>
 
         {/* Product Details */}
