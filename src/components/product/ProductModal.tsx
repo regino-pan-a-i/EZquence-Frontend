@@ -2,27 +2,34 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ProductResponse, Product, Process, ProcessResponse, Material } from '@/utils/supabase/schema'
+import { ProductResponse, Product, Process, ProcessResponse, Material, InventoryItem, InventoryResponse } from '@/utils/supabase/schema'
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
 
 
 
 export interface ProductCardProps {
-  productId: number;
+  productId?: number | null;
   onSave?: (updatedProduct: Product) => void;
+  onCreate?: (newProduct: Product) => void;
   className?: string;
 }
 
 const ProductModal: React.FC<ProductCardProps> = ({
   productId,
   onSave,
+  onCreate,
   className = '',
 }) => {
 
+  const isCreating = !productId || productId === 0;
   const [product, setProduct] = useState<Product>();
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(isCreating);
   const [process, setProcess] = useState<Process>();
+  const [isSaving, setIsSaving] = useState(false);
+  const [availableMaterials, setAvailableMaterials] = useState<InventoryItem[]>([]);
+  const [materialSearchTerm, setMaterialSearchTerm] = useState<string>('');
+  const [showMaterialDropdown, setShowMaterialDropdown] = useState<number | null>(null);
 
   const { data: prodResponse, isLoading: loadingProducts } = useQuery<ProductResponse>({
     queryKey: ['product', productId],
@@ -45,6 +52,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
       const data = await res.json();
       return data;
     },
+    enabled: !isCreating,
   });
 
   // Use useEffect to set products when data is fetched
@@ -77,6 +85,29 @@ const ProductModal: React.FC<ProductCardProps> = ({
       const data = await res.json();
       return data;
     },
+    enabled: !isCreating,
+  });
+
+  // Fetch available materials for autocomplete
+  const { data: materialsResponse } = useQuery<InventoryResponse>({
+    queryKey: ['materials'],
+    queryFn: async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(
+        `http://localhost:8080/inventory`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (!res.ok) throw new Error('Failed to fetch materials');
+      return res.json();
+    },
   });
 
   // Use useEffect to set products when data is fetched
@@ -86,6 +117,39 @@ const ProductModal: React.FC<ProductCardProps> = ({
       console.log(processResponse.data);
     }
   }, [processResponse]);
+
+  // Initialize empty product and process for creation mode
+  useEffect(() => {
+    if (isCreating) {
+      const emptyProduct: Product = {
+        productId: 0,
+        name: '',
+        price: 0,
+        details: '',
+        companyId: 0,
+        productImage: [{ productId: 0, imageURL: 'https://placehold.co/600x400' }]
+      };
+      const emptyProcess: Process = {
+        processId: 0,
+        name: '',
+        details: '',
+        productId: 0,
+        productsPerBatch: 1,
+        materials: []
+      };
+      setProduct(emptyProduct);
+      setProcess(emptyProcess);
+      setEditedProduct(emptyProduct);
+      setEditedProcess(emptyProcess);
+    }
+  }, [isCreating]);
+
+  // Update available materials list
+  useEffect(() => {
+    if (materialsResponse && materialsResponse.success === true) {
+      setAvailableMaterials(materialsResponse.data);
+    }
+  }, [materialsResponse]);
 
   const [editedProduct, setEditedProduct] = useState<Product | undefined>(product);
   const [editedProcess, setEditedProcess] = useState<Process | undefined>(process);
@@ -100,6 +164,21 @@ const ProductModal: React.FC<ProductCardProps> = ({
     }
   }, [editedProcess?.details, isEditing]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showMaterialDropdown !== null) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.relative')) {
+          setShowMaterialDropdown(null);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showMaterialDropdown]);
+
   // Function to parse process details into steps
   const parseProcessSteps = (details: string): string[] => {
     if (!details) return [];
@@ -110,6 +189,28 @@ const ProductModal: React.FC<ProductCardProps> = ({
     return steps;
   };
 
+  // Function to diff materials and identify changes
+  const diffMaterials = (original: Material[], edited: Material[]) => {
+    const added = edited.filter(em => 
+      em.materialId === 0 || !original.some(om => om.materialId === em.materialId)
+    );
+    
+    const removed = original.filter(om => 
+      !edited.some(em => em.materialId === om.materialId)
+    );
+    
+    const modified = edited.filter(em => {
+      if (em.materialId === 0) return false; // Skip new materials
+      const originalMaterial = original.find(om => om.materialId === em.materialId);
+      return originalMaterial && (
+        originalMaterial.quantityNeeded !== em.quantityNeeded ||
+        originalMaterial.units !== em.units
+      );
+    });
+    
+    return { added, removed, modified };
+  };
+
   const handleEdit = () => {
     setIsEditing(true);
     setEditedProduct(product);
@@ -118,17 +219,395 @@ const ProductModal: React.FC<ProductCardProps> = ({
   };
 
   const handleCancel = () => {
-    setIsEditing(false);
-    setEditedProduct(product);
-    setEditedProcess(process);
-    setImagePreview(product?.productImage[0]?.imageURL || 'https://placehold.co/600x400');
+    if (isCreating) {
+      // For creation mode, just close without saving
+      setIsEditing(false);
+    } else {
+      // For edit mode, revert to original values
+      setIsEditing(false);
+      setEditedProduct(product);
+      setEditedProcess(process);
+      setImagePreview(product?.productImage[0]?.imageURL || 'https://placehold.co/600x400');
+    }
   };
 
-  const handleSave = () => {
-    if (onSave && editedProduct) {
-      onSave(editedProduct);
+  const handleSave = async () => {
+    if (!editedProduct) return;
+    
+    setIsSaving(true);
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (isCreating) {
+        // Step 1: Create Product
+        const productPayload = {
+          name: editedProduct.name,
+          price: editedProduct.price,
+          details: editedProduct.details,
+          imageURL: editedProduct.productImage[0]?.imageURL || 'https://placehold.co/600x400'
+        };
+
+        const productRes = await fetch('http://localhost:8080/product', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(productPayload),
+        });
+
+        if (!productRes.ok) throw new Error('Failed to create product');
+        const productData = await productRes.json();
+        const newProductId = productData.data.productId;
+
+        // Step 2: Create Process (if defined)
+        if (editedProcess && editedProcess.name) {
+          const processPayload = {
+            name: editedProcess.name,
+            details: editedProcess.details,
+            productId: newProductId,
+            productsPerBatch: editedProcess.productsPerBatch,
+          };
+
+          const processRes = await fetch(`http://localhost:8080/product/${newProductId}/process`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(processPayload),
+          });
+
+          if (!processRes.ok) throw new Error('Failed to create process');
+          const processData = await processRes.json();
+          const newProcessId = processData.data.processId;
+
+          // Step 3: Create new materials and link them to process
+          if (editedProcess.materials && editedProcess.materials.length > 0) {
+            for (const material of editedProcess.materials) {
+              let materialId = material.materialId;
+
+              // Check if material is new (materialId === 0 or doesn't exist in inventory)
+              const existingMaterial = availableMaterials.find(
+                m => m.name.toLowerCase() === material.name.toLowerCase() && m.units === material.units
+              );
+
+              if (!existingMaterial && material.name) {
+                // Create new material
+                const materialPayload = {
+                  name: material.name,
+                  quantityInStock: 0,
+                  units: material.units,
+                  expirationDate: null
+                };
+
+                const materialRes = await fetch('http://localhost:8080/inventory', {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(materialPayload),
+                });
+
+                if (!materialRes.ok) throw new Error(`Failed to create material: ${material.name}`);
+                const materialData = await materialRes.json();
+                materialId = materialData.data.materialId;
+              } else if (existingMaterial) {
+                materialId = existingMaterial.materialId;
+              }
+
+              // Step 4: Link material to process
+              if (materialId) {
+                const linkPayload = {
+                  materialId: materialId,
+                  processId: newProcessId,
+                  quantityNeeded: material.quantityNeeded,
+                  units: material.units
+                };
+
+                const linkRes = await fetch(`http://localhost:8080/process/${newProcessId}/materials`, {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(linkPayload),
+                });
+
+                if (!linkRes.ok) console.warn(`Failed to link material ${material.name} to process`);
+              }
+            }
+          }
+        }
+
+        if (onCreate) {
+          onCreate({ ...editedProduct, productId: newProductId });
+        }
+      } else {
+        // Update existing product
+        const productPayload = {
+          name: editedProduct.name,
+          price: editedProduct.price,
+          details: editedProduct.details,
+          imageURL: editedProduct.productImage[0]?.imageURL || 'https://placehold.co/600x400'
+        };
+
+        const productRes = await fetch(`http://localhost:8080/product/${productId}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(productPayload),
+        });
+
+        if (!productRes.ok) throw new Error('Failed to update product');
+
+        // Update process if it exists
+        if (editedProcess && process) {
+          const processPayload = {
+            name: editedProcess.name,
+            details: editedProcess.details,
+            productsPerBatch: editedProcess.productsPerBatch,
+          };
+
+          const processRes = await fetch(`http://localhost:8080/product/${productId}/updateProcess`, {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(processPayload),
+          });
+
+          if (!processRes.ok) throw new Error('Failed to update process');
+
+          // Sync materials after process update
+          const originalMaterials = process.materials || [];
+          const editedMaterials = editedProcess.materials || [];
+          const { added, removed, modified } = diffMaterials(originalMaterials, editedMaterials);
+
+          const materialErrors: string[] = [];
+
+          // Remove materials
+          for (const material of removed) {
+            try {
+              const deleteRes = await fetch(
+                `http://localhost:8080/process/${process.processId}/materials/${material.materialId}`,
+                {
+                  method: 'DELETE',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                }
+              );
+              if (!deleteRes.ok) {
+                materialErrors.push(`Failed to remove material: ${material.name}`);
+              }
+            } catch (error) {
+              materialErrors.push(`Error removing material ${material.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            }
+          }
+
+          // Add new materials
+          for (const material of added) {
+            try {
+              let materialId = material.materialId;
+
+              // Check if material exists in inventory
+              const existingMaterial = availableMaterials.find(
+                m => m.name.toLowerCase() === material.name.toLowerCase() && m.units === material.units
+              );
+
+              if (!existingMaterial && material.name) {
+                // Create new material in inventory
+                const materialPayload = {
+                  name: material.name,
+                  quantityInStock: 0,
+                  units: material.units,
+                  expirationDate: null
+                };
+
+                const materialRes = await fetch('http://localhost:8080/inventory/createMaterial', {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(materialPayload),
+                });
+
+                if (!materialRes.ok) {
+                  materialErrors.push(`Failed to create material: ${material.name}`);
+                  continue;
+                }
+                const materialData = await materialRes.json();
+                console.log(materialData)
+                materialId = materialData.data[0].materialId;
+              } else if (existingMaterial) {
+                materialId = existingMaterial.materialId;
+              }
+
+              // Link material to process
+              if (materialId) {
+                const linkPayload = {
+                  materialId: materialId,
+                  processId: process.processId,
+                  quantityNeeded: material.quantityNeeded,
+                  unitsNeeded: material.units
+                };
+
+                const linkRes = await fetch(`http://localhost:8080/process/materials/add`, {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(linkPayload),
+                });
+
+                if (!linkRes.ok) {
+                  materialErrors.push(`Failed to link material: ${material.name}`);
+                }
+              }
+            } catch (error) {
+              materialErrors.push(`Error adding material ${material.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            }
+          }
+
+          // Update modified materials
+          for (const material of modified) {
+            try {
+              const updateRes = await fetch(
+                `http://localhost:8080/process/${process.processId}/materials/${material.materialId}`,
+                {
+                  method: 'PUT',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    quantityNeeded: material.quantityNeeded,
+                    unitsNeeded: material.units
+                  }),
+                }
+              );
+              if (!updateRes.ok) {
+                materialErrors.push(`Failed to update material: ${material.name}`);
+              }
+            } catch (error) {
+              materialErrors.push(`Error updating material ${material.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            }
+          }
+
+          // Show material errors if any occurred
+          if (materialErrors.length > 0) {
+            console.warn('Material update errors:', materialErrors);
+            alert(`Product saved, but some material updates failed:\n${materialErrors.join('\n')}`);
+          }
+        } else if (editedProcess && editedProcess.name && !process) {
+          // Create process if it didn't exist before
+          const processPayload = {
+            name: editedProcess.name,
+            details: editedProcess.details,
+            productId: productId,
+            productsPerBatch: editedProcess.productsPerBatch,
+          };
+
+          const processRes = await fetch(`http://localhost:8080/product/${productId}/createProcess`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(processPayload),
+          });
+
+          if (!processRes.ok) throw new Error('Failed to create process');
+          const processData = await processRes.json();
+          const newProcessId = processData.data.processId;
+
+          // Add materials to newly created process
+          if (editedProcess.materials && editedProcess.materials.length > 0) {
+            for (const material of editedProcess.materials) {
+              let materialId = material.materialId;
+
+              // Check if material exists in inventory
+              const existingMaterial = availableMaterials.find(
+                m => m.name.toLowerCase() === material.name.toLowerCase() && m.units === material.units
+              );
+
+              if (!existingMaterial && material.name) {
+                // Create new material in inventory
+                const materialPayload = {
+                  name: material.name,
+                  quantityInStock: 0,
+                  units: material.units,
+                  expirationDate: null
+                };
+
+                const materialRes = await fetch('http://localhost:8080/inventory', {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(materialPayload),
+                });
+
+                if (!materialRes.ok) {
+                  console.warn(`Failed to create material: ${material.name}`);
+                  continue;
+                }
+                const materialData = await materialRes.json();
+                materialId = materialData.data.materialId;
+              } else if (existingMaterial) {
+                materialId = existingMaterial.materialId;
+              }
+
+              // Link material to process
+              if (materialId) {
+                const linkPayload = {
+                  materialId: materialId,
+                  processId: newProcessId,
+                  quantityNeeded: material.quantityNeeded,
+                  unitsNeeded: material.units
+                };
+
+                const linkRes = await fetch(`http://localhost:8080/process/materials/add`, {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(linkPayload),
+                });
+
+                if (!linkRes.ok) {
+                  console.warn(`Failed to link material ${material.name} to process`);
+                }
+              }
+            }
+          }
+        }
+
+        if (onSave) {
+          onSave(editedProduct);
+        }
+      }
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving product:', error);
+      alert(`Failed to save product: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsSaving(false);
     }
-    setIsEditing(false);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,6 +621,28 @@ const ProductModal: React.FC<ProductCardProps> = ({
     const newMaterials = [...editedProcess.materials];
     newMaterials[index] = { ...newMaterials[index], [field]: value };
     setEditedProcess({ ...editedProcess, materials: newMaterials });
+  };
+
+  const handleMaterialSelect = (index: number, material: InventoryItem) => {
+    if (!editedProcess) return;
+    const newMaterials = [...editedProcess.materials];
+    newMaterials[index] = {
+      ...newMaterials[index],
+      materialId: material.materialId,
+      name: material.name,
+      units: material.units,
+      materialUnits: material.units,
+    };
+    setEditedProcess({ ...editedProcess, materials: newMaterials });
+    setShowMaterialDropdown(null);
+    setMaterialSearchTerm('');
+  };
+
+  const getFilteredMaterials = (searchTerm: string) => {
+    if (!searchTerm) return availableMaterials;
+    return availableMaterials.filter(m => 
+      m.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   };
 
   const handleAddMaterial = () => {
@@ -249,7 +750,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
             <h3 className="text-lg font-semibold text-gray-700 mb-3">
               Materials Required
             </h3>
-            {!process && !editedProcess ? (
+            {!process && !editedProcess && !isEditing ? (
               <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <p className="text-gray-500 text-sm text-center italic">
                   No process defined - materials information unavailable
@@ -278,14 +779,49 @@ const ProductModal: React.FC<ProductCardProps> = ({
             ) : (
               <div className="space-y-3">
                 {editedProcess && editedProcess?.materials.map((material, index) => (
-                  <div key={index} className="flex gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-                    <input
-                      type="text"
-                      value={material.name}
-                      onChange={(e) => handleMaterialChange(index, 'name', e.target.value)}
-                      placeholder="Material name"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
+                  <div key={index} className="relative flex gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        value={material.name}
+                        onChange={(e) => {
+                          handleMaterialChange(index, 'name', e.target.value);
+                          setMaterialSearchTerm(e.target.value);
+                          setShowMaterialDropdown(index);
+                        }}
+                        onFocus={() => {
+                          setShowMaterialDropdown(index);
+                          setMaterialSearchTerm(material.name);
+                        }}
+                        placeholder="Material name (type to search)"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                      {showMaterialDropdown === index && (
+                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                          {getFilteredMaterials(materialSearchTerm).length > 0 ? (
+                            <>
+                              {getFilteredMaterials(materialSearchTerm).map((mat) => (
+                                <div
+                                  key={mat.materialId}
+                                  onClick={() => handleMaterialSelect(index, mat)}
+                                  className="px-3 py-2 hover:bg-blue-50 cursor-pointer flex justify-between items-center"
+                                >
+                                  <span className="font-medium">{mat.name}</span>
+                                  <span className="text-sm text-gray-500">{mat.units}</span>
+                                </div>
+                              ))}
+                              <div className="px-3 py-2 text-xs text-gray-500 border-t border-gray-200 bg-gray-50">
+                                Or type a new material name
+                              </div>
+                            </>
+                          ) : (
+                            <div className="px-3 py-2 text-sm text-gray-500">
+                              No materials found. Type to create new material.
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                     <input
                       type="number"
                       value={material.quantityNeeded}
@@ -420,15 +956,27 @@ const ProductModal: React.FC<ProductCardProps> = ({
           <>
             <button
               onClick={handleCancel}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              disabled={isSaving}
+              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="flex-1 px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              disabled={isSaving}
+              className="flex-1 px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              Save Changes
+              {isSaving ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {isCreating ? 'Creating...' : 'Saving...'}
+                </>
+              ) : (
+                isCreating ? 'Create Product' : 'Save Changes'
+              )}
             </button>
           </>
         )}
