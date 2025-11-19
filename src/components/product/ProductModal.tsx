@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ProductResponse, Product, Process, ProcessResponse, Material, InventoryItem, InventoryResponse } from '@/utils/supabase/schema'
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
+import toast from 'react-hot-toast';
 
 
 
@@ -211,10 +212,35 @@ const ProductModal: React.FC<ProductCardProps> = ({
     return { added, removed, modified };
   };
 
+  // Helper function to filter out empty/incomplete materials
+  const filterValidMaterials = (materials: Material[]): Material[] => {
+    return materials.filter(
+      (material) =>
+        material.name.trim() !== '' &&
+        material.quantityNeeded > 0 &&
+        material.units.trim() !== ''
+    );
+  };
+
   const handleEdit = () => {
     setIsEditing(true);
     setEditedProduct(product);
-    setEditedProcess(process);
+    
+    // Initialize empty process if it doesn't exist
+    if (!process) {
+      const emptyProcess: Process = {
+        processId: 0,
+        name: '',
+        details: '',
+        productId: productId || 0,
+        productsPerBatch: 1,
+        materials: []
+      };
+      setEditedProcess(emptyProcess);
+    } else {
+      setEditedProcess(process);
+    }
+    
     setImagePreview(product?.productImage[0]?.imageURL || 'https://placehold.co/600x400');
   };
 
@@ -286,8 +312,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
           const newProcessId = processData.data.processId;
 
           // Step 3: Create new materials and link them to process
-          if (editedProcess.materials && editedProcess.materials.length > 0) {
-            for (const material of editedProcess.materials) {
+          const validMaterials = filterValidMaterials(editedProcess.materials || []);
+          if (validMaterials.length > 0) {
+            for (const material of validMaterials) {
               let materialId = material.materialId;
 
               // Check if material is new (materialId === 0 or doesn't exist in inventory)
@@ -344,6 +371,8 @@ const ProductModal: React.FC<ProductCardProps> = ({
           }
         }
 
+        toast.success('Product created successfully!');
+        
         if (onCreate) {
           onCreate({ ...editedProduct, productId: newProductId });
         }
@@ -388,7 +417,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
           // Sync materials after process update
           const originalMaterials = process.materials || [];
-          const editedMaterials = editedProcess.materials || [];
+          const editedMaterials = filterValidMaterials(editedProcess.materials || []);
           const { added, removed, modified } = diffMaterials(originalMaterials, editedMaterials);
 
           const materialErrors: string[] = [];
@@ -508,7 +537,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
           // Show material errors if any occurred
           if (materialErrors.length > 0) {
             console.warn('Material update errors:', materialErrors);
-            alert(`Product saved, but some material updates failed:\n${materialErrors.join('\n')}`);
+            toast.error(`Some material updates failed:\n${materialErrors.join('\n')}`, {
+              duration: 5000,
+            });
           }
         } else if (editedProcess && editedProcess.name && !process) {
           // Create process if it didn't exist before
@@ -530,11 +561,12 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
           if (!processRes.ok) throw new Error('Failed to create process');
           const processData = await processRes.json();
-          const newProcessId = processData.data.processId;
+          const newProcessId = processData.data[0].processId;
 
           // Add materials to newly created process
-          if (editedProcess.materials && editedProcess.materials.length > 0) {
-            for (const material of editedProcess.materials) {
+          const validMaterials = filterValidMaterials(editedProcess.materials || []);
+          if (validMaterials.length > 0) {
+            for (const material of validMaterials) {
               let materialId = material.materialId;
 
               // Check if material exists in inventory
@@ -596,6 +628,8 @@ const ProductModal: React.FC<ProductCardProps> = ({
           }
         }
 
+        toast.success('Product updated successfully!');
+        
         if (onSave) {
           onSave(editedProduct);
         }
@@ -604,7 +638,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
       setIsEditing(false);
     } catch (error) {
       console.error('Error saving product:', error);
-      alert(`Failed to save product: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      toast.error(`Failed to save product: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsSaving(false);
     }
@@ -713,17 +747,38 @@ const ProductModal: React.FC<ProductCardProps> = ({
             {/* Product Name */}
             <div className="mb-4">
               {!isEditing ? (
-                <h2 className="text-2xl font-bold text-gray-900">{product?.name}</h2>
+                <>
+                  <h2 className="text-2xl font-bold text-gray-900">{product?.name}</h2>
+                  <p className="text-xl font-semibold text-green-600 mt-2">
+                    ${product?.price.toFixed(2)}
+                  </p>
+                </>
               ) : (
-                <input
-                  type="text"
-                  value={editedProduct?.name}
-                  onChange={(e) =>
-                    setEditedProduct(prev => prev ? { ...prev, name: e.target.value } : undefined)
-                  }
-                  placeholder="Product Name"
-                  className="w-full text-2xl font-bold px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
+                <>
+                  <input
+                    type="text"
+                    value={editedProduct?.name}
+                    onChange={(e) =>
+                      setEditedProduct(prev => prev ? { ...prev, name: e.target.value } : undefined)
+                    }
+                    placeholder="Product Name"
+                    className="w-full text-2xl font-bold px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <div className="mt-2">
+                    <label className="text-sm font-semibold text-gray-700 mb-1 block">Price</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={editedProduct?.price}
+                      onChange={(e) =>
+                        setEditedProduct(prev => prev ? { ...prev, price: Math.max(0, parseFloat(e.target.value) || 0) } : undefined)
+                      }
+                      placeholder="0.00"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </>
               )}
             </div>
 
