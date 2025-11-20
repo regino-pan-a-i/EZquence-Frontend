@@ -2,16 +2,21 @@
 
 import React from 'react';
 import MaterialsInventory from '@/components/inventory/MaterialsInventory';
+import MaterialModal from '@/components/inventory/MaterialModal';
+import DeleteConfirmationDialog from '@/components/inventory/DeleteConfirmationDialog';
 import { InventoryResponse, InventoryItem, InventoryNeed, InventoryNeedResponse } from '@/utils/supabase/schema';
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
 
 
 export default function InventoryPage() {
-
+  const queryClient = useQueryClient();
   const [materials, setMaterials] = useState<InventoryItem[]>([]);
   const [inventoryNeeded, setInventoryNeeded] = useState<InventoryNeed[]>([]);
+  const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedMaterial, setSelectedMaterial] = useState<InventoryItem | null>(null);
 
   const { data: materialsResponse, isLoading: loadingMaterials, error: errorMaterials } = useQuery<InventoryResponse>({
     queryKey: ['materials'],
@@ -43,7 +48,6 @@ export default function InventoryPage() {
   // Use useEffect to set products when data is fetched
   useEffect(() => {
     if (materialsResponse && materialsResponse.success === true) {
-      console.log(materialsResponse.data)
       setMaterials(materialsResponse.data);
     }
   }, [materialsResponse]);
@@ -83,6 +87,47 @@ export default function InventoryPage() {
     }
   }, [inventoryNeededResponse]);
 
+  const handleCreateNew = () => {
+    setSelectedMaterial(null);
+    setIsMaterialModalOpen(true);
+  };
+
+  const handleEdit = (material: InventoryItem) => {
+    setSelectedMaterial(material);
+    setIsMaterialModalOpen(true);
+  };
+
+  const handleDelete = (material: InventoryItem) => {
+    setSelectedMaterial(material);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsMaterialModalOpen(false);
+    setSelectedMaterial(null);
+  };
+
+  const handleSaveMaterial = (updatedMaterial: InventoryItem) => {
+    queryClient.invalidateQueries({ queryKey: ['materials'] });
+    handleCloseModal();
+  };
+
+  const handleCreateMaterial = (newMaterial: InventoryItem) => {
+    queryClient.invalidateQueries({ queryKey: ['materials'] });
+    handleCloseModal();
+  };
+
+  const handleConfirmDelete = () => {
+    queryClient.invalidateQueries({ queryKey: ['materials'] });
+    setIsDeleteDialogOpen(false);
+    setSelectedMaterial(null);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteDialogOpen(false);
+    setSelectedMaterial(null);
+  };
+
   if (loadingMaterials) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -105,14 +150,59 @@ export default function InventoryPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
-        <p className="text-gray-600 mt-2">
-          The status is based on the amount of materials in stock compared to the required quantity for today's production.
-        </p>
+      <div className="mb-6 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
+          <p className="text-gray-600 mt-2">
+            The status is based on the amount of materials in stock compared to the required quantity for today's production.
+          </p>
+        </div>
+        <button
+          onClick={handleCreateNew}
+          className="px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Add Material
+        </button>
       </div>
 
-      <MaterialsInventory materials={materials || []} inventoryNeeded={inventoryNeeded || []} />
+      <MaterialsInventory 
+        materials={materials || []} 
+        inventoryNeeded={inventoryNeeded || []}
+        isAdminView={true}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+
+      {/* Material Modal */}
+      {isMaterialModalOpen && (
+        <div
+          className="fixed inset-0 backdrop-blur-xs flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) handleCloseModal();
+          }}
+        >
+          <div className="max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+            <MaterialModal
+              materialId={selectedMaterial?.materialId}
+              onSave={handleSaveMaterial}
+              onCreate={handleCreateMaterial}
+              onClose={handleCloseModal}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {isDeleteDialogOpen && selectedMaterial && (
+        <DeleteConfirmationDialog
+          material={selectedMaterial}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
     </div>
   );
 }
