@@ -2,19 +2,15 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Product } from '@/utils/supabase/schema'
+import { Product } from '@/utils/supabase/schema';
 
 export interface ProductCardProps {
   product: Product;
-  onDetailsClick?: (productId: number) => void;  
+  onDetailsClick?: (productId: number) => void;
   className?: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({
-  product,
-  onDetailsClick,
-  className = '',
-}) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onDetailsClick, className = '' }) => {
   const [imagePreview, setImagePreview] = useState<string>(product.productImage[0]?.imageURL);
 
   const handleDetails = () => {
@@ -29,7 +25,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
     >
       {/* Product Image Section */}
       <div className="relative w-full h-64 bg-gray-100">
-
         <Image
           src={imagePreview || '/placeholder-product.png'}
           alt={product.name}
@@ -37,7 +32,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="object-cover"
           onError={() => setImagePreview('/placeholder-product.png')}
         />
-        
       </div>
 
       {/* Product Content Section */}
@@ -45,18 +39,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Name */}
         <div className="mb-4">
           <h2 className="text-2xl font-bold text-gray-900">{product.name}</h2>
-          <p className="text-xl font-semibold text-green-600 mt-2">
-            ${product.price.toFixed(2)}
-          </p>
+          <p className="text-xl font-semibold text-green-600 mt-2">${product.price.toFixed(2)}</p>
         </div>
 
         {/* Product Details */}
         <div className="mb-4 flex-grow">
           <h3 className="text-sm font-semibold text-gray-700 mb-2">Details</h3>
           <p className="text-gray-600 leading-relaxed">{product.details}</p>
-          
         </div>
-        
+
         {/* Action Buttons */}
         <div className="flex gap-2 mt-auto">
           <button
@@ -65,7 +56,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           >
             See Details
           </button>
-
         </div>
       </div>
     </div>

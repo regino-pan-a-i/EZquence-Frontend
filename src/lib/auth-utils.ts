@@ -22,7 +22,7 @@ export function decodeToken(token: string): DecodedToken | null {
 export async function getUserRole(): Promise<UserRole | null> {
   try {
     const cookieStore = await cookies();
-    
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -57,7 +57,7 @@ export async function getUserRole(): Promise<UserRole | null> {
 export async function isAuthenticated(): Promise<boolean> {
   try {
     const cookieStore = await cookies();
-    
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

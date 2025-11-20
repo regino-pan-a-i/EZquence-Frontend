@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { InventoryItem, InventoryNeed } from '@/utils/supabase/schema';
 
-
 interface MaterialsInventoryProps {
   materials: InventoryItem[];
   inventoryNeeded: InventoryNeed[];
@@ -12,19 +11,23 @@ interface MaterialsInventoryProps {
   onDelete?: (material: InventoryItem) => void;
 }
 
-export default function MaterialsInventory({ 
-  materials, 
+export default function MaterialsInventory({
+  materials,
   inventoryNeeded,
   isAdminView = false,
   onEdit,
   onDelete,
 }: MaterialsInventoryProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortField, setSortField] = useState<'name' | 'quantityInStock' | 'status' | 'expirationDate'>('name');
+  const [sortField, setSortField] = useState<
+    'name' | 'quantityInStock' | 'status' | 'expirationDate'
+  >('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const getQuantityNeeded = (material: InventoryItem) => {
-    const quantityNeeded = inventoryNeeded.find(inventory => inventory.materialId === material.materialId)?.quantityNeeded;
+    const quantityNeeded = inventoryNeeded.find(
+      (inventory) => inventory.materialId === material.materialId
+    )?.quantityNeeded;
     return quantityNeeded || 0;
   };
 
@@ -92,7 +95,9 @@ export default function MaterialsInventory({
         const statusA = getStockStatus(a);
         const statusB = getStockStatus(b);
         const statusOrder = { 'out-of-stock': 0, 'low-stock': 1, 'in-stock': 2 };
-        comparison = statusOrder[statusA as keyof typeof statusOrder] - statusOrder[statusB as keyof typeof statusOrder];
+        comparison =
+          statusOrder[statusA as keyof typeof statusOrder] -
+          statusOrder[statusB as keyof typeof statusOrder];
         break;
       case 'expirationDate':
         const dateA = a.expirationDate ? new Date(a.expirationDate).getTime() : Infinity;
@@ -116,8 +121,18 @@ export default function MaterialsInventory({
   const SortIcon = ({ field }: { field: typeof sortField }) => {
     if (sortField !== field) {
       return (
-        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+        <svg
+          className="w-4 h-4 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+          />
         </svg>
       );
     }
@@ -185,13 +200,7 @@ export default function MaterialsInventory({
               <div className="ml-4">
                 <p className="text-sm font-medium text-green-600">In Stock</p>
                 <p className="text-2xl font-bold text-green-900">
-                  {
-                    materials.filter(
-                      (m) =>
-                        getStockStatus(m) ===
-                        'in-stock'
-                    ).length
-                  }
+                  {materials.filter((m) => getStockStatus(m) === 'in-stock').length}
                 </p>
               </div>
             </div>
@@ -217,13 +226,7 @@ export default function MaterialsInventory({
               <div className="ml-4">
                 <p className="text-sm font-medium text-yellow-600">Low Stock</p>
                 <p className="text-2xl font-bold text-yellow-900">
-                  {
-                    materials.filter(
-                      (m) =>
-                        getStockStatus(m) ===
-                        'low-stock'
-                    ).length
-                  }
+                  {materials.filter((m) => getStockStatus(m) === 'low-stock').length}
                 </p>
               </div>
             </div>
@@ -249,13 +252,7 @@ export default function MaterialsInventory({
               <div className="ml-4">
                 <p className="text-sm font-medium text-red-600">Out of Stock</p>
                 <p className="text-2xl font-bold text-red-900">
-                  {
-                    materials.filter(
-                      (m) =>
-                        getStockStatus(m) ===
-                        'out-of-stock'
-                    ).length
-                  }
+                  {materials.filter((m) => getStockStatus(m) === 'out-of-stock').length}
                 </p>
               </div>
             </div>
@@ -266,9 +263,7 @@ export default function MaterialsInventory({
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 border-b border-blue-800">
           <h2 className="text-2xl font-bold text-white">Materials Inventory</h2>
-          <p className="text-blue-100 text-sm mt-1">
-            Total Materials: {materials.length}
-          </p>
+          <p className="text-blue-100 text-sm mt-1">Total Materials: {materials.length}</p>
         </div>
 
         {materials.length === 0 ? (
@@ -298,7 +293,7 @@ export default function MaterialsInventory({
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('name')}
                   >
@@ -307,7 +302,7 @@ export default function MaterialsInventory({
                       <SortIcon field="name" />
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('quantityInStock')}
                   >
@@ -322,7 +317,7 @@ export default function MaterialsInventory({
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Units
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('status')}
                   >
@@ -331,7 +326,7 @@ export default function MaterialsInventory({
                       <SortIcon field="status" />
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('expirationDate')}
                   >
@@ -350,16 +345,11 @@ export default function MaterialsInventory({
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedMaterials.map((material) => {
                   const status = getStockStatus(material);
-                  
+
                   return (
-                    <tr
-                      key={material.materialId}
-                      className="hover:bg-gray-50 transition-colors"
-                    >
+                    <tr key={material.materialId} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {material.name}
-                        </div>
+                        <div className="text-sm font-medium text-gray-900">{material.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
@@ -418,7 +408,6 @@ export default function MaterialsInventory({
           </div>
         )}
       </div>
-
     </div>
   );
 }

@@ -4,21 +4,16 @@ import ProductCard from '@/components/product/ProductCard';
 import ProductModal from '@/components/product/ProductModal';
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ProductListResponse, Product } from '@/utils/supabase/schema'
+import { ProductListResponse, Product } from '@/utils/supabase/schema';
 import { supabase } from '@/utils/supabase/supabaseClient';
 
-
 export default function ProductsPage() {
-
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const queryClient = useQueryClient();
-
-
-
 
   const { data: prodResponse, isLoading: loadingProducts } = useQuery<ProductListResponse>({
     queryKey: ['products'],
@@ -28,15 +23,12 @@ export default function ProductsPage() {
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(
-        `http://localhost:8080/product`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const res = await fetch(`http://localhost:8080/product`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (!res.ok) console.log('Failed to fetch orders', res);
       return res.json();
     },
@@ -103,26 +95,22 @@ export default function ProductsPage() {
           Create Product
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products?.map((product) => (
-          <ProductCard
-            key={product.productId}
-            product={product}
-            onDetailsClick={handleOpenModal}
-          />
+          <ProductCard key={product.productId} product={product} onDetailsClick={handleOpenModal} />
         ))}
       </div>
 
       {/* Modal */}
       {isModalOpen && (
-        <div 
+        <div
           className={`fixed inset-0 backdrop-blur-xs flex items-center justify-center z-50 p-4 transition-opacity duration-300 ${
             isAnimating ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={handleCloseModal}
-          >
-          <div 
+        >
+          <div
             className={`bg-white rounded-lg w-full max-w-6xl h-auto max-h-[90vh] min-h-[500px] overflow-hidden flex flex-col transform transition-transform duration-300 ease-out ${
               isAnimating ? 'translate-y-0' : 'translate-y-full'
             }`}

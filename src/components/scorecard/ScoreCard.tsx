@@ -47,7 +47,7 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
 }) => {
   const dataArray = Array.isArray(data) ? data : [data];
 
-    const renderSkeletonItem = (index: number) => {
+  const renderSkeletonItem = (index: number) => {
     return (
       <div
         key={`skeleton-${index}`}
@@ -62,7 +62,9 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
               <div className="h-4 bg-gray-300 rounded w-20"></div>
             </div>
 
-            <div className={`bg-gray-300 rounded ${variant === 'compact' ? 'h-7 w-24' : 'h-8 w-32'}`}></div>
+            <div
+              className={`bg-gray-300 rounded ${variant === 'compact' ? 'h-7 w-24' : 'h-8 w-32'}`}
+            ></div>
 
             {variant !== 'compact' && (
               <div className="mt-2 flex items-center gap-2">

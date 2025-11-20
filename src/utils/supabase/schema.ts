@@ -44,11 +44,12 @@ export type Product = {
   price: number;
   details: string;
   companyId: number;
-  productImage: [{
+  productImage: [
+    {
       productId: number;
       imageURL: string;
-    }
-  ]
+    },
+  ];
 };
 
 export type ProductListResponse = {
@@ -66,8 +67,7 @@ export type Material = {
   units: string;
   expirationDate: Date;
   unitsNeeded: string;
-
-}
+};
 
 export type ProductResponse = {
   success: boolean;
@@ -99,7 +99,6 @@ export type DailyProductNeedResponse = {
   data: DailyProductNeed[];
 };
 
-
 export type InventoryItem = {
   materialId: number;
   name: string;
@@ -120,7 +119,7 @@ export type InventoryNeed = {
   quantityInStock: number;
   quantityNeeded: number;
   units: string;
-}
+};
 
 export type InventoryNeedResponse = {
   success: boolean;

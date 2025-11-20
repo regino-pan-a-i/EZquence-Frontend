@@ -17,7 +17,6 @@ interface DateFilterProps {
 
 type PresetOption = 'today' | 'last7days' | 'last30days' | 'custom';
 
-
 function DateFilter({
   onDateChange,
   onDateRangeChange,
@@ -80,7 +79,7 @@ function DateFilter({
         // Just switch to custom mode, keep current values
         break;
     }
-  };  
+  };
 
   const handleSingleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const date = event.target.value;
@@ -226,9 +225,7 @@ function DateFilter({
         </div>
       )}
       {selectedPreset !== 'custom' && selectedDate && (
-        <div className="text-sm text-gray-600 dark:text-gray-400">
-          {selectedDate}
-        </div>
+        <div className="text-sm text-gray-600 dark:text-gray-400">{selectedDate}</div>
       )}
     </div>
   );

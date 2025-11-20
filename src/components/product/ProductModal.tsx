@@ -2,12 +2,18 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ProductResponse, Product, Process, ProcessResponse, Material, InventoryItem, InventoryResponse } from '@/utils/supabase/schema'
+import {
+  ProductResponse,
+  Product,
+  Process,
+  ProcessResponse,
+  Material,
+  InventoryItem,
+  InventoryResponse,
+} from '@/utils/supabase/schema';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import toast from 'react-hot-toast';
-
-
 
 export interface ProductCardProps {
   productId?: number | null;
@@ -22,7 +28,6 @@ const ProductModal: React.FC<ProductCardProps> = ({
   onCreate,
   className = '',
 }) => {
-
   const isCreating = !productId || productId === 0;
   const [product, setProduct] = useState<Product>();
   const [isEditing, setIsEditing] = useState(isCreating);
@@ -40,15 +45,12 @@ const ProductModal: React.FC<ProductCardProps> = ({
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(
-        `http://localhost:8080/product/${productId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const res = await fetch(`http://localhost:8080/product/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (!res.ok) console.log('Failed to fetch orders', res);
       const data = await res.json();
       return data;
@@ -60,8 +62,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
   useEffect(() => {
     if (prodResponse && prodResponse.success === true) {
       setProduct(prodResponse.data);
-      setImagePreview(prodResponse.data.productImage[0]?.imageURL || 'https://placehold.co/600x400');
-
+      setImagePreview(
+        prodResponse.data.productImage[0]?.imageURL || 'https://placehold.co/600x400'
+      );
     }
   }, [prodResponse]);
 
@@ -73,15 +76,12 @@ const ProductModal: React.FC<ProductCardProps> = ({
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(
-        `http://localhost:8080/product/${productId}/process`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const res = await fetch(`http://localhost:8080/product/${productId}/process`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (!res.ok) console.log('Failed to fetch orders', res);
       const data = await res.json();
       return data;
@@ -97,15 +97,12 @@ const ProductModal: React.FC<ProductCardProps> = ({
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(
-        `http://localhost:8080/inventory`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const res = await fetch(`http://localhost:8080/inventory`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (!res.ok) throw new Error('Failed to fetch materials');
       return res.json();
     },
@@ -128,7 +125,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
         price: 0,
         details: '',
         companyId: 0,
-        productImage: [{ productId: 0, imageURL: 'https://placehold.co/600x400' }]
+        productImage: [{ productId: 0, imageURL: 'https://placehold.co/600x400' }],
       };
       const emptyProcess: Process = {
         processId: 0,
@@ -136,7 +133,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
         details: '',
         productId: 0,
         productsPerBatch: 1,
-        materials: []
+        materials: [],
       };
       setProduct(emptyProduct);
       setProcess(emptyProcess);
@@ -183,32 +180,31 @@ const ProductModal: React.FC<ProductCardProps> = ({
   // Function to parse process details into steps
   const parseProcessSteps = (details: string): string[] => {
     if (!details) return [];
-    
+
     // Split by numbered patterns like "1.", "2.", etc.
-    const steps = details.split(/(?=\d+\.)/).filter(step => step.trim());
-    
+    const steps = details.split(/(?=\d+\.)/).filter((step) => step.trim());
+
     return steps;
   };
 
   // Function to diff materials and identify changes
   const diffMaterials = (original: Material[], edited: Material[]) => {
-    const added = edited.filter(em => 
-      em.materialId === 0 || !original.some(om => om.materialId === em.materialId)
+    const added = edited.filter(
+      (em) => em.materialId === 0 || !original.some((om) => om.materialId === em.materialId)
     );
-    
-    const removed = original.filter(om => 
-      !edited.some(em => em.materialId === om.materialId)
-    );
-    
-    const modified = edited.filter(em => {
+
+    const removed = original.filter((om) => !edited.some((em) => em.materialId === om.materialId));
+
+    const modified = edited.filter((em) => {
       if (em.materialId === 0) return false; // Skip new materials
-      const originalMaterial = original.find(om => om.materialId === em.materialId);
-      return originalMaterial && (
-        originalMaterial.quantityNeeded !== em.quantityNeeded ||
-        originalMaterial.units !== em.units
+      const originalMaterial = original.find((om) => om.materialId === em.materialId);
+      return (
+        originalMaterial &&
+        (originalMaterial.quantityNeeded !== em.quantityNeeded ||
+          originalMaterial.units !== em.units)
       );
     });
-    
+
     return { added, removed, modified };
   };
 
@@ -216,16 +212,14 @@ const ProductModal: React.FC<ProductCardProps> = ({
   const filterValidMaterials = (materials: Material[]): Material[] => {
     return materials.filter(
       (material) =>
-        material.name.trim() !== '' &&
-        material.quantityNeeded > 0 &&
-        material.units.trim() !== ''
+        material.name.trim() !== '' && material.quantityNeeded > 0 && material.units.trim() !== ''
     );
   };
 
   const handleEdit = () => {
     setIsEditing(true);
     setEditedProduct(product);
-    
+
     // Initialize empty process if it doesn't exist
     if (!process) {
       const emptyProcess: Process = {
@@ -234,13 +228,13 @@ const ProductModal: React.FC<ProductCardProps> = ({
         details: '',
         productId: productId || 0,
         productsPerBatch: 1,
-        materials: []
+        materials: [],
       };
       setEditedProcess(emptyProcess);
     } else {
       setEditedProcess(process);
     }
-    
+
     setImagePreview(product?.productImage[0]?.imageURL || 'https://placehold.co/600x400');
   };
 
@@ -259,7 +253,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
   const handleSave = async () => {
     if (!editedProduct) return;
-    
+
     setIsSaving(true);
     try {
       const {
@@ -273,7 +267,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           name: editedProduct.name,
           price: editedProduct.price,
           details: editedProduct.details,
-          imageURL: editedProduct.productImage[0]?.imageURL || 'https://placehold.co/600x400'
+          imageURL: editedProduct.productImage[0]?.imageURL || 'https://placehold.co/600x400',
         };
 
         const productRes = await fetch('http://localhost:8080/product', {
@@ -319,7 +313,8 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
               // Check if material is new (materialId === 0 or doesn't exist in inventory)
               const existingMaterial = availableMaterials.find(
-                m => m.name.toLowerCase() === material.name.toLowerCase() && m.units === material.units
+                (m) =>
+                  m.name.toLowerCase() === material.name.toLowerCase() && m.units === material.units
               );
 
               if (!existingMaterial && material.name) {
@@ -328,7 +323,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   name: material.name,
                   quantityInStock: 0,
                   units: material.units,
-                  expirationDate: null
+                  expirationDate: null,
                 };
 
                 const materialRes = await fetch('http://localhost:8080/inventory', {
@@ -353,26 +348,30 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   materialId: materialId,
                   processId: newProcessId,
                   quantityNeeded: material.quantityNeeded,
-                  units: material.units
+                  units: material.units,
                 };
 
-                const linkRes = await fetch(`http://localhost:8080/process/${newProcessId}/materials`, {
-                  method: 'POST',
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(linkPayload),
-                });
+                const linkRes = await fetch(
+                  `http://localhost:8080/process/${newProcessId}/materials`,
+                  {
+                    method: 'POST',
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(linkPayload),
+                  }
+                );
 
-                if (!linkRes.ok) console.warn(`Failed to link material ${material.name} to process`);
+                if (!linkRes.ok)
+                  console.warn(`Failed to link material ${material.name} to process`);
               }
             }
           }
         }
 
         toast.success('Product created successfully!');
-        
+
         if (onCreate) {
           onCreate({ ...editedProduct, productId: newProductId });
         }
@@ -382,7 +381,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           name: editedProduct.name,
           price: editedProduct.price,
           details: editedProduct.details,
-          imageURL: editedProduct.productImage[0]?.imageURL || 'https://placehold.co/600x400'
+          imageURL: editedProduct.productImage[0]?.imageURL || 'https://placehold.co/600x400',
         };
 
         const productRes = await fetch(`http://localhost:8080/product/${productId}`, {
@@ -404,14 +403,17 @@ const ProductModal: React.FC<ProductCardProps> = ({
             productsPerBatch: editedProcess.productsPerBatch,
           };
 
-          const processRes = await fetch(`http://localhost:8080/product/${productId}/updateProcess`, {
-            method: 'PUT',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(processPayload),
-          });
+          const processRes = await fetch(
+            `http://localhost:8080/product/${productId}/updateProcess`,
+            {
+              method: 'PUT',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(processPayload),
+            }
+          );
 
           if (!processRes.ok) throw new Error('Failed to update process');
 
@@ -439,7 +441,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
                 materialErrors.push(`Failed to remove material: ${material.name}`);
               }
             } catch (error) {
-              materialErrors.push(`Error removing material ${material.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+              materialErrors.push(
+                `Error removing material ${material.name}: ${error instanceof Error ? error.message : 'Unknown error'}`
+              );
             }
           }
 
@@ -450,7 +454,8 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
               // Check if material exists in inventory
               const existingMaterial = availableMaterials.find(
-                m => m.name.toLowerCase() === material.name.toLowerCase() && m.units === material.units
+                (m) =>
+                  m.name.toLowerCase() === material.name.toLowerCase() && m.units === material.units
               );
 
               if (!existingMaterial && material.name) {
@@ -459,7 +464,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   name: material.name,
                   quantityInStock: 0,
                   units: material.units,
-                  expirationDate: null
+                  expirationDate: null,
                 };
 
                 const materialRes = await fetch('http://localhost:8080/inventory/createMaterial', {
@@ -476,7 +481,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   continue;
                 }
                 const materialData = await materialRes.json();
-                console.log(materialData)
+                console.log(materialData);
                 materialId = materialData.data[0].materialId;
               } else if (existingMaterial) {
                 materialId = existingMaterial.materialId;
@@ -488,7 +493,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   materialId: materialId,
                   processId: process.processId,
                   quantityNeeded: material.quantityNeeded,
-                  unitsNeeded: material.units
+                  unitsNeeded: material.units,
                 };
 
                 const linkRes = await fetch(`http://localhost:8080/process/materials/add`, {
@@ -505,7 +510,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
                 }
               }
             } catch (error) {
-              materialErrors.push(`Error adding material ${material.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+              materialErrors.push(
+                `Error adding material ${material.name}: ${error instanceof Error ? error.message : 'Unknown error'}`
+              );
             }
           }
 
@@ -522,7 +529,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   },
                   body: JSON.stringify({
                     quantityNeeded: material.quantityNeeded,
-                    unitsNeeded: material.units
+                    unitsNeeded: material.units,
                   }),
                 }
               );
@@ -530,7 +537,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
                 materialErrors.push(`Failed to update material: ${material.name}`);
               }
             } catch (error) {
-              materialErrors.push(`Error updating material ${material.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+              materialErrors.push(
+                `Error updating material ${material.name}: ${error instanceof Error ? error.message : 'Unknown error'}`
+              );
             }
           }
 
@@ -550,14 +559,17 @@ const ProductModal: React.FC<ProductCardProps> = ({
             productsPerBatch: editedProcess.productsPerBatch,
           };
 
-          const processRes = await fetch(`http://localhost:8080/product/${productId}/createProcess`, {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(processPayload),
-          });
+          const processRes = await fetch(
+            `http://localhost:8080/product/${productId}/createProcess`,
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(processPayload),
+            }
+          );
 
           if (!processRes.ok) throw new Error('Failed to create process');
           const processData = await processRes.json();
@@ -571,7 +583,8 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
               // Check if material exists in inventory
               const existingMaterial = availableMaterials.find(
-                m => m.name.toLowerCase() === material.name.toLowerCase() && m.units === material.units
+                (m) =>
+                  m.name.toLowerCase() === material.name.toLowerCase() && m.units === material.units
               );
 
               if (!existingMaterial && material.name) {
@@ -580,7 +593,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   name: material.name,
                   quantityInStock: 0,
                   units: material.units,
-                  expirationDate: null
+                  expirationDate: null,
                 };
 
                 const materialRes = await fetch('http://localhost:8080/inventory', {
@@ -608,7 +621,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   materialId: materialId,
                   processId: newProcessId,
                   quantityNeeded: material.quantityNeeded,
-                  unitsNeeded: material.units
+                  unitsNeeded: material.units,
                 };
 
                 const linkRes = await fetch(`http://localhost:8080/process/materials/add`, {
@@ -629,7 +642,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
         }
 
         toast.success('Product updated successfully!');
-        
+
         if (onSave) {
           onSave(editedProduct);
         }
@@ -638,7 +651,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
       setIsEditing(false);
     } catch (error) {
       console.error('Error saving product:', error);
-      toast.error(`Failed to save product: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      toast.error(
+        `Failed to save product: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     } finally {
       setIsSaving(false);
     }
@@ -646,7 +661,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setEditedProduct(prev => prev ? { ...prev, productImage: [{ ...prev.productImage[0], imageURL: value }] } : undefined);
+    setEditedProduct((prev) =>
+      prev ? { ...prev, productImage: [{ ...prev.productImage[0], imageURL: value }] } : undefined
+    );
     setImagePreview(value);
   };
 
@@ -674,7 +691,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
   const getFilteredMaterials = (searchTerm: string) => {
     if (!searchTerm) return availableMaterials;
-    return availableMaterials.filter(m => 
+    return availableMaterials.filter((m) =>
       m.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
@@ -708,14 +725,14 @@ const ProductModal: React.FC<ProductCardProps> = ({
     <div
       className={`bg-white border border-gray-200 h-full p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-auto ${className}`}
     >
-      <div className='flex flex-col md:flex-row gap-4 min-h-0'>
+      <div className="flex flex-col md:flex-row gap-4 min-h-0">
         <div className="w-full md:w-1/2 overflow-y-auto">
           {/* Product Image Section */}
           <div className="relative w-full h-64 min-h-[256px] bg-gray-100 overflow-hidden rounded-lg flex-shrink-0">
             {!isEditing ? (
               <Image
                 src={imagePreview || 'https://placehold.co/600x400'}
-                alt={product?.name || "Product Image"}
+                alt={product?.name || 'Product Image'}
                 fill
                 className="object-cover"
                 onError={() => setImagePreview('/placeholder-product.png')}
@@ -724,7 +741,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
               <div className="relative w-full h-full flex items-center justify-center">
                 <Image
                   src={imagePreview || 'https://placehold.co/600x400'}
-                  alt={editedProduct?.name || "Product Image"}
+                  alt={editedProduct?.name || 'Product Image'}
                   fill
                   className="object-cover opacity-50"
                   onError={() => setImagePreview('/placeholder-product.png')}
@@ -759,7 +776,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
                     type="text"
                     value={editedProduct?.name}
                     onChange={(e) =>
-                      setEditedProduct(prev => prev ? { ...prev, name: e.target.value } : undefined)
+                      setEditedProduct((prev) =>
+                        prev ? { ...prev, name: e.target.value } : undefined
+                      )
                     }
                     placeholder="Product Name"
                     className="w-full text-2xl font-bold px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -772,7 +791,11 @@ const ProductModal: React.FC<ProductCardProps> = ({
                       min="0"
                       value={editedProduct?.price}
                       onChange={(e) =>
-                        setEditedProduct(prev => prev ? { ...prev, price: Math.max(0, parseFloat(e.target.value) || 0) } : undefined)
+                        setEditedProduct((prev) =>
+                          prev
+                            ? { ...prev, price: Math.max(0, parseFloat(e.target.value) || 0) }
+                            : undefined
+                        )
                       }
                       placeholder="0.00"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -791,7 +814,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
                 <textarea
                   value={editedProduct?.details}
                   onChange={(e) =>
-                    setEditedProduct(prev => prev ? { ...prev, details: e.target.value } : undefined)
+                    setEditedProduct((prev) =>
+                      prev ? { ...prev, details: e.target.value } : undefined
+                    )
                   }
                   placeholder="Product details..."
                   rows={4}
@@ -802,9 +827,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           </div>
           {/* Product Materials */}
           <div className="p-4 mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-3">
-              Materials Required
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-3">Materials Required</h3>
             {!process && !editedProcess && !isEditing ? (
               <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <p className="text-gray-500 text-sm text-center italic">
@@ -813,93 +836,106 @@ const ProductModal: React.FC<ProductCardProps> = ({
               </div>
             ) : !isEditing ? (
               <div className="space-y-3">
-                {process && process?.materials.map((material, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">{material.name}</p>
+                {process &&
+                  process?.materials.map((material, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">{material.name}</p>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <span className="font-semibold text-blue-600">
+                          {material.quantityNeeded}
+                        </span>
+                        <span>{material.units}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <span className="font-semibold text-blue-600">{material.quantityNeeded}</span>
-                      <span>{material.units}</span>
-                    </div>
-                  </div>
-                ))}
+                  ))}
                 {process && process?.materials.length === 0 && (
                   <p className="text-gray-500 text-sm italic">No materials added yet</p>
                 )}
               </div>
             ) : (
               <div className="space-y-3">
-                {editedProcess && editedProcess?.materials.map((material, index) => (
-                  <div key={index} className="relative flex gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-                    <div className="flex-1 relative">
+                {editedProcess &&
+                  editedProcess?.materials.map((material, index) => (
+                    <div
+                      key={index}
+                      className="relative flex gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg"
+                    >
+                      <div className="flex-1 relative">
+                        <input
+                          type="text"
+                          value={material.name}
+                          onChange={(e) => {
+                            handleMaterialChange(index, 'name', e.target.value);
+                            setMaterialSearchTerm(e.target.value);
+                            setShowMaterialDropdown(index);
+                          }}
+                          onFocus={() => {
+                            setShowMaterialDropdown(index);
+                            setMaterialSearchTerm(material.name);
+                          }}
+                          placeholder="Material name (type to search)"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        {showMaterialDropdown === index && (
+                          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                            {getFilteredMaterials(materialSearchTerm).length > 0 ? (
+                              <>
+                                {getFilteredMaterials(materialSearchTerm).map((mat) => (
+                                  <div
+                                    key={mat.materialId}
+                                    onClick={() => handleMaterialSelect(index, mat)}
+                                    className="px-3 py-2 hover:bg-blue-50 cursor-pointer flex justify-between items-center"
+                                  >
+                                    <span className="font-medium">{mat.name}</span>
+                                    <span className="text-sm text-gray-500">{mat.units}</span>
+                                  </div>
+                                ))}
+                                <div className="px-3 py-2 text-xs text-gray-500 border-t border-gray-200 bg-gray-50">
+                                  Or type a new material name
+                                </div>
+                              </>
+                            ) : (
+                              <div className="px-3 py-2 text-sm text-gray-500">
+                                No materials found. Type to create new material.
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <input
+                        type="number"
+                        value={material.quantityNeeded}
+                        onChange={(e) =>
+                          handleMaterialChange(
+                            index,
+                            'quantityNeeded',
+                            parseFloat(e.target.value) || 0
+                          )
+                        }
+                        placeholder="Qty"
+                        className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
                       <input
                         type="text"
-                        value={material.name}
-                        onChange={(e) => {
-                          handleMaterialChange(index, 'name', e.target.value);
-                          setMaterialSearchTerm(e.target.value);
-                          setShowMaterialDropdown(index);
-                        }}
-                        onFocus={() => {
-                          setShowMaterialDropdown(index);
-                          setMaterialSearchTerm(material.name);
-                        }}
-                        placeholder="Material name (type to search)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        value={material.units}
+                        onChange={(e) => handleMaterialChange(index, 'units', e.target.value)}
+                        placeholder="Units"
+                        className="w-28 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
-                      {showMaterialDropdown === index && (
-                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                          {getFilteredMaterials(materialSearchTerm).length > 0 ? (
-                            <>
-                              {getFilteredMaterials(materialSearchTerm).map((mat) => (
-                                <div
-                                  key={mat.materialId}
-                                  onClick={() => handleMaterialSelect(index, mat)}
-                                  className="px-3 py-2 hover:bg-blue-50 cursor-pointer flex justify-between items-center"
-                                >
-                                  <span className="font-medium">{mat.name}</span>
-                                  <span className="text-sm text-gray-500">{mat.units}</span>
-                                </div>
-                              ))}
-                              <div className="px-3 py-2 text-xs text-gray-500 border-t border-gray-200 bg-gray-50">
-                                Or type a new material name
-                              </div>
-                            </>
-                          ) : (
-                            <div className="px-3 py-2 text-sm text-gray-500">
-                              No materials found. Type to create new material.
-                            </div>
-                          )}
-                        </div>
-                      )}
+                      <button
+                        onClick={() => handleRemoveMaterial(index)}
+                        className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 flex-shrink-0"
+                        title="Remove material"
+                      >
+                        ×
+                      </button>
                     </div>
-                    <input
-                      type="number"
-                      value={material.quantityNeeded}
-                      onChange={(e) => handleMaterialChange(index, 'quantityNeeded', parseFloat(e.target.value) || 0)}
-                      placeholder="Qty"
-                      className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    <input
-                      type="text"
-                      value={material.units}
-                      onChange={(e) => handleMaterialChange(index, 'units', e.target.value)}
-                      placeholder="Units"
-                      className="w-28 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    <button
-                      onClick={() => handleRemoveMaterial(index)}
-                      className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 flex-shrink-0"
-                      title="Remove material"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+                  ))}
                 <button
                   onClick={handleAddMaterial}
                   className="w-full px-3 py-2 border-2 border-dashed border-gray-300 text-gray-600 rounded-md hover:border-blue-500 hover:text-blue-500 transition-colors duration-200 font-medium"
@@ -912,7 +948,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
         </div>
         <div className="w-full md:w-1/2 overflow-y-auto">
           <div className="p-4">
-            {(process || editedProcess) ? (
+            {process || editedProcess ? (
               <div>
                 {/* Process Name */}
                 {!isEditing ? (
@@ -922,13 +958,15 @@ const ProductModal: React.FC<ProductCardProps> = ({
                     type="text"
                     value={editedProcess?.name}
                     onChange={(e) =>
-                      setEditedProcess(prev => prev ? { ...prev, name: e.target.value } : undefined)
+                      setEditedProcess((prev) =>
+                        prev ? { ...prev, name: e.target.value } : undefined
+                      )
                     }
                     placeholder="Process Name"
                     className="w-full text-lg font-semibold px-3 py-2 mb-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 )}
-                
+
                 {/* Products Per Batch */}
                 {!isEditing ? (
                   <p className="font-semibold text-gray-700 leading-relaxed mb-4">
@@ -941,31 +979,38 @@ const ProductModal: React.FC<ProductCardProps> = ({
                       type="number"
                       value={editedProcess?.productsPerBatch}
                       onChange={(e) =>
-                        setEditedProcess(prev => prev ? { ...prev, productsPerBatch: parseInt(e.target.value) || 0 } : undefined)
+                        setEditedProcess((prev) =>
+                          prev
+                            ? { ...prev, productsPerBatch: parseInt(e.target.value) || 0 }
+                            : undefined
+                        )
                       }
                       placeholder="0"
                       className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
                 )}
-                
+
                 {/* Process Steps */}
                 <div className="space-y-2 h-fit">
                   <h4 className="text-sm font-semibold text-gray-700 mb-2">Process Steps:</h4>
                   {!isEditing ? (
                     <>
-                      {process && parseProcessSteps(process.details).map((step, index) => (
-                        <div key={index} className="pl-2 text-gray-600 leading-relaxed">
-                          {step.trim()}
-                        </div>
-                      ))}
+                      {process &&
+                        parseProcessSteps(process.details).map((step, index) => (
+                          <div key={index} className="pl-2 text-gray-600 leading-relaxed">
+                            {step.trim()}
+                          </div>
+                        ))}
                     </>
                   ) : (
                     <textarea
                       ref={textareaRef}
                       value={editedProcess?.details}
                       onChange={(e) => {
-                        setEditedProcess(prev => prev ? { ...prev, details: e.target.value } : undefined);
+                        setEditedProcess((prev) =>
+                          prev ? { ...prev, details: e.target.value } : undefined
+                        );
                       }}
                       placeholder="Enter process steps (e.g., 1. First step 2. Second step 3. Third step)"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm overflow-hidden resize-none"
@@ -1023,14 +1068,32 @@ const ProductModal: React.FC<ProductCardProps> = ({
             >
               {isSaving ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   {isCreating ? 'Creating...' : 'Saving...'}
                 </>
+              ) : isCreating ? (
+                'Create Product'
               ) : (
-                isCreating ? 'Create Product' : 'Save Changes'
+                'Save Changes'
               )}
             </button>
           </>

@@ -4,8 +4,8 @@ export default function SignupBox() {
   const handleSubmit = async (formData: FormData) => {
     'use server';
 
-    let firstPassword = formData.get('password') as string;
-    let secondPassword = formData.get('confirmPassword') as string;
+    const firstPassword = formData.get('password') as string;
+    const secondPassword = formData.get('confirmPassword') as string;
 
     if (firstPassword !== secondPassword) {
       throw new Error('Passwords do not match');

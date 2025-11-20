@@ -6,25 +6,25 @@ import { useQuery } from '@tanstack/react-query';
 import { Order, OrderResponse, OrderStatus } from '@/utils/supabase/schema';
 import { useState } from 'react';
 import { supabase } from '@/utils/supabase/supabaseClient';
-import RevenueChart from '@/components/charts/RevenueChart'
+import RevenueChart from '@/components/charts/RevenueChart';
 
 export default function DashboardPage() {
-    const getFirstDayOfMonth = () => {
-      const date = new Date();
-      date.setDate(1); // Set to the 1st day of the month
-      return date.toISOString().split('T')[0];
-    };
+  const getFirstDayOfMonth = () => {
+    const date = new Date();
+    date.setDate(1); // Set to the 1st day of the month
+    return date.toISOString().split('T')[0];
+  };
 
-    const [dateRange, setDateRange] = useState({
-      start: getFirstDayOfMonth(), // First day of current month
-      end: new Date().toISOString().split('T')[0], // Today's date by default
-    });
+  const [dateRange, setDateRange] = useState({
+    start: getFirstDayOfMonth(), // First day of current month
+    end: new Date().toISOString().split('T')[0], // Today's date by default
+  });
 
-    const handleDateRangeChange = (start: string, end: string) => {
-      setDateRange({ start, end });
-    };
+  const handleDateRangeChange = (start: string, end: string) => {
+    setDateRange({ start, end });
+  };
 
-    const { data: orders, isLoading: loadingOrders } = useQuery<OrderResponse>({
+  const { data: orders, isLoading: loadingOrders } = useQuery<OrderResponse>({
     queryKey: ['orders', dateRange.start, dateRange.end],
     queryFn: async () => {
       // Get the session token
@@ -52,7 +52,7 @@ export default function DashboardPage() {
 
   const RevenueByDateRange = (orderList: OrderResponse) => {
     if (orders) {
-      let orderData = orderList.data;
+      const orderData = orderList.data;
 
       const revenueData = orderData
         .map((order: Order) => {
@@ -60,7 +60,8 @@ export default function DashboardPage() {
             date: new Date(order.dateCreated).toISOString().split('T')[0],
             revenue: order.status === OrderStatus.COMPLETED ? order.orderTotal : 0,
           };
-        }).reduce((acc: Record<string, number>, curr) => {
+        })
+        .reduce((acc: Record<string, number>, curr) => {
           acc[curr.date] = (acc[curr.date] || 0) + curr.revenue;
           return acc;
         }, {});
@@ -75,7 +76,7 @@ export default function DashboardPage() {
   };
 
   const TotalRevenue = (orderList: OrderResponse) => {
-    let orderData = orderList.data;
+    const orderData = orderList.data;
     return orderData
       .map((order: Order) => {
         return order.status === OrderStatus.COMPLETED ? order.orderTotal : 0;
@@ -84,7 +85,7 @@ export default function DashboardPage() {
   };
 
   const AvgOrderValue = (orderList: OrderResponse) => {
-    let orderData = orderList.data;
+    const orderData = orderList.data;
     const total = orderData
       .map((order: Order) => {
         return order.orderTotal;
@@ -94,16 +95,16 @@ export default function DashboardPage() {
   };
 
   const PendingOrders = (orderList: OrderResponse) => {
-    let orderData = orderList.data;
-    let data =  orderData.filter((order: Order) => {
+    const orderData = orderList.data;
+    const data = orderData.filter((order: Order) => {
       return (
         order.status === OrderStatus.IN_PROGRESS ||
         order.status === OrderStatus.PAID ||
         order.status === OrderStatus.DELAYED ||
-        order.status === OrderStatus.RECEIVED && order.paid == true
+        (order.status === OrderStatus.RECEIVED && order.paid == true)
       );
     });
-    return 5
+    return 5;
   };
 
   return (
@@ -164,13 +165,11 @@ export default function DashboardPage() {
         )}
       </div>
 
-      <div className="w-full">
-        {orders && <RevenueChart data={RevenueByDateRange(orders)} />}
-      </div>
+      <div className="w-full">{orders && <RevenueChart data={RevenueByDateRange(orders)} />}</div>
 
-      <div>Orders Summary (bar chart: completed vs pending)</div>   
+      <div>Orders Summary (bar chart: completed vs pending)</div>
       <div>Top-Selling Products (mini leaderboard list)</div>
-      <div>Table: "Top Selling Products"</div>
+      <div>Table: Top Selling Products</div>
       <div>| Columns: Product | Units Sold | Revenue | Profit % </div>
     </>
   );

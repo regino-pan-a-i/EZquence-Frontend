@@ -1,14 +1,18 @@
-'use client'
+'use client';
 
 import React from 'react';
 import MaterialsInventory from '@/components/inventory/MaterialsInventory';
 import MaterialModal from '@/components/inventory/MaterialModal';
 import DeleteConfirmationDialog from '@/components/inventory/DeleteConfirmationDialog';
-import { InventoryResponse, InventoryItem, InventoryNeed, InventoryNeedResponse } from '@/utils/supabase/schema';
+import {
+  InventoryResponse,
+  InventoryItem,
+  InventoryNeed,
+  InventoryNeedResponse,
+} from '@/utils/supabase/schema';
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
-
 
 export default function InventoryPage() {
   const queryClient = useQueryClient();
@@ -18,29 +22,30 @@ export default function InventoryPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<InventoryItem | null>(null);
 
-  const { data: materialsResponse, isLoading: loadingMaterials, error: errorMaterials } = useQuery<InventoryResponse>({
+  const {
+    data: materialsResponse,
+    isLoading: loadingMaterials,
+    error: errorMaterials,
+  } = useQuery<InventoryResponse>({
     queryKey: ['materials'],
     queryFn: async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      
-      const res = await fetch(
-        `http://localhost:8080/inventory`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      
+
+      const res = await fetch(`http://localhost:8080/inventory`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
       if (!res.ok) {
         console.log('Failed to fetch materials', res);
         throw new Error('Failed to fetch materials');
       }
-      
+
       return res.json();
     },
   });
@@ -52,24 +57,25 @@ export default function InventoryPage() {
     }
   }, [materialsResponse]);
 
-  const { data: inventoryNeededResponse, isLoading: loadingInventoryNeeded, error: errorInventoryNeeded } = useQuery<InventoryNeedResponse>({
+  const {
+    data: inventoryNeededResponse,
+    isLoading: loadingInventoryNeeded,
+    error: errorInventoryNeeded,
+  } = useQuery<InventoryNeedResponse>({
     queryKey: ['inventoryNeeded'],
     queryFn: async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      
-      const res = await fetch(
-        `http://localhost:8080/inventory/needs/today`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      
+
+      const res = await fetch(`http://localhost:8080/inventory/needs/today`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
       if (!res.ok) {
         console.log('Failed to fetch materials', res);
         throw new Error('Failed to fetch materials');
@@ -82,7 +88,7 @@ export default function InventoryPage() {
   // Use useEffect to set products when data is fetched
   useEffect(() => {
     if (inventoryNeededResponse && inventoryNeededResponse.success === true) {
-      console.log(inventoryNeededResponse.data)
+      console.log(inventoryNeededResponse.data);
       setInventoryNeeded(inventoryNeededResponse.data);
     }
   }, [inventoryNeededResponse]);
@@ -154,7 +160,8 @@ export default function InventoryPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
           <p className="text-gray-600 mt-2">
-            The status is based on the amount of materials in stock compared to the required quantity for today's production.
+            The status is based on the amount of materials in stock compared to the required
+            quantity for today's production.
           </p>
         </div>
         <button
@@ -168,8 +175,8 @@ export default function InventoryPage() {
         </button>
       </div>
 
-      <MaterialsInventory 
-        materials={materials || []} 
+      <MaterialsInventory
+        materials={materials || []}
         inventoryNeeded={inventoryNeeded || []}
         isAdminView={true}
         onEdit={handleEdit}

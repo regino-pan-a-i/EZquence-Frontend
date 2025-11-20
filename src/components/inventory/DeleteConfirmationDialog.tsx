@@ -90,7 +90,9 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
       onConfirm();
     } catch (error) {
       console.error('Error deleting material:', error);
-      toast.error(`Failed to delete material: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      toast.error(
+        `Failed to delete material: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     } finally {
       setIsDeleting(false);
     }
@@ -193,9 +195,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
                         key={usage.processId}
                         className="bg-white rounded p-3 border border-yellow-200"
                       >
-                        <p className="text-sm font-semibold text-gray-900">
-                          {usage.productName}
-                        </p>
+                        <p className="text-sm font-semibold text-gray-900">{usage.productName}</p>
                         <p className="text-xs text-gray-600 mt-1">
                           Process: {usage.processName} • Requires: {usage.quantityNeeded}{' '}
                           {usage.units}

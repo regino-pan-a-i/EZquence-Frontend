@@ -55,7 +55,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
         });
 
         if (!res.ok) throw new Error('Failed to fetch material');
-        
+
         const data = await res.json();
         if (data.success) {
           setMaterial(data.data);
@@ -74,12 +74,14 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditedMaterial(material || {
-      name: '',
-      quantityInStock: 0,
-      units: '',
-      expirationDate: null,
-    });
+    setEditedMaterial(
+      material || {
+        name: '',
+        quantityInStock: 0,
+        units: '',
+        expirationDate: null,
+      }
+    );
   };
 
   const handleCancel = () => {
@@ -116,7 +118,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
       const expDate = new Date(editedMaterial.expirationDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       if (expDate < today) {
         toast.error('Expiration date must be in the future');
         return false;
@@ -154,10 +156,10 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
         });
 
         if (!res.ok) throw new Error('Failed to create material');
-        
+
         const data = await res.json();
         toast.success('Material created successfully!');
-        
+
         if (onCreate && data.data) {
           onCreate(data.data);
         }
@@ -171,13 +173,13 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
           },
           body: JSON.stringify(payload),
         });
-        console.log(res)
+        console.log(res);
 
         if (!res.ok) throw new Error('Failed to update material');
-        
+
         const data = await res.json();
         toast.success('Material updated successfully!');
-        
+
         if (onSave && data.data) {
           onSave(data.data);
         }
@@ -186,7 +188,9 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
       }
     } catch (error) {
       console.error('Error saving material:', error);
-      toast.error(`Failed to save material: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      toast.error(
+        `Failed to save material: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     } finally {
       setIsSaving(false);
     }
@@ -377,8 +381,10 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
                   </svg>
                   {isCreating ? 'Creating...' : 'Saving...'}
                 </>
+              ) : isCreating ? (
+                'Create Material'
               ) : (
-                isCreating ? 'Create Material' : 'Save Changes'
+                'Save Changes'
               )}
             </button>
           </>

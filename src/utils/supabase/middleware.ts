@@ -63,14 +63,15 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protected routes - require authentication
-  const isProtectedRoute = pathname.startsWith('/admin') || 
-                          pathname.startsWith('/production') ||
-                          pathname.startsWith('/account') ||
-                          pathname.startsWith('/settings');
+  const isProtectedRoute =
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/production') ||
+    pathname.startsWith('/account') ||
+    pathname.startsWith('/settings');
 
   // Admin-only routes
   const isAdminRoute = pathname.startsWith('/admin');
-  
+
   // Production worker routes
   const isProductionRoute = pathname.startsWith('/production');
 
@@ -116,13 +117,13 @@ export async function updateSession(request: NextRequest) {
     if (session?.access_token) {
       const userRole = getRoleFromToken(session.access_token);
       const dashboardUrl = request.nextUrl.clone();
-      
+
       if (userRole === UserRole.ADMIN) {
         dashboardUrl.pathname = '/admin/dashboard';
       } else if (userRole === UserRole.WORKER) {
         dashboardUrl.pathname = '/production/dashboard';
       }
-      
+
       return NextResponse.redirect(dashboardUrl);
     }
   }

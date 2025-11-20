@@ -36,9 +36,7 @@ export default function UnauthorizedMessage() {
             clipRule="evenodd"
           />
         </svg>
-        <span className="font-medium">
-          You don&apos;t have permissions to access that page.
-        </span>
+        <span className="font-medium">You don&apos;t have permissions to access that page.</span>
       </div>
       <button
         onClick={() => setShowMessage(false)}
