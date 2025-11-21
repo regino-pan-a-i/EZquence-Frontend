@@ -27,9 +27,7 @@ export default function Sidebar({ variant = 'admin' }: { variant?: SidebarVarian
     { label: 'Analysis', key: 'analysis', href: '/admin/analysis' },
     { label: 'Product', key: 'product', href: '/admin/product' },
     { label: 'Inventory', key: 'inventory', href: '/admin/inventory' },
-    { label: 'Production', key: 'production', href: '/admin/production' },
-    { label: 'Users', key: 'users', href: '/admin/users' },
-    { label: 'Order', key: 'order', href: '/admin/order' },
+    { label: 'Order', key: 'order', href: '/admin/orders' },
     { label: 'Account', key: 'account', href: '/account' },
     { label: 'Settings', key: 'settings', href: '/settings' },
   ];
