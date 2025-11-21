@@ -1,9 +1,9 @@
 'use client';
 import ScoreCard from '@/components/scorecard/ScoreCard';
-import { FaDollarSign, FaReceipt, FaUser } from 'react-icons/fa';
+import { FaDollarSign, FaReceipt, FaTachometerAlt } from 'react-icons/fa';
 import DateFilter from '@/components/filters/DateFilter';
 import { useQuery } from '@tanstack/react-query';
-import { Order, OrderResponse, OrderStatus } from '@/utils/supabase/schema';
+import { Order, OrdersByDateRangeResponse, OrderStatus } from '@/utils/supabase/schema';
 import { useState } from 'react';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import RevenueChart from '@/components/charts/RevenueChart';
@@ -24,7 +24,7 @@ export default function DashboardPage() {
     setDateRange({ start, end });
   };
 
-  const { data: orders, isLoading: loadingOrders } = useQuery<OrderResponse>({
+  const { data: orders, isLoading: loadingOrders } = useQuery<OrdersByDateRangeResponse>({
     queryKey: ['orders', dateRange.start, dateRange.end],
     queryFn: async () => {
       // Get the session token
@@ -46,11 +46,11 @@ export default function DashboardPage() {
     },
   });
 
-  const OrdersTotal = (orderList: OrderResponse) => {
+  const OrdersTotal = (orderList: OrdersByDateRangeResponse) => {
     return orderList.data.length;
   };
 
-  const RevenueByDateRange = (orderList: OrderResponse) => {
+  const RevenueByDateRange = (orderList: OrdersByDateRangeResponse) => {
     if (orders) {
       const orderData = orderList.data;
 
@@ -75,7 +75,7 @@ export default function DashboardPage() {
     return [];
   };
 
-  const TotalRevenue = (orderList: OrderResponse) => {
+  const TotalRevenue = (orderList: OrdersByDateRangeResponse) => {
     const orderData = orderList.data;
     return orderData
       .map((order: Order) => {
@@ -84,7 +84,7 @@ export default function DashboardPage() {
       .reduce((a, b) => a + b, 0);
   };
 
-  const AvgOrderValue = (orderList: OrderResponse) => {
+  const AvgOrderValue = (orderList: OrdersByDateRangeResponse) => {
     const orderData = orderList.data;
     const total = orderData
       .map((order: Order) => {
@@ -94,7 +94,7 @@ export default function DashboardPage() {
     return total / orderData.length;
   };
 
-  const PendingOrders = (orderList: OrderResponse) => {
+  const PendingOrders = (orderList: OrdersByDateRangeResponse) => {
     const orderData = orderList.data;
     const data = orderData.filter((order: Order) => {
       return (
@@ -109,11 +109,14 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="flex flex-row m-4 justify-between">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center m-4 gap-4">
+        <div className="flex items-center gap-3">
+          <FaTachometerAlt className="text-blue-600 text-3xl" />
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        </div>
         <DateFilter
           type="range"
-          label="Filter"
+          label="Filter By Date"
           onDateRangeChange={handleDateRangeChange}
           defaultStartDate={dateRange.start}
           defaultEndDate={dateRange.end}

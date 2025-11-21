@@ -13,6 +13,8 @@ import {
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
+import { FaBoxes } from 'react-icons/fa';
+
 
 export default function InventoryPage() {
   const queryClient = useQueryClient();
@@ -157,12 +159,17 @@ export default function InventoryPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6 flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
-          <p className="text-gray-600 mt-2">
-            The status is based on the amount of materials in stock compared to the required
-            quantity for today's production.
-          </p>
+        <div className="flex flex-col md:flex-row md:items-center gap-3">
+          <div>
+            <div className="flex items-center gap-3">
+              <FaBoxes className="text-blue-600 text-3xl" />
+              <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
+            </div>
+            <p className="text-gray-600 mt-2">
+              The status is based on the amount of materials in stock compared to the required
+              quantity for today's production.
+            </p>
+          </div>
         </div>
         <button
           onClick={handleCreateNew}

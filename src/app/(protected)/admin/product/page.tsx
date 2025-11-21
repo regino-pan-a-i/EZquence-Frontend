@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ProductListResponse, Product } from '@/utils/supabase/schema';
 import { supabase } from '@/utils/supabase/supabaseClient';
+import { FaBoxOpen } from 'react-icons/fa';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -83,8 +84,11 @@ export default function ProductsPage() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Products</h1>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center m-4 gap-4">
+        <div className="flex items-center gap-3">
+          <FaBoxOpen className="text-blue-600 text-3xl" />
+          <h1 className="text-3xl font-bold text-gray-900">Products</h1>
+        </div>
         <button
           onClick={handleCreateNew}
           className="px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-2"
