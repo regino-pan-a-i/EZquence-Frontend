@@ -12,10 +12,14 @@ export interface DecodedToken {
   iat?: number;
 }
 
-export type OrderResponse = {
-  success: boolean;
-  data: Order[];
-};
+export enum OrderStatus {
+  RECEIVED = 'RECEIVED',
+  COMPLETED = 'COMPLETED',
+  STARTED = 'STARTED',
+  PAID = 'PAID',
+  DELAYED = 'DELAYED',
+  IN_PROGRESS = 'IN_PROGRESS',
+}
 
 export type Order = {
   orderId: number;
@@ -29,14 +33,30 @@ export type Order = {
   companyId: number;
 };
 
-export enum OrderStatus {
-  RECEIVED = 'RECEIVED',
-  COMPLETED = 'COMPLETED',
-  STARTED = 'STARTED',
-  PAID = 'PAID',
-  DELAYED = 'DELAYED',
-  IN_PROGRESS = 'IN_PROGRESS',
+export type OrdersByDateRangeResponse = {
+  success: boolean;
+  data: Order[];
+};
+
+export type OrderProductList = {
+  orderId: number;
+  productId: number;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+  companyId: number;
+  productName: {
+    name: string;
+  };
 }
+
+export type OrderDetailsResponse = {
+  success: boolean;
+  data: {
+    order: Order;
+    products: OrderProductList[];
+  };
+};
 
 export type Product = {
   productId: number;
