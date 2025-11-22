@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 import { useState, useEffect } from 'react';
 import { Order, OrdersByDateRangeResponse, OrderDetailsResponse, OrderProductList } from '@/utils/supabase/schema';
 import DateFilter from '@/components/filters/DateFilter';
@@ -45,7 +46,7 @@ export default function OrdersPage() {
       const token = session?.access_token;
 
       const res = await fetch(
-        `http://localhost:8080/order/daterange?start=${dateRange.start}&end=${dateRange.end}`,
+        `${getApiBaseUrl()}/order/daterange?start=${dateRange.start}&end=${dateRange.end}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -85,7 +86,7 @@ export default function OrdersPage() {
 
         // Fetch all order details in parallel
         const detailsPromises = orders.map(async (order) => {
-          const res = await fetch(`http://localhost:8080/order/${order.orderId}`, {
+          const res = await fetch(`${getApiBaseUrl()}/order/${order.orderId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',

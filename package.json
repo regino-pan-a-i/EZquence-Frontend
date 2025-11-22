@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:prod": "NODE_ENV=production next build",
     "start": "next start",
+    "deploy": "npm run build:prod && npm start",
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

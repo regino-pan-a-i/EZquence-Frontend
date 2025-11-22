@@ -1,6 +1,7 @@
 'use client';
 import ScoreCard from '@/components/scorecard/ScoreCard';
 import { FaDollarSign, FaReceipt, FaTachometerAlt } from 'react-icons/fa';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 import DateFilter from '@/components/filters/DateFilter';
 import { useQuery } from '@tanstack/react-query';
 import { Order, OrdersByDateRangeResponse, OrderStatus } from '@/utils/supabase/schema';
@@ -33,7 +34,7 @@ export default function DashboardPage() {
       } = await supabase.auth.getSession();
       const token = session?.access_token;
       const res = await fetch(
-        `http://localhost:8080/order/daterange?start=${dateRange.start}&end=${dateRange.end}`,
+        `${getApiBaseUrl()}/order/daterange?start=${dateRange.start}&end=${dateRange.end}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

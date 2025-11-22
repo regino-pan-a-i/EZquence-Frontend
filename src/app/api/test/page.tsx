@@ -1,11 +1,12 @@
 import { getAccessToken } from '@/lib/auth-actions';
 import { useQuery } from '@tanstack/react-query';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 
 export default async function DashboardPage() {
   const token = await getAccessToken();
 
   try {
-    const response = await fetch('http://localhost:8080/product/', {
+    const response = await fetch(`${getApiBaseUrl()}/product/`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

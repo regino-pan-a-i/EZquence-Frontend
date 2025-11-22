@@ -2,6 +2,7 @@
 
 import React from 'react';
 import MaterialsInventory from '@/components/inventory/MaterialsInventory';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 import {
   InventoryResponse,
   InventoryItem,
@@ -28,7 +29,7 @@ export default function InventoryPage() {
       } = await supabase.auth.getSession();
       const token = session?.access_token;
 
-      const res = await fetch(`http://localhost:8080/inventory`, {
+      const res = await fetch(`${getApiBaseUrl()}/inventory`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -64,7 +65,7 @@ export default function InventoryPage() {
       } = await supabase.auth.getSession();
       const token = session?.access_token;
 
-      const res = await fetch(`http://localhost:8080/inventory/needs/today`, {
+      const res = await fetch(`${getApiBaseUrl()}/inventory/needs/today`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

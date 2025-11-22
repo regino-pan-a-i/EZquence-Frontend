@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { InventoryItem } from '@/utils/supabase/schema';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import toast from 'react-hot-toast';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 
 export interface MaterialModalProps {
   materialId?: number | null;
@@ -47,7 +48,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
         } = await supabase.auth.getSession();
         const token = session?.access_token;
 
-        const res = await fetch(`http://localhost:8080/inventory/${materialId}`, {
+        const res = await fetch(`${getApiBaseUrl()}/inventory/${materialId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -146,7 +147,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
       };
 
       if (isCreating) {
-        const res = await fetch('http://localhost:8080/inventory/createMaterial', {
+        const res = await fetch(`${getApiBaseUrl()}/inventory/createMaterial`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -165,7 +166,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
         }
         onClose?.();
       } else {
-        const res = await fetch(`http://localhost:8080/inventory/${materialId}`, {
+        const res = await fetch(`${getApiBaseUrl()}/inventory/${materialId}`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${token}`,

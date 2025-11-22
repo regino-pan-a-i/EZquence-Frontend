@@ -2,6 +2,7 @@
 
 import ProductCard from '@/components/product/ProductCard';
 import ProductModal from '@/components/product/ProductModal';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ProductListResponse, Product } from '@/utils/supabase/schema';
@@ -24,7 +25,7 @@ export default function ProductsPage() {
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(`http://localhost:8080/product`, {
+      const res = await fetch(`${getApiBaseUrl()}/product`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

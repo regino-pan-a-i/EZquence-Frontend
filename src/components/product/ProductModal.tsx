@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 import {
   ProductResponse,
   Product,
@@ -45,7 +46,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(`http://localhost:8080/product/${productId}`, {
+      const res = await fetch(`${getApiBaseUrl()}/product/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(`http://localhost:8080/product/${productId}/process`, {
+      const res = await fetch(`${getApiBaseUrl()}/product/${productId}/process`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -97,7 +98,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(`http://localhost:8080/inventory`, {
+      const res = await fetch(`${getApiBaseUrl()}/inventory`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -270,7 +271,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           imageURL: editedProduct.productImage[0]?.imageURL || 'https://placehold.co/600x400',
         };
 
-        const productRes = await fetch('http://localhost:8080/product', {
+        const productRes = await fetch(`${getApiBaseUrl()}/product`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -292,7 +293,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
             productsPerBatch: editedProcess.productsPerBatch,
           };
 
-          const processRes = await fetch(`http://localhost:8080/product/${newProductId}/process`, {
+          const processRes = await fetch(`${getApiBaseUrl()}/product/${newProductId}/process`, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -326,7 +327,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   expirationDate: null,
                 };
 
-                const materialRes = await fetch('http://localhost:8080/inventory', {
+                const materialRes = await fetch(`${getApiBaseUrl()}/inventory`, {
                   method: 'POST',
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -352,7 +353,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                 };
 
                 const linkRes = await fetch(
-                  `http://localhost:8080/process/${newProcessId}/materials`,
+                  `${getApiBaseUrl()}/process/${newProcessId}/materials`,
                   {
                     method: 'POST',
                     headers: {
@@ -384,7 +385,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           imageURL: editedProduct.productImage[0]?.imageURL || 'https://placehold.co/600x400',
         };
 
-        const productRes = await fetch(`http://localhost:8080/product/${productId}`, {
+        const productRes = await fetch(`${getApiBaseUrl()}/product/${productId}`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -404,7 +405,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           };
 
           const processRes = await fetch(
-            `http://localhost:8080/product/${productId}/updateProcess`,
+            `${getApiBaseUrl()}/product/${productId}/updateProcess`,
             {
               method: 'PUT',
               headers: {
@@ -428,7 +429,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           for (const material of removed) {
             try {
               const deleteRes = await fetch(
-                `http://localhost:8080/process/${process.processId}/materials/${material.materialId}`,
+                `${getApiBaseUrl()}/process/${process.processId}/materials/${material.materialId}`,
                 {
                   method: 'DELETE',
                   headers: {
@@ -467,7 +468,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   expirationDate: null,
                 };
 
-                const materialRes = await fetch('http://localhost:8080/inventory/createMaterial', {
+                const materialRes = await fetch(`${getApiBaseUrl()}/inventory/createMaterial`, {
                   method: 'POST',
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -496,7 +497,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   unitsNeeded: material.units,
                 };
 
-                const linkRes = await fetch(`http://localhost:8080/process/materials/add`, {
+                const linkRes = await fetch(`${getApiBaseUrl()}/process/materials/add`, {
                   method: 'POST',
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -520,7 +521,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           for (const material of modified) {
             try {
               const updateRes = await fetch(
-                `http://localhost:8080/process/${process.processId}/materials/${material.materialId}`,
+                `${getApiBaseUrl()}/process/${process.processId}/materials/${material.materialId}`,
                 {
                   method: 'PUT',
                   headers: {
@@ -560,7 +561,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           };
 
           const processRes = await fetch(
-            `http://localhost:8080/product/${productId}/createProcess`,
+            `${getApiBaseUrl()}/product/${productId}/createProcess`,
             {
               method: 'POST',
               headers: {
@@ -596,7 +597,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   expirationDate: null,
                 };
 
-                const materialRes = await fetch('http://localhost:8080/inventory', {
+                const materialRes = await fetch(`${getApiBaseUrl()}/inventory`, {
                   method: 'POST',
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -624,7 +625,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   unitsNeeded: material.units,
                 };
 
-                const linkRes = await fetch(`http://localhost:8080/process/materials/add`, {
+                const linkRes = await fetch(`${getApiBaseUrl()}/process/materials/add`, {
                   method: 'POST',
                   headers: {
                     Authorization: `Bearer ${token}`,

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { InventoryItem } from '@/utils/supabase/schema';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import toast from 'react-hot-toast';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 
 export interface ProcessUsage {
   processId: number;
@@ -40,7 +41,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
         const token = session?.access_token;
 
         const res = await fetch(
-          `http://localhost:8080/inventory/${material.materialId}/processes`,
+          `${getApiBaseUrl()}/inventory/${material.materialId}/processes`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -76,7 +77,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
       } = await supabase.auth.getSession();
       const token = session?.access_token;
 
-      const res = await fetch(`http://localhost:8080/inventory/${material.materialId}/delete`, {
+      const res = await fetch(`${getApiBaseUrl()}/inventory/${material.materialId}/delete`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
