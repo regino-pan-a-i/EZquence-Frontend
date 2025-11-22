@@ -9,10 +9,19 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
 };
 
-export default function LoginPage() {
+interface LoginPageProps {
+  searchParams: {
+    mode?: string;
+  };
+}
+
+export default function LoginPage({ searchParams }: LoginPageProps) {
+  // Check if mode=signup query parameter is present
+  const isSignupMode = searchParams.mode === 'signup';
+
   return (
     <>
-      <LoginBox />
+      {isSignupMode ? <SignupBox /> : <LoginBox />}
     </>
   );
 }
