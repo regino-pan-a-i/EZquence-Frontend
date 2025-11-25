@@ -34,7 +34,7 @@ export default function Sidebar({ variant = 'admin' }: { variant?: SidebarVarian
 
   // Production worker items requested by user
   const productionItems = [
-    { label: 'Dashboard', key: 'dashboard', href: '/production' },
+    { label: 'Dashboard', key: 'dashboard', href: '/production/dashboard' },
     { label: 'Orders', key: 'order', href: '/production/orders' },
     { label: 'Inventory', key: 'inventory', href: '/production/inventory' },
     { label: 'Process', key: 'process', href: '/production/process' },
