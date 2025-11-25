@@ -1,18 +1,21 @@
 
-import { Order, OrderProductList } from '@/utils/supabase/schema';
+import { Order, OrderProductList, OrderStatus } from '@/utils/supabase/schema';
 import OrderStatusBadge from './OrderStatusBadge';
-import { FaCheckCircle, FaTimesCircle, FaCalendar, FaDollarSign, FaBox } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaCalendar, FaDollarSign, FaBox, FaSpinner } from 'react-icons/fa';
 import { useState } from 'react';
 
 interface OrderCardProps {
   order: Order;
   products: OrderProductList[];
   onViewDetails?: (orderId: number) => void;
+  showStatusActions?: boolean;
+  onStatusChange?: (orderId: number, newStatus: OrderStatus) => Promise<void>;
   className?: string;
 }
 
-export default function OrderCard({ order, products, onViewDetails, className = '' }: OrderCardProps) {
+export default function OrderCard({ order, products, onViewDetails, showStatusActions = false, onStatusChange, className = '' }: OrderCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -27,6 +30,19 @@ export default function OrderCard({ order, products, onViewDetails, className = 
       style: 'currency',
       currency: 'USD',
     }).format(amount);
+  };
+
+  const handleStatusChange = async (newStatus: OrderStatus) => {
+    if (!onStatusChange || isUpdatingStatus) return;
+    
+    setIsUpdatingStatus(true);
+    try {
+      await onStatusChange(order.orderId, newStatus);
+    } catch (error) {
+      console.error('Failed to update order status:', error);
+    } finally {
+      setIsUpdatingStatus(false);
+    }
   };
 
   return (
@@ -129,6 +145,39 @@ export default function OrderCard({ order, products, onViewDetails, className = 
           <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <p className="text-xs font-semibold text-yellow-800 uppercase tracking-wide mb-1">Notes</p>
             <p className="text-sm text-gray-700 whitespace-pre-wrap">{order.notes}</p>
+          </div>
+        )}
+
+        {/* Status Action Buttons */}
+        {showStatusActions && onStatusChange && order.status !== OrderStatus.COMPLETED && (
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Update Status</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button
+                onClick={() => handleStatusChange(OrderStatus.IN_PROGRESS)}
+                disabled={isUpdatingStatus}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
+              >
+                {isUpdatingStatus ? <FaSpinner className="animate-spin" /> : null}
+                In Progress
+              </button>
+              <button
+                onClick={() => handleStatusChange(OrderStatus.DELAYED)}
+                disabled={isUpdatingStatus}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
+              >
+                {isUpdatingStatus ? <FaSpinner className="animate-spin" /> : null}
+                Delayed
+              </button>
+              <button
+                onClick={() => handleStatusChange(OrderStatus.COMPLETED)}
+                disabled={isUpdatingStatus}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
+              >
+                {isUpdatingStatus ? <FaSpinner className="animate-spin" /> : null}
+                Completed
+              </button>
+            </div>
           </div>
         )}
       </div>
