@@ -12,6 +12,30 @@ export interface DecodedToken {
   iat?: number;
 }
 
+export type Company = {
+  companyId: number;
+  name: string;
+  industry: string;
+  description: string;
+  logoURL: string;
+  dateCreated: Date;
+}
+
+export type ProductionGoal = {
+  productionGoalId: number;
+  dateCreated: Date;
+  goalValue: number;
+  productId: number;
+  companyId: number;
+  effectiveDate: Date;
+  endDate: Date;
+}
+
+export type ProductionGoalsResponse = {
+  success: boolean;
+  data: ProductionGoal[];
+};
+
 export enum OrderStatus {
   RECEIVED = 'RECEIVED',
   COMPLETED = 'COMPLETED',
@@ -145,3 +169,27 @@ export type InventoryNeedResponse = {
   success: boolean;
   data: InventoryNeed[];
 };
+
+export type ProductInStock = {
+  productId: number;
+  productName: string;
+  totalStock: number;
+}
+
+export type ProductInStockResponse = {
+  success: boolean;
+  data: ProductInStock;
+};
+
+export enum TransactionReason {
+  PRODUCTION = 'PRODUCTION',
+  ORDER_FULFILLMENT = 'ORDER_FULFILLMENT',
+  MANUAL_ADJUSTMENT = 'MANUAL_ADJUSTMENT',
+}
+
+export type StockTransaction = {
+  quantity: number;
+  productId: number;
+  companyId: number;
+  reason: TransactionReason;
+}
