@@ -1,5 +1,6 @@
 'use client';
 import ScoreCard from '@/components/scorecard/ScoreCard';
+import ProductionGoalsManager from '@/components/admin/ProductionGoalsManager';
 import { FaDollarSign, FaReceipt, FaTachometerAlt } from 'react-icons/fa';
 import { getApiBaseUrl } from '@/utils/apiConfig';
 import DateFilter from '@/components/filters/DateFilter';
@@ -8,8 +9,12 @@ import { Order, OrdersByDateRangeResponse, OrderStatus } from '@/utils/supabase/
 import { useState } from 'react';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import RevenueChart from '@/components/charts/RevenueChart';
+import { useRole } from '@/hooks/useAuth';
+import { UserRole } from '@/utils/supabase/schema';
 
 export default function DashboardPage() {
+  const role = useRole();
+  
   const getFirstDayOfMonth = () => {
     const date = new Date();
     date.setDate(1); // Set to the 1st day of the month
@@ -78,11 +83,7 @@ export default function DashboardPage() {
 
   const TotalRevenue = (orderList: OrdersByDateRangeResponse) => {
     const orderData = orderList.data;
-    return orderData
-      .map((order: Order) => {
-        return order.status === OrderStatus.COMPLETED ? order.orderTotal : 0;
-      })
-      .reduce((a, b) => a + b, 0);
+    return orderData.reduce((sum, order) => sum + order.orderTotal, 0);
   };
 
   const AvgOrderValue = (orderList: OrdersByDateRangeResponse) => {
@@ -170,6 +171,13 @@ export default function DashboardPage() {
       </div>
 
       <div className="w-full">{orders && <RevenueChart data={RevenueByDateRange(orders)} />}</div>
+
+      {/* Production Goals Management - Admin Only */}
+      {role === UserRole.ADMIN && (
+        <div className="my-6">
+          <ProductionGoalsManager />
+        </div>
+      )}
 
       <div>Orders Summary (bar chart: completed vs pending)</div>
       <div>Top-Selling Products (mini leaderboard list)</div>
