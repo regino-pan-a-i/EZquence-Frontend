@@ -2,10 +2,11 @@
 
 import ProductCard from '@/components/product/ProductCard';
 import ProductModal from '@/components/product/ProductModal';
+import ScoreCard from '@/components/scorecard/ScoreCard';
 import { getApiBaseUrl } from '@/utils/apiConfig';
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ProductListResponse, Product } from '@/utils/supabase/schema';
+import { ProductListResponse, Product, ProductInStock, ProductInStockResponse } from '@/utils/supabase/schema';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import { FaBoxOpen } from 'react-icons/fa';
 
@@ -34,6 +35,42 @@ export default function ProductsPage() {
       if (!res.ok) console.log('Failed to fetch orders', res);
       return res.json();
     },
+  });
+
+  // Fetch stock data for all products
+  const { data: productStockData, isLoading: loadingStock } = useQuery<Map<number, ProductInStock>>({
+    queryKey: ['product-stock-all', prodResponse?.data],
+    queryFn: async () => {
+      if (!prodResponse?.data || prodResponse.data.length === 0) {
+        return new Map();
+      }
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      const stockPromises = prodResponse.data.map(async (product) => {
+        try {
+          const res = await fetch(`${getApiBaseUrl()}/inventory/stock/${product.productId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+          if (!res.ok) throw new Error(`Failed to fetch stock for product ${product.productId}`);
+          const response: ProductInStockResponse = await res.json();
+          return [product.productId, response.data] as [number, ProductInStock];
+        } catch (error) {
+          console.error(`Error fetching stock for product ${product.productId}:`, error);
+          return [product.productId, { productId: product.productId, productName: product.name, totalStock: 0 }] as [number, ProductInStock];
+        }
+      });
+
+      const stockResults = await Promise.all(stockPromises);
+      return new Map(stockResults);
+    },
+    enabled: !!prodResponse?.data && prodResponse.data.length > 0,
   });
 
   // Use useEffect to set products when data is fetched
@@ -100,6 +137,40 @@ export default function ProductsPage() {
           Create Product
         </button>
       </div>
+
+      {/* Stock Overview Scorecard */}
+      {products && products.length > 0 && (
+        <div className="mb-6 mx-4">
+          {loadingStock ? (
+            <ScoreCard title="Product Stock Overview" data={[]} isLoading={true} skeletonCount={3} />
+          ) : (
+            <ScoreCard
+              title="Product Stock Overview"
+              data={products.map((product) => {
+                const stock = productStockData?.get(product.productId);
+                const stockValue = stock?.totalStock ?? 0;
+                
+                // Determine color based on stock level
+                let stockColor: 'green' | 'yellow' | 'red' | 'gray' = 'gray';
+                if (stockValue === 0) {
+                  stockColor = 'red';
+                } else if (stockValue < 10) {
+                  stockColor = 'yellow';
+                } else {
+                  stockColor = 'green';
+                }
+
+                return {
+                  value: stockValue,
+                  label: product.name,
+                  color: stockColor,
+                  icon: <FaBoxOpen />,
+                };
+              })}
+            />
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products?.map((product) => (
