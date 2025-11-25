@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation';
 import { isAuthenticated } from '@/lib/auth-utils';
+import { TanstackProvider } from '@/components/providers/tanstack-provider';
+
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const authenticated = await isAuthenticated();
@@ -9,5 +11,5 @@ export default async function ProtectedLayout({ children }: { children: React.Re
     redirect('/login');
   }
 
-  return <>{children}</>;
+  return <TanstackProvider>{children}</TanstackProvider>;
 }
