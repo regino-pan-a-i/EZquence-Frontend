@@ -62,8 +62,6 @@ export default function InventoryPage() {
 
   const {
     data: inventoryNeededResponse,
-    isLoading: loadingInventoryNeeded,
-    error: errorInventoryNeeded,
   } = useQuery<InventoryNeedResponse>({
     queryKey: ['inventoryNeeded'],
     queryFn: async () => {
@@ -116,12 +114,12 @@ export default function InventoryPage() {
     setSelectedMaterial(null);
   };
 
-  const handleSaveMaterial = (updatedMaterial: InventoryItem) => {
+  const handleSaveMaterial = () => {
     queryClient.invalidateQueries({ queryKey: ['materials'] });
     handleCloseModal();
   };
 
-  const handleCreateMaterial = (newMaterial: InventoryItem) => {
+  const handleCreateMaterial = () => {
     queryClient.invalidateQueries({ queryKey: ['materials'] });
     handleCloseModal();
   };
@@ -168,7 +166,7 @@ export default function InventoryPage() {
             </div>
             <p className="text-gray-600 mt-2">
               The status is based on the amount of materials in stock compared to the required
-              quantity for today's production.
+              quantity for today&apos;s production.
             </p>
           </div>
         </div>

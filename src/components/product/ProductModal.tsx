@@ -38,7 +38,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
   const [materialSearchTerm, setMaterialSearchTerm] = useState<string>('');
   const [showMaterialDropdown, setShowMaterialDropdown] = useState<number | null>(null);
 
-  const { data: prodResponse, isLoading: loadingProducts } = useQuery<ProductResponse>({
+  const { data: prodResponse } = useQuery<ProductResponse>({
     queryKey: ['product', productId],
     queryFn: async () => {
       // Get the session token
@@ -69,7 +69,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
     }
   }, [prodResponse]);
 
-  const { data: processResponse, isLoading: loadingProcess } = useQuery<ProcessResponse>({
+  const { data: processResponse } = useQuery<ProcessResponse>({
     queryKey: ['process', productId],
     queryFn: async () => {
       // Get the session token
@@ -1037,7 +1037,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                 </svg>
                 <h3 className="text-lg font-semibold text-gray-700 mb-2">No Process Defined</h3>
                 <p className="text-sm text-gray-500 text-center mb-4">
-                  This product doesn't have a manufacturing process yet.
+                  This product doesn&apos;t have a manufacturing process yet.
                 </p>
               </div>
             )}

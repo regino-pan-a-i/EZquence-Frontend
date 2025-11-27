@@ -106,7 +106,7 @@ export default function DashboardPage() {
         (order.status === OrderStatus.RECEIVED && order.paid == true)
       );
     });
-    return 5;
+    return data.length;
   };
 
   return (

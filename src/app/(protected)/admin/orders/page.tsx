@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import { getApiBaseUrl } from '@/utils/apiConfig';
 import { useState, useEffect } from 'react';
-import { Order, OrdersByDateRangeResponse, OrderDetailsResponse, OrderProductList, OrderStatus } from '@/utils/supabase/schema';
+import { Order, OrdersByDateRangeResponse, OrderDetailsResponse, OrderProductList } from '@/utils/supabase/schema';
 import DateFilter from '@/components/filters/DateFilter';
 import OrderCard from '@/components/orders/OrderCard';
 import ScoreCard from '@/components/scorecard/ScoreCard';
