@@ -10,7 +10,7 @@ import {
   OrderProductList,
   OrderStatus,
 } from '@/utils/supabase/schema';
-import { getApiBaseUrl, updateOrderStatus } from '@/utils/apiConfig';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 import DateFilter from '@/components/filters/DateFilter';
 import OrderCard from '@/components/orders/OrderCard';
 import ScoreCard from '@/components/scorecard/ScoreCard';
@@ -106,28 +106,7 @@ export default function ProductionOrdersPage() {
     fetchOrderDetails();
   }, [ordersResponse]);
 
-  // Mutation for updating order status
-  const statusMutation = useMutation({
-    mutationFn: async ({ orderId, newStatus }: { orderId: number; newStatus: OrderStatus }) => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      return updateOrderStatus(orderId, newStatus, token!);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['production-all-orders'] });
-      toast.success('Order status updated successfully!');
-    },
-    onError: (error) => {
-      console.error('Failed to update order status:', error);
-      toast.error('Failed to update order status');
-    },
-  });
 
-  const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
-    await statusMutation.mutateAsync({ orderId, newStatus });
-  };
 
   // Calculate totals
   const totalRevenue = ordersResponse?.data.reduce((sum, order) => sum + order.orderTotal, 0) || 0;
@@ -268,7 +247,6 @@ export default function ProductionOrdersPage() {
               order={orderWithProducts.order}
               products={orderWithProducts.products}
               showStatusActions={true}
-              onStatusChange={handleStatusChange}
             />
           ))}
         </div>
