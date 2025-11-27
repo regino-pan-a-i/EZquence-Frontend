@@ -3,19 +3,57 @@ import { Order, OrderProductList, OrderStatus } from '@/utils/supabase/schema';
 import OrderStatusBadge from './OrderStatusBadge';
 import { FaCheckCircle, FaTimesCircle, FaCalendar, FaDollarSign, FaBox, FaSpinner } from 'react-icons/fa';
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/utils/supabase/supabaseClient';
+import { getApiBaseUrl } from '@/utils/apiConfig';
+import toast from 'react-hot-toast';
 
 interface OrderCardProps {
   order: Order;
   products: OrderProductList[];
   onViewDetails?: (orderId: number) => void;
   showStatusActions?: boolean;
-  onStatusChange?: (orderId: number, newStatus: OrderStatus) => Promise<void>;
   className?: string;
 }
 
-export default function OrderCard({ order, products, onViewDetails, showStatusActions = false, onStatusChange, className = '' }: OrderCardProps) {
+export default function OrderCard({ order, products, onViewDetails, showStatusActions = false, className = '' }: OrderCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Mutation for updating order status
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ orderId, newStatus }: { orderId: number; newStatus: OrderStatus }) => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      
+      const response = await fetch(`${getApiBaseUrl()}/order/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      console.log(response)
+      if (!response.ok) {
+        throw new Error(`Failed to update order status: ${response.statusText}`);
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ['production-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['production-order-details'] });
+      toast.success('Order status updated successfully!');
+    },
+    onError: (error) => {
+      console.error('Failed to update order status:', error);
+      toast.error('Failed to update order status');
+    },
+  });
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -33,15 +71,12 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
   };
 
   const handleStatusChange = async (newStatus: OrderStatus) => {
-    if (!onStatusChange || isUpdatingStatus) return;
+    if (updateStatusMutation.isPending) return;
     
-    setIsUpdatingStatus(true);
     try {
-      await onStatusChange(order.orderId, newStatus);
+      updateStatusMutation.mutate({ orderId: order.orderId, newStatus });
     } catch (error) {
       console.error('Failed to update order status:', error);
-    } finally {
-      setIsUpdatingStatus(false);
     }
   };
 
@@ -95,16 +130,22 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
         </div>
 
         {/* Delivery Date */}
-        {order.dateDelivered && (
-          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-center gap-2">
-              <FaCalendar className="text-blue-600 text-sm" />
-              <span className="text-sm text-gray-700">
-                <span className="font-medium">Delivery Date:</span> {formatDate(order.dateDelivered)}
-              </span>
-            </div>
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center gap-2">
+            <FaCalendar className="text-blue-600 text-sm" />
+            <span className="text-sm text-gray-700">
+              {order.dateDelivered ? (
+                <>
+                  <span className="font-medium">Delivery Date:</span> {formatDate(order.dateDelivered)}
+                </>
+              ) : (
+                <>
+                  <span className="font-medium">Not yet delivered</span> 
+                </>
+              )}
+            </span>
           </div>
-        )}
+        </div>
 
         {/* Products Section */}
         <div className="mb-4">
@@ -141,42 +182,51 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
         </div>
 
         {/* Notes Section */}
-        {order.notes && order.notes.trim() !== '' && (
-          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-xs font-semibold text-yellow-800 uppercase tracking-wide mb-1">Notes</p>
+        <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-xs font-semibold text-yellow-800 uppercase tracking-wide mb-1">Notes</p>
+          {order.notes && order.notes.trim() !== '' ? (
             <p className="text-sm text-gray-700 whitespace-pre-wrap">{order.notes}</p>
-          </div>
-        )}
+          ) : (
+            <p className="text-sm text-gray-700 whitespace-pre-wrap">N/A</p>
+          )}
+        </div>
 
         {/* Status Action Buttons */}
-        {showStatusActions && onStatusChange && order.status !== OrderStatus.COMPLETED && (
+        {showStatusActions && order.status !== OrderStatus.COMPLETED && (
           <div className="mt-4 pt-4 border-t border-gray-200">
             <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Update Status</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <button
-                onClick={() => handleStatusChange(OrderStatus.IN_PROGRESS)}
-                disabled={isUpdatingStatus}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
-              >
-                {isUpdatingStatus ? <FaSpinner className="animate-spin" /> : null}
-                In Progress
-              </button>
-              <button
-                onClick={() => handleStatusChange(OrderStatus.DELAYED)}
-                disabled={isUpdatingStatus}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
-              >
-                {isUpdatingStatus ? <FaSpinner className="animate-spin" /> : null}
-                Delayed
-              </button>
-              <button
-                onClick={() => handleStatusChange(OrderStatus.COMPLETED)}
-                disabled={isUpdatingStatus}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
-              >
-                {isUpdatingStatus ? <FaSpinner className="animate-spin" /> : null}
-                Completed
-              </button>
+            <div className="flex flex-col md:flex-row justify-evenly gap-2">
+              
+              {order.status != OrderStatus.IN_PROGRESS && (
+                <button
+                  onClick={() => handleStatusChange(OrderStatus.IN_PROGRESS)}
+                  disabled={updateStatusMutation.isPending}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
+                >
+                  {updateStatusMutation.isPending ? <FaSpinner className="animate-spin" /> : null}
+                  In Progress
+                </button>
+              )}
+              {order.status != OrderStatus.DELAYED && (
+                <button
+                  onClick={() => handleStatusChange(OrderStatus.DELAYED)}
+                  disabled={updateStatusMutation.isPending}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
+                >
+                  {updateStatusMutation.isPending ? <FaSpinner className="animate-spin" /> : null}
+                  Delayed
+                </button>
+              )}
+              {order.status != OrderStatus.RECEIVED && (
+                <button
+                  onClick={() => handleStatusChange(OrderStatus.COMPLETED)}
+                  disabled={updateStatusMutation.isPending}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
+                >
+                  {updateStatusMutation.isPending ? <FaSpinner className="animate-spin" /> : null}
+                  Completed
+                </button>
+              )}
             </div>
           </div>
         )}
