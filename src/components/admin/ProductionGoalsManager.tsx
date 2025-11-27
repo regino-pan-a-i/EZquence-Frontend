@@ -8,7 +8,7 @@ import {
   ProductionGoalsResponse,
   ProductListResponse,
 } from '@/utils/supabase/schema';
-import { getActiveProductionGoals, updateProductionGoal, createProductionGoal, getApiBaseUrl } from '@/utils/apiConfig';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 import { FaBullseye, FaEdit, FaSave, FaTimes, FaPlus, FaSpinner } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -39,7 +39,19 @@ export default function ProductionGoalsManager() {
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      return getActiveProductionGoals(token!);
+      
+      const response = await fetch(`${getApiBaseUrl()}/company/production-goals/active`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch production goals: ${response.statusText}`);
+      }
+
+      return response.json();
     },
   });
 
@@ -69,7 +81,24 @@ export default function ProductionGoalsManager() {
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      return updateProductionGoal(productionGoalId, updatedGoal, token!);
+      
+      const response = await fetch(
+        `${getApiBaseUrl()}/company/production-goals/${productionGoalId}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedGoal),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to update production goal: ${response.statusText}`);
+      }
+
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['production-goals-active'] });
@@ -88,7 +117,21 @@ export default function ProductionGoalsManager() {
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      return createProductionGoal(newGoal, token!);
+      
+      const response = await fetch(`${getApiBaseUrl()}/company/production-goals`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newGoal),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to create production goal: ${response.statusText}`);
+      }
+
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['production-goals-active'] });
