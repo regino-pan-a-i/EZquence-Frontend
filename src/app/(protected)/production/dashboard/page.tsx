@@ -14,7 +14,7 @@ import {
   ProductInStock,
   ProductInStockResponse,
 } from '@/utils/supabase/schema';
-import { getApiBaseUrl, updateOrderStatus, getActiveProductionGoals } from '@/utils/apiConfig';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 import ScoreCard from '@/components/scorecard/ScoreCard';
 import DateFilter from '@/components/filters/DateFilter';
 import OrderCard from '@/components/orders/OrderCard';
@@ -103,7 +103,19 @@ export default function ProductionDashboard() {
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      return getActiveProductionGoals(token!);
+      
+      const response = await fetch(`${getApiBaseUrl()}/company/production-goals/active`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch production goals: ${response.statusText}`);
+      }
+
+      return response.json();
     },
   });
 
@@ -162,29 +174,6 @@ export default function ProductionDashboard() {
     enabled: !!productionGoalsResponse?.data && productionGoalsResponse.data.length > 0,
   });
 
-  // Mutation for updating order status
-  const statusMutation = useMutation({
-    mutationFn: async ({ orderId, newStatus }: { orderId: number; newStatus: OrderStatus }) => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      return updateOrderStatus(orderId, newStatus, token!);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['production-orders'] });
-      queryClient.invalidateQueries({ queryKey: ['production-order-details'] });
-      toast.success('Order status updated successfully!');
-    },
-    onError: (error) => {
-      console.error('Failed to update order status:', error);
-      toast.error('Failed to update order status');
-    },
-  });
-
-  const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
-    await statusMutation.mutateAsync({ orderId, newStatus });
-  };
 
   // Calculate order counts by status
   const getOrderCountByStatus = (status: OrderStatus) => {
@@ -360,7 +349,6 @@ export default function ProductionDashboard() {
                 order={orderWithProducts.order}
                 products={orderWithProducts.products}
                 showStatusActions={true}
-                onStatusChange={handleStatusChange}
               />
             ))}
           </div>
