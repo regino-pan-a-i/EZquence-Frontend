@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { jwtDecode } from 'jwt-decode';
 
 import { createClient } from '@/utils/supabase/supabaseServer';
+import { DecodedToken } from '@/utils/supabase/schema';
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
@@ -25,7 +26,7 @@ export async function login(formData: FormData) {
 
   let path = '/';
   const token = authData?.session?.access_token;
-  const decoded = jwtDecode(token) as any;
+  const decoded = jwtDecode(token) as DecodedToken;
   const role = decoded?.user_role;
   console.log(role);
   if (role === 'ADMIN') {

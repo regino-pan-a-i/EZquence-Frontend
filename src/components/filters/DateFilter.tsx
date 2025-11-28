@@ -103,16 +103,6 @@ function DateFilter({
     }
   };
 
-  const clearFilters = () => {
-    if (type === 'single') {
-      setSelectedDate('');
-      onDateChange?.('');
-    } else {
-      setStartDate('');
-      setEndDate('');
-      onDateRangeChange?.('', '');
-    }
-  };
 
   const PresetButtons = () => (
     <div className="flex flex-wrap gap-2 mb-3">

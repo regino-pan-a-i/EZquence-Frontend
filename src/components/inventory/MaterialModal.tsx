@@ -8,8 +8,8 @@ import { getApiBaseUrl } from '@/utils/apiConfig';
 
 export interface MaterialModalProps {
   materialId?: number | null;
-  onSave?: (updatedMaterial: InventoryItem) => void;
-  onCreate?: (newMaterial: InventoryItem) => void;
+  onSave?: () => void;
+  onCreate?: () => void;
   onClose?: () => void;
   className?: string;
 }
@@ -158,12 +158,10 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
 
         if (!res.ok) throw new Error('Failed to create material');
 
-        const data = await res.json();
         toast.success('Material created successfully!');
 
-        if (onCreate && data.data) {
-          onCreate(data.data);
-        }
+        onCreate?.();
+        
         onClose?.();
       } else {
         const res = await fetch(`${getApiBaseUrl()}/inventory/${materialId}`, {
@@ -181,9 +179,8 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
         const data = await res.json();
         toast.success('Material updated successfully!');
 
-        if (onSave && data.data) {
-          onSave(data.data);
-        }
+        onSave?.();
+        
         setIsEditing(false);
         setMaterial(data.data);
       }

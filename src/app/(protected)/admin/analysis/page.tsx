@@ -2,10 +2,7 @@
 import ScoreCard from '@/components/scorecard/ScoreCard';
 import { FaDollarSign, FaReceipt, FaUser } from 'react-icons/fa';
 import DateFilter from '@/components/filters/DateFilter';
-import { useQuery } from '@tanstack/react-query';
-import { Order, OrdersByDateRangeResponse, OrderStatus } from '@/utils/supabase/schema';
 import { useState } from 'react';
-import { supabase } from '@/utils/supabase/supabaseClient';
 
 export default function AnalysisPage() {
   const [dateRange, setDateRange] = useState({

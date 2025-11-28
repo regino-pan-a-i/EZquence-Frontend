@@ -10,14 +10,16 @@ export const metadata: Metadata = {
 };
 
 interface LoginPageProps {
-  searchParams: {
+  searchParams: Promise<{
     mode?: string;
-  };
+  }>;
 }
 
-export default function LoginPage({ searchParams }: LoginPageProps) {
-  // Check if mode=signup query parameter is present
-  const isSignupMode = searchParams.mode === 'signup';
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  // Await searchParams in Next.js 15
+  const params = await searchParams;
+  const isSignupMode = params.mode === 'signup';
 
   return (
     <>

@@ -1,7 +1,6 @@
 import Sidebar from '@/components/sidebar/Sidebar';
 import { redirect } from 'next/navigation';
 import { getUserRole } from '@/lib/auth-utils';
-import { UserRole } from '@/utils/supabase/schema';
 
 export default async function ProductionLayout({ children }: { children: React.ReactNode }) {
   const userRole = await getUserRole();

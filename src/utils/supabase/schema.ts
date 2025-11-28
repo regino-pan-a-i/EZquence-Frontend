@@ -2,6 +2,7 @@
 export enum UserRole {
   ADMIN = 'ADMIN',
   WORKER = 'WORKER',
+  CLIENT = 'CLIENT'
 }
 
 export interface DecodedToken {

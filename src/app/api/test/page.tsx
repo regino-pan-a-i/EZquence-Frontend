@@ -1,5 +1,4 @@
 import { getAccessToken } from '@/lib/auth-actions';
-import { useQuery } from '@tanstack/react-query';
 import { getApiBaseUrl } from '@/utils/apiConfig';
 
 export default async function DashboardPage() {

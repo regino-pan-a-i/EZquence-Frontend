@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import {
   Order,
@@ -19,7 +19,6 @@ import ScoreCard from '@/components/scorecard/ScoreCard';
 import DateFilter from '@/components/filters/DateFilter';
 import OrderCard from '@/components/orders/OrderCard';
 import { FaTachometerAlt, FaBoxOpen, FaSpinner, FaCheckCircle, FaClock, FaExclamationTriangle } from 'react-icons/fa';
-import toast from 'react-hot-toast';
 
 // Type for order with its products
 type OrderWithProducts = {
@@ -28,7 +27,6 @@ type OrderWithProducts = {
 };
 
 export default function ProductionDashboard() {
-  const queryClient = useQueryClient();
   
   // Default to today's date
   const getTodayDate = () => new Date().toISOString().split('T')[0];
