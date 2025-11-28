@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import {
   Order,
@@ -15,7 +15,7 @@ import DateFilter from '@/components/filters/DateFilter';
 import OrderCard from '@/components/orders/OrderCard';
 import ScoreCard from '@/components/scorecard/ScoreCard';
 import { FaShoppingCart, FaSearch, FaDollarSign, FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
-import toast from 'react-hot-toast';
+
 
 // Helper function to get first day of current month
 const getFirstDayOfMonth = () => {
@@ -30,7 +30,6 @@ type OrderWithProducts = {
 };
 
 export default function ProductionOrdersPage() {
-  const queryClient = useQueryClient();
   
   const [dateRange, setDateRange] = useState({
     start: getFirstDayOfMonth(),

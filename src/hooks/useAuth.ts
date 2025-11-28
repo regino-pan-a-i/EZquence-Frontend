@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import { UserRole, DecodedToken } from '@/utils/supabase/schema';
 import { jwtDecode } from 'jwt-decode';
+import { User } from '@supabase/supabase-js';
 
 /**
  * Hook to get the current user's role from the session token (client-side)
@@ -61,7 +62,7 @@ export function useRole(): UserRole | null {
  * Hook to get the current authenticated user (client-side)
  */
 export function useUser() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);  
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

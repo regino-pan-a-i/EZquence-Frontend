@@ -54,9 +54,7 @@ export default function InventoryPage() {
   }, [materialsResponse]);
 
   const {
-    data: inventoryNeededResponse,
-    isLoading: loadingInventoryNeeded,
-    error: errorInventoryNeeded,
+    data: inventoryNeededResponse
   } = useQuery<InventoryNeedResponse>({
     queryKey: ['inventoryNeeded'],
     queryFn: async () => {

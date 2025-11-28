@@ -92,19 +92,19 @@ export async function updateSession(request: NextRequest) {
       const userRole = getRoleFromToken(session.access_token);
 
       // Workers cannot access admin routes
-      if (isAdminRoute && userRole === UserRole.WORKER) {
+      if (isAdminRoute && (userRole === UserRole.WORKER || userRole === UserRole.CLIENT)) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = '/production/dashboard';
         redirectUrl.searchParams.set('error', 'unauthorized');
         return NextResponse.redirect(redirectUrl);
       }
 
-      // Admins cannot access production routes (optional - remove if admins should have access)
-      // if (isProductionRoute && userRole === UserRole.ADMIN) {
-      //   const redirectUrl = request.nextUrl.clone();
-      //   redirectUrl.pathname = '/admin/dashboard';
-      //   return NextResponse.redirect(redirectUrl);
-      // }
+      // Clients cannot access production routes
+      if (isProductionRoute && userRole === UserRole.CLIENT) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = '/admin/dashboard';
+        return NextResponse.redirect(redirectUrl);
+      }
     }
   }
 

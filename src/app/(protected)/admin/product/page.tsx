@@ -18,7 +18,7 @@ export default function ProductsPage() {
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: prodResponse, isLoading: loadingProducts } = useQuery<ProductListResponse>({
+  const { data: prodResponse } = useQuery<ProductListResponse>({
     queryKey: ['products'],
     queryFn: async () => {
       // Get the session token
