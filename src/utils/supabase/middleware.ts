@@ -66,6 +66,7 @@ export async function updateSession(request: NextRequest) {
   const isProtectedRoute =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/production') ||
+    pathname.startsWith('/customer') ||
     pathname.startsWith('/account') ||
     pathname.startsWith('/settings');
 
@@ -74,6 +75,9 @@ export async function updateSession(request: NextRequest) {
 
   // Production worker routes
   const isProductionRoute = pathname.startsWith('/production');
+
+  // Customer routes
+  const isCustomerRoute = pathname.startsWith('/customer');
 
   // If not authenticated and trying to access protected route, redirect to login
   if (!user && isProtectedRoute) {
@@ -92,17 +96,26 @@ export async function updateSession(request: NextRequest) {
       const userRole = getRoleFromToken(session.access_token);
 
       // Workers cannot access admin routes
-      if (isAdminRoute && (userRole === UserRole.WORKER || userRole === UserRole.CLIENT)) {
+      if (isAdminRoute && userRole === UserRole.WORKER) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = '/production/dashboard';
         redirectUrl.searchParams.set('error', 'unauthorized');
         return NextResponse.redirect(redirectUrl);
       }
 
-      // Clients cannot access production routes
-      if (isProductionRoute && userRole === UserRole.CLIENT) {
+      // Clients cannot access admin or production routes
+      if ((isAdminRoute || isProductionRoute) && userRole === UserRole.CLIENT) {
         const redirectUrl = request.nextUrl.clone();
-        redirectUrl.pathname = '/admin/dashboard';
+        redirectUrl.pathname = '/customer/products';
+        redirectUrl.searchParams.set('error', 'unauthorized');
+        return NextResponse.redirect(redirectUrl);
+      }
+
+      // Workers and admins cannot access customer routes
+      if (isCustomerRoute && (userRole === UserRole.ADMIN || userRole === UserRole.WORKER)) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = userRole === UserRole.ADMIN ? '/admin/dashboard' : '/production/dashboard';
+        redirectUrl.searchParams.set('error', 'unauthorized');
         return NextResponse.redirect(redirectUrl);
       }
     }
@@ -122,6 +135,8 @@ export async function updateSession(request: NextRequest) {
         dashboardUrl.pathname = '/admin/dashboard';
       } else if (userRole === UserRole.WORKER) {
         dashboardUrl.pathname = '/production/dashboard';
+      } else if (userRole === UserRole.CLIENT) {
+        dashboardUrl.pathname = '/customer/products';
       }
 
       return NextResponse.redirect(dashboardUrl);
