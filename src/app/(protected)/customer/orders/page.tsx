@@ -127,7 +127,7 @@ export default function OrdersPage() {
                 Order Placed Successfully!
               </h3>
               <p className="text-sm text-green-700 dark:text-green-300">
-                Your order #{orderIdParam} has been received and is being processed. You'll receive real-time updates as your order progresses.
+                Your order #{orderIdParam} has been received and is being processed. You&aposll receive real-time updates as your order progresses.
               </p>
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function OrdersPage() {
             📱 Real-time Order Updates
           </h3>
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            You'll receive automatic notifications when your order status changes. Keep this page open to see updates in real-time!
+            You&apos;ll receive automatic notifications when your order status changes. Keep this page open to see updates in real-time!
           </p>
         </div>
       </div>
