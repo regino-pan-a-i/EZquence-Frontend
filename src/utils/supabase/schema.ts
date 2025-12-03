@@ -194,3 +194,27 @@ export type StockTransaction = {
   companyId: number;
   reason: TransactionReason;
 }
+
+export enum CartStatus {
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
+export type Cart = {
+  cartId: number;
+  createdDate: Date;
+  updatedAt: Date;
+  userId: number;
+  cartStatus: CartStatus;
+  companyId: number;
+  notes: string;
+}
+
+export type cartItem = {
+  cartId: number;
+  productId: number;
+  quantity: number;
+  companyId: number;
+  product : Product
+}
