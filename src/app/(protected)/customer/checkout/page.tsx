@@ -20,7 +20,7 @@ export default function CheckoutPage() {
   const cart = cartData?.data?.cart;
   const items = cartData?.data?.items || [];
 
-  const subtotal = items.reduce((sum, item) => sum + (item.productPrice * item.quantity), 0);
+  const subtotal = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
   const tax = subtotal * 0.08;
   const total = subtotal + tax;
 
@@ -116,10 +116,10 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.productId} className="flex gap-3 items-center">
                   <div className="relative w-16 h-16 flex-shrink-0 bg-gray-100 dark:bg-neutral-800 rounded overflow-hidden">
-                    {item.productImage ? (
+                    {item.product.productImage ? (
                       <Image
-                        src={item.productImage}
-                        alt={item.productName}
+                        src={item.product.productImage[0].imageURL}
+                        alt={item.product.name}
                         fill
                         className="object-cover"
                       />
@@ -131,14 +131,14 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-900 dark:text-white truncate">
-                      {item.productName}
+                      {item.product.name}
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      ${item.productPrice.toFixed(2)} × {item.quantity}
+                      ${item.product.price.toFixed(2)} × {item.quantity}
                     </p>
                   </div>
                   <p className="font-bold text-gray-900 dark:text-white">
-                    ${(item.productPrice * item.quantity).toFixed(2)}
+                    ${(item.product.price * item.quantity).toFixed(2)}
                   </p>
                 </div>
               ))}
