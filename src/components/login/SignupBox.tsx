@@ -1,4 +1,5 @@
 import { signup } from '@/lib/auth-actions';
+import { UserRole } from '@/utils/supabase/schema';
 
 export default function SignupBox() {
   const handleSubmit = async (formData: FormData) => {
@@ -57,6 +58,20 @@ export default function SignupBox() {
           type="text"
           required
         />
+
+        <label className="mb-1 text-sm font-medium" htmlFor="role">
+          Account Type:
+        </label>
+        <select
+          className="py-2 px-3 w-full rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-neutral-700"
+          id="role"
+          name="role"
+          required
+        >
+          <option value={UserRole.CLIENT}>Customer</option>
+          <option value={UserRole.WORKER}>Production Worker</option>
+          <option value={UserRole.ADMIN}>Administrator</option>
+        </select>
 
         <label className="mb-1 text-sm font-medium" htmlFor="email">
           Email:

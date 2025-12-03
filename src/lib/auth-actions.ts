@@ -33,9 +33,11 @@ export async function login(formData: FormData) {
     path = '/admin';
   } else if (role === 'WORKER') {
     path = '/production';
+  } else if (role === 'CLIENT') {
+    path = '/customer';
   }
 
-  path += '/dashboard';
+  path += role === 'CLIENT' ? '/products' : '/dashboard';
   revalidatePath('/', 'layout');
   redirect(path);
 }
@@ -47,6 +49,7 @@ export async function signup(formData: FormData) {
   // in practice, you should validate your inputs
   const firstName = formData.get('firstName') as string;
   const lastName = formData.get('lastName') as string;
+  const role = formData.get('role') as string;
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
@@ -55,6 +58,7 @@ export async function signup(formData: FormData) {
         firstName: firstName,
         lastName: lastName,
         email: formData.get('email') as string,
+        role: role,
       },
     },
   };
