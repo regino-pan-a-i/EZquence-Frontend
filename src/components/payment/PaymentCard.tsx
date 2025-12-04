@@ -4,6 +4,7 @@ import {
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
+import { getApiBaseUrl, getFrontendUrl } from '@/utils/apiConfig';
 
 export default function PaymentCard({ amount }: { amount: number }) {
   const stripe = useStripe();
@@ -16,7 +17,7 @@ export default function PaymentCard({ amount }: { amount: number }) {
 
 
   useEffect(() => {
-    fetch("/api/create-payment-intent", {
+    fetch(`${getApiBaseUrl()}/customer/create-payment-intent`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,7 +48,7 @@ export default function PaymentCard({ amount }: { amount: number }) {
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `http://www.localhost:3000/payment-success?amount=${amount}`,
+        return_url: `${getFrontendUrl()}/payment-success?amount=${amount}`,
       },
     });
 
