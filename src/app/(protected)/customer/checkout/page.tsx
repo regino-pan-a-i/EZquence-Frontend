@@ -8,6 +8,9 @@ import { CartStatus } from '@/utils/supabase/schema';
 import { FiCheck, FiPackage, FiCalendar } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import PaymentCard from "@/components/payment/PaymentCard"
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -36,18 +39,19 @@ export default function CheckoutPage() {
 
     try {
       // Get auth token
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const token = session?.access_token;
 
       if (!token) {
         throw new Error('Not authenticated');
       }
-
       // Create order from cart
       const orderResponse = await fetch(getApiUrl('/order/createOrder'), {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -79,6 +83,9 @@ export default function CheckoutPage() {
       setIsSubmitting(false);
     }
   };
+
+  const convertToSubcurrency = (amount: number) => Math.round(amount * 100);
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
   // Get minimum date (today)
   const today = new Date().toISOString().split('T')[0];
@@ -162,7 +169,7 @@ export default function CheckoutPage() {
               required
             />
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              Select your preferred delivery date (within 90 days)
+              Select your preferred delivery date (within 7 days)
             </p>
           </div>
 
@@ -200,6 +207,17 @@ export default function CheckoutPage() {
               </div>
             )}
 
+            <Elements
+              stripe={stripePromise}
+              options={{
+                mode: "payment",
+                amount: convertToSubcurrency(total),
+                currency: "usd",
+              }}
+            >
+              <PaymentCard amount={total} />
+            </Elements>
+
             <button
               onClick={handleSubmitOrder}
               disabled={isSubmitting || !deliveryDate}
@@ -218,9 +236,7 @@ export default function CheckoutPage() {
               )}
             </button>
 
-            <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-3">
-              Payment will be processed upon delivery
-            </p>
+
           </div>
         </div>
       </div>
