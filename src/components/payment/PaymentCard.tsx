@@ -5,6 +5,15 @@ import {
   PaymentElement,
 } from "@stripe/react-stripe-js";
 import { getApiBaseUrl, getFrontendUrl } from '@/utils/apiConfig';
+import { supabase } from '@/utils/supabase/supabaseClient';
+import { useQuery } from '@tanstack/react-query';
+
+type PaymentIntentResponse = {
+  success: boolean,
+  data: {
+    clientSecret: string;
+  }
+};
 
 export default function PaymentCard({ amount }: { amount: number }) {
   const stripe = useStripe();
@@ -15,18 +24,34 @@ export default function PaymentCard({ amount }: { amount: number }) {
 
   const convertToSubcurrency = (amount: number) => Math.round(amount * 100);
 
+  const { data, isLoading } = useQuery<PaymentIntentResponse>({
+    queryKey: ['paymentIntent'],
+    queryFn: async () => {
+      // Get the session token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(
+        `${getApiBaseUrl()}/customer/create-payment-intent`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ amount: convertToSubcurrency(amount) }),
+        }
+      );
+      if (!res.ok) console.log('Failed to create payment intent', res);
+      return res.json();
+    },
+  });
+
 
   useEffect(() => {
-    fetch(`${getApiBaseUrl()}/customer/create-payment-intent`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ amount: convertToSubcurrency(amount) }),
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-  }, [amount]);
+      if (data) setClientSecret(data.data.clientSecret);
+  }, [amount, data]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,7 +73,7 @@ export default function PaymentCard({ amount }: { amount: number }) {
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `${getFrontendUrl()}/payment-success?amount=${amount}`,
+        return_url: `${getFrontendUrl()}/customer/payment-success?amount=${amount}`,
       },
     });
 
