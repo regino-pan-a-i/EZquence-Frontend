@@ -36,7 +36,6 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      console.log(response)
       if (!response.ok) {
         throw new Error(`Failed to update order status: ${response.statusText}`);
       }

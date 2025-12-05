@@ -172,7 +172,6 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
           },
           body: JSON.stringify(payload),
         });
-        console.log(res);
 
         if (!res.ok) throw new Error('Failed to update material');
 
