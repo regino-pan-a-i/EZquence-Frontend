@@ -11,6 +11,7 @@ export interface DecodedToken {
   email?: string;
   exp?: number;
   iat?: number;
+  usr_id?: number;
 }
 
 export type Company = {
@@ -82,6 +83,14 @@ export type OrderDetailsResponse = {
     products: OrderProductList[];
   };
 };
+
+export type ClientOrderDetailsResponse = {
+    success: boolean;
+  data: [{
+    order: Order;
+    products: OrderProductList[];
+  }];
+}
 
 export type Product = {
   productId: number;
