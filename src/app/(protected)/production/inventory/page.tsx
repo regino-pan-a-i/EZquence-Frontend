@@ -48,7 +48,6 @@ export default function InventoryPage() {
   // Use useEffect to set products when data is fetched
   useEffect(() => {
     if (materialsResponse && materialsResponse.success === true) {
-      console.log(materialsResponse.data);
       setMaterials(materialsResponse.data);
     }
   }, [materialsResponse]);
@@ -82,7 +81,6 @@ export default function InventoryPage() {
   // Use useEffect to set products when data is fetched
   useEffect(() => {
     if (inventoryNeededResponse && inventoryNeededResponse.success === true) {
-      console.log(inventoryNeededResponse.data);
       setInventoryNeeded(inventoryNeededResponse.data);
     }
   }, [inventoryNeededResponse]);

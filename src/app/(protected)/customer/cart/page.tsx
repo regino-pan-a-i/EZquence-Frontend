@@ -17,8 +17,6 @@ export default function CartPage() {
   const cart = cartData?.data?.cart;
   const items = cartData?.data?.items || [];
 
-  console.log(cart)
-  console.log(items)
   const [notes, setNotes] = useState('');
   const [notesTimeout, setNotesTimeout] = useState<NodeJS.Timeout | null>(null);
 

@@ -24,15 +24,15 @@ export function useOrderRealtime({ userId, enabled = true }: UseOrderRealtimePro
         {
           event: 'UPDATE',
           schema: 'public',
-          table: 'orders',
+          table: 'order',
           filter: `userId=eq.${userId}`,
         },
         (payload) => {
           console.log('Order updated:', payload);
 
           // Invalidate order queries to refetch data
-          queryClient.invalidateQueries({ queryKey: ['orders'] });
-          queryClient.invalidateQueries({ queryKey: ['order', payload.new.orderId] });
+          queryClient.invalidateQueries({ queryKey: ['userOrders'] });
+          queryClient.invalidateQueries({ queryKey: ['userOrders', payload.new.orderId] });
 
           // Show notification based on status change
           const newStatus = payload.new.status;
@@ -77,12 +77,12 @@ export function useOrderRealtime({ userId, enabled = true }: UseOrderRealtimePro
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'orders',
+          table: 'order',
           filter: `userId=eq.${userId}`,
         },
         (payload) => {
           console.log('New order created:', payload);
-          queryClient.invalidateQueries({ queryKey: ['orders'] });
+          queryClient.invalidateQueries({ queryKey: ['userOrders'] });
           
           toast.success('New order created successfully!', {
             duration: 5000,
