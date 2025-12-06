@@ -28,7 +28,6 @@ export async function login(formData: FormData) {
   const token = authData?.session?.access_token;
   const decoded = jwtDecode(token) as DecodedToken;
   const role = decoded?.user_role;
-  console.log(role);
   if (role === 'ADMIN') {
     path = '/admin';
   } else if (role === 'WORKER') {

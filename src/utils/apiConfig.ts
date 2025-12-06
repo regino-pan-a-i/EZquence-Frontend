@@ -25,3 +25,10 @@ export function getApiUrl(endpoint: string): string {
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   return `${baseUrl}${cleanEndpoint}`;
 }
+
+export function getFrontendUrl(): string {
+  const url = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000';
+
+    // Remove trailing slash if present
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+}

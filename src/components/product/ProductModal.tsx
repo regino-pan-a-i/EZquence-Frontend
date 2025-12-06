@@ -113,7 +113,6 @@ const ProductModal: React.FC<ProductCardProps> = ({
   useEffect(() => {
     if (processResponse && processResponse.success === true) {
       setProcess(processResponse.data);
-      console.log(processResponse.data);
     }
   }, [processResponse]);
 
@@ -482,7 +481,6 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   continue;
                 }
                 const materialData = await materialRes.json();
-                console.log(materialData);
                 materialId = materialData.data[0].materialId;
               } else if (existingMaterial) {
                 materialId = existingMaterial.materialId;

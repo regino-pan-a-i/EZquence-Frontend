@@ -4,18 +4,22 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import { getApiUrl } from '@/utils/apiConfig';
-import { OrdersByDateRangeResponse, OrderDetailsResponse } from '@/utils/supabase/schema';
+import { DecodedToken, ClientOrderDetailsResponse } from '@/utils/supabase/schema';
 import { useOrderRealtime } from '@/hooks/useOrderRealtime';
 import OrderCard from '@/components/orders/OrderCard';
 import { FiPackage, FiCheck } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
+import { jwtDecode } from 'jwt-decode';
 
-async function fetchOrders(startDate: string, endDate: string): Promise<OrdersByDateRangeResponse> {
+async function fetchOrders(): Promise<ClientOrderDetailsResponse> {
   const { data: { session } } = await supabase.auth.getSession();
   const token = session?.access_token;
 
+  const decodedToken = jwtDecode<DecodedToken>(token || '');
+  const userId = decodedToken.usr_id;
+
   const response = await fetch(
-    getApiUrl(`/order/daterange?start=${startDate}&end=${endDate}`),
+    getApiUrl(`/order/customer/${userId}`),
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -30,22 +34,6 @@ async function fetchOrders(startDate: string, endDate: string): Promise<OrdersBy
   return response.json();
 }
 
-async function fetchOrderDetails(orderId: number): Promise<OrderDetailsResponse> {
-  const { data: { session } } = await supabase.auth.getSession();
-  const token = session?.access_token;
-
-  const response = await fetch(getApiUrl(`/order/${orderId}`), {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch order details');
-  }
-
-  return response.json();
-}
 
 export default function OrdersPage() {
   const searchParams = useSearchParams();
@@ -58,13 +46,13 @@ export default function OrdersPage() {
   
   useEffect(() => {
     const fetchUserId = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user?.id) {
-        // Extract user ID from JWT or user metadata
-        const { data: { session } } = await supabase.auth.getSession();
-        // Note: You may need to adjust this based on how your backend stores userId
-        // For now, we'll use a placeholder. The backend should include userId in the JWT
-        setUserId(1); // TODO: Get actual userId from JWT or user metadata
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      const decodedToken = jwtDecode<DecodedToken>(token || '');
+      const userId = decodedToken.usr_id;
+      if (userId) {
+        setUserId(userId);
       }
     };
     fetchUserId();
@@ -83,33 +71,15 @@ export default function OrdersPage() {
     }
   }, [successParam]);
 
-  // Date range: last 6 months to 3 months in future
-  const startDate = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  const endDate = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
   const { data: ordersData, isLoading } = useQuery({
-    queryKey: ['orders', startDate, endDate],
-    queryFn: () => fetchOrders(startDate, endDate),
+    queryKey: ['userOrders'],
+    queryFn: () => fetchOrders(),
     staleTime: 1000 * 60, // 1 minute
   });
 
   // Fetch order details for each order
   const orders = ordersData?.data || [];
-  const orderIds = orders.map(order => order.orderId);
-
-  const orderDetailsQueries = useQuery({
-    queryKey: ['orderDetails', orderIds],
-    queryFn: async () => {
-      const details = await Promise.all(
-        orderIds.map(id => fetchOrderDetails(id))
-      );
-      return details;
-    },
-    enabled: orderIds.length > 0,
-    staleTime: 1000 * 60, // 1 minute
-  });
-
-  const orderDetails = orderDetailsQueries.data || [];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 p-4 md:p-6">
@@ -134,11 +104,11 @@ export default function OrdersPage() {
         )}
 
         {/* Orders List */}
-        {isLoading || orderDetailsQueries.isLoading ? (
+        {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
           </div>
-        ) : orders.length === 0 ? (
+        ) : !orders ? (
           <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
             <FiPackage size={80} className="text-gray-300 dark:text-neutral-700 mb-6" />
             <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
@@ -150,13 +120,12 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-            {orderDetails.map((details, index) => {
-              if (!details?.data) return null;
+            {orders.map((response, index) => {
               return (
                 <OrderCard
-                  key={details.data.order.orderId}
-                  order={details.data.order}
-                  products={details.data.products}
+                  key={response.order.orderId}
+                  order={response.order}
+                  products={response.products}
                   showStatusActions={false}
                 />
               );
