@@ -68,7 +68,6 @@ export async function signup(formData: FormData) {
     redirect(`/error`);
   }
 
-  console.log(authData)
 
   const userId = authData.user?.id;
   // If no session, sign in immediately to get a token
