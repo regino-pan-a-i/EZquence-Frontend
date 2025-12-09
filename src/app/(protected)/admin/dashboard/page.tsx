@@ -38,7 +38,6 @@ export default function DashboardPage() {
         data: { session },
       } = await supabase.auth.getSession();
       const token = session?.access_token;
-      console.log(token)
       const res = await fetch(
         `${getApiBaseUrl()}/order/daterange?start=${dateRange.start}&end=${dateRange.end}`,
         {
@@ -48,7 +47,6 @@ export default function DashboardPage() {
           },
         }
       );
-      console.log(res)
       if (!res.ok) console.log('Failed to fetch orders', res);
       return res.json();
     },
@@ -74,7 +72,6 @@ export default function DashboardPage() {
           return acc;
         }, {});
 
-      console.log(revenueData);
       return Object.entries(revenueData).map(([date, revenue]) => ({
         date,
         revenue,

@@ -107,14 +107,12 @@ export default function ProductsPage() {
     setProducts(
       products?.map((p) => (p.productId === updatedProduct.productId ? updatedProduct : p))
     );
-    console.log('Product updated:', updatedProduct);
     // Invalidate and refetch products
     queryClient.invalidateQueries({ queryKey: ['products'] });
     handleCloseModal();
   };
 
   const handleCreateProduct = (newProduct: Product) => {
-    console.log('Product created:', newProduct);
     // Invalidate and refetch products
     queryClient.invalidateQueries({ queryKey: ['products'] });
     handleCloseModal();

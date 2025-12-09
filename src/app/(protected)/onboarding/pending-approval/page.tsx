@@ -20,11 +20,9 @@ export default function PendingApprovalPage() {
   useEffect(() => {
     const fetchCompanyDetails = async () => {
       const details = await getCompanyById();
-      console.log(details.data)
       if (details.data) {
         setCompanyDetails(details.data);
       }
-      console.log(companyDetails)
     }
     fetchCompanyDetails()
   }, [])

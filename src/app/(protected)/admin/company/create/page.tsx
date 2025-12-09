@@ -102,7 +102,6 @@ export default function CreateCompanyPage() {
         setIsSubmitting(false);
         return;
       }
-      console.log(result)
       if (!result.data?.companyId) {
         toast.error('Failed to create company');
         setIsSubmitting(false);
