@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import SidebarButton from './buttons/SidebarButton';
 import {
   FaTachometerAlt,
@@ -14,11 +15,13 @@ import {
   FaUserCircle,
   FaCog,
   FaSyncAlt,
+  FaBuilding
 } from 'react-icons/fa';
+import { Company } from '@/utils/supabase/schema';
 
 type SidebarVariant = 'admin' | 'production';
 
-export default function Sidebar({ variant = 'admin' }: { variant?: SidebarVariant }) {
+export default function Sidebar({ variant = 'admin', company }: { variant?: SidebarVariant, company?: Company }) {
   const [open, setOpen] = useState(true);
 
   // Default admin items (previous behavior)
@@ -84,24 +87,20 @@ export default function Sidebar({ variant = 'admin' }: { variant?: SidebarVarian
         <div className="flex items-center gap-3 px-4 py-5">
           <div className="flex items-center gap-3 w-full">
             <div className="shrink-0 h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-800 flex items-center justify-center">
-              {/* simple logo mark */}
-              <svg
-                viewBox="0 0 24 24"
-                className="h-6 w-6 text-gray-700 dark:text-gray-200"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 2L2 7l10 5 10-5-10-5z"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+              {company?.logoURL ? (
+                <Image
+                  src={company.logoURL}
+                  alt={`${company.name} logo`}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
                 />
-              </svg>
+              ) : (
+                <FaBuilding className="h-6 w-6 text-gray-700 dark:text-gray-200" />
+              )}
             </div>
             {!open && <div className="grow" />}
-            {open && <span className="font-semibold text-lg truncate">EZquence</span>}
+            {open && <span className="font-semibold text-lg truncate">{company?.name || 'EZquence'}</span>}
           </div>
         </div>
 

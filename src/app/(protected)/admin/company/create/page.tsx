@@ -66,29 +66,29 @@ export default function CreateCompanyPage() {
       return;
     }
 
-    if (!logoFile) {
-      toast.error('Please upload a company logo');
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      // Step 1: Upload logo
-      const uploadResult = await uploadCompanyLogo(logoFile);
+      let logoURL: string | undefined = undefined;
 
-      if (!uploadResult.success || !uploadResult.url) {
-        toast.error(uploadResult.error || 'Failed to upload logo');
-        setIsSubmitting(false);
-        return;
+      // Step 1: Upload logo (if provided)
+      if (logoFile) {
+        const uploadResult = await uploadCompanyLogo(logoFile);
+
+        if (!uploadResult.success || !uploadResult.url) {
+          toast.error(uploadResult.error || 'Failed to upload logo');
+          setIsSubmitting(false);
+          return;
+        }
+        logoURL = uploadResult.url;
       }
 
-      // Step 2: Create company with logo URL
+      // Step 2: Create company with logo URL (if provided)
       const result = await createCompany({
         name: formData.name,
         description: formData.description,
         industry: formData.industry,
-        logoURL: uploadResult.url,
+        logoURL: '',
       });
 
       const { data: { session } } = await supabase.auth.getSession();
@@ -111,10 +111,6 @@ export default function CreateCompanyPage() {
 
       // Step 3: Assign the new company to the current user
       const newResult = await adminJoinCompany(result.data.companyId, userId)
-
-      const { data: newData, error: newError } = await supabase.auth.refreshSession();
-
-      if (newError) console.error(newError);
 
       if (result.success) {
         toast.success('Company created successfully!');
@@ -219,7 +215,7 @@ export default function CreateCompanyPage() {
           {/* Logo Upload */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Company Logo <span className="text-red-500">*</span>
+              Company Logo <span className="text-gray-400 text-xs">(optional)</span>
             </label>
             <div className="flex items-start gap-4">
               {/* Preview */}
