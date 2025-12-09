@@ -1,7 +1,14 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { getRoleFromToken } from '@/lib/auth-utils';
-import { UserRole } from './schema';
+import { getRoleFromToken, decodeToken } from '@/lib/auth-utils';
+import { UserRole, ApiResponse, ApprovalStatus } from './schema';
+import { getApiBaseUrl } from '@/utils/apiConfig'
+import { useQuery } from '@tanstack/react-query';
+import { getCompanyById } from '@/lib/company-actions';
+
+const fetchCompanyDetails = async () => {
+  return await getCompanyById()
+}
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
@@ -62,13 +69,17 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
+  // Onboarding routes (accessible to authenticated users without company setup)
+  const isOnboardingRoute = pathname.startsWith('/onboarding');
+
   // Protected routes - require authentication
   const isProtectedRoute =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/production') ||
     pathname.startsWith('/customer') ||
     pathname.startsWith('/account') ||
-    pathname.startsWith('/settings');
+    pathname.startsWith('/settings') ||
+    isOnboardingRoute;
 
   // Admin-only routes
   const isAdminRoute = pathname.startsWith('/admin');
@@ -86,7 +97,30 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // If authenticated, check role-based access
+  const { data: workerApprovalStatus } = useQuery<ApiResponse<ApprovalStatus>>({
+    queryKey: ['approval'],
+    queryFn: async () => {
+      // Get the session token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const decoded = decodeToken(token || '');
+      const userId = decoded?.sub || '';
+      const res = await fetch(
+        `${getApiBaseUrl()}/customer/user/${userId}/approvalStatus}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (!res.ok) console.log('Failed to fetch approval status', res);
+      return res.json();
+    },
+  });
+  // If authenticated, check role-based access and approval status
   if (user && isProtectedRoute) {
     const {
       data: { session },
@@ -94,6 +128,44 @@ export async function updateSession(request: NextRequest) {
 
     if (session?.access_token) {
       const userRole = getRoleFromToken(session.access_token);
+      const approvalStatus = workerApprovalStatus?.data;
+      const companyDetails = await fetchCompanyDetails();
+      const hasCompany = !!companyDetails;
+
+      // Check if worker is pending approval and trying to access non-onboarding routes
+      if (
+        userRole === UserRole.WORKER &&
+        approvalStatus === ApprovalStatus.PENDING &&
+        !pathname.startsWith('/onboarding/pending-approval')
+      ) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = '/onboarding/pending-approval';
+        return NextResponse.redirect(redirectUrl);
+      }
+
+      // Redirect admin without company to company creation (except if already there)
+      if (
+        userRole === UserRole.ADMIN &&
+        !hasCompany &&
+        !pathname.startsWith('/admin/company/create') &&
+        !isOnboardingRoute
+      ) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = '/admin/company/create';
+        return NextResponse.redirect(redirectUrl);
+      }
+
+      // Redirect workers/clients without company to company selection (except if already there)
+      if (
+        (userRole === UserRole.WORKER || userRole === UserRole.CLIENT) &&
+        !hasCompany &&
+        !pathname.startsWith('/onboarding/select-company') &&
+        !pathname.startsWith('/onboarding/pending-approval')
+      ) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = '/onboarding/select-company';
+        return NextResponse.redirect(redirectUrl);
+      }
 
       // Workers cannot access admin routes
       if (isAdminRoute && userRole === UserRole.WORKER) {
@@ -129,8 +201,29 @@ export async function updateSession(request: NextRequest) {
 
     if (session?.access_token) {
       const userRole = getRoleFromToken(session.access_token);
+      const approvalStatus = workerApprovalStatus?.data;
+      const companyDetails = await fetchCompanyDetails();
+      const hasCompany = !!companyDetails;
       const dashboardUrl = request.nextUrl.clone();
 
+      // Handle pending worker approval
+      if (userRole === UserRole.WORKER && approvalStatus === ApprovalStatus.PENDING) {
+        dashboardUrl.pathname = '/onboarding/pending-approval';
+        return NextResponse.redirect(dashboardUrl);
+      }
+
+      // Handle users without company
+      if (userRole === UserRole.ADMIN && !hasCompany) {
+        dashboardUrl.pathname = '/admin/company/create';
+        return NextResponse.redirect(dashboardUrl);
+      }
+
+      if ((userRole === UserRole.WORKER || userRole === UserRole.CLIENT) && !hasCompany) {
+        dashboardUrl.pathname = '/onboarding/select-company';
+        return NextResponse.redirect(dashboardUrl);
+      }
+
+      // Normal dashboard redirects
       if (userRole === UserRole.ADMIN) {
         dashboardUrl.pathname = '/admin/dashboard';
       } else if (userRole === UserRole.WORKER) {

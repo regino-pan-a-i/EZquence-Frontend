@@ -5,6 +5,12 @@ export enum UserRole {
   CLIENT = 'CLIENT'
 }
 
+export enum ApprovalStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
+}
+
 export interface DecodedToken {
   user_role: UserRole;
   sub: string;
@@ -12,6 +18,25 @@ export interface DecodedToken {
   exp?: number;
   iat?: number;
   usr_id?: number;
+  user_company?: number;
+  approvalStatus?: ApprovalStatus;
+}
+
+export interface Worker {
+  userId: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+  companyId: number;
+  approvalStatus: ApprovalStatus;
+  createdAt: Date;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
 }
 
 export type Company = {

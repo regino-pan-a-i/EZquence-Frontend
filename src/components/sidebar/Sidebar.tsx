@@ -28,6 +28,7 @@ export default function Sidebar({ variant = 'admin' }: { variant?: SidebarVarian
     { label: 'Product', key: 'product', href: '/admin/product' },
     { label: 'Inventory', key: 'inventory', href: '/admin/inventory' },
     { label: 'Order', key: 'order', href: '/admin/orders' },
+    { label: 'Team', key: 'team', href: '/admin/team' },
     { label: 'Account', key: 'account', href: '/account' },
     { label: 'Settings', key: 'settings', href: '/settings' },
   ];
@@ -57,6 +58,8 @@ export default function Sidebar({ variant = 'admin' }: { variant?: SidebarVarian
       case 'production':
         return <FaIndustry className="h-5 w-5" />;
       case 'users':
+        return <FaUsers className="h-5 w-5" />;
+      case 'team':
         return <FaUsers className="h-5 w-5" />;
       case 'order':
         return <FaShoppingCart className="h-5 w-5" />;

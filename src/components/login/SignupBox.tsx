@@ -48,17 +48,6 @@ export default function SignupBox() {
           required
         />
 
-        <label className="mb-1 text-sm font-medium" htmlFor="company">
-          Company:
-        </label>
-        <input
-          className="py-2 px-3 w-full rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-neutral-700"
-          id="company"
-          name="company"
-          type="text"
-          required
-        />
-
         <label className="mb-1 text-sm font-medium" htmlFor="role">
           Account Type:
         </label>

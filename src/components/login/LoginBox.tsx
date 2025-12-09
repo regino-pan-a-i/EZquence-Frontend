@@ -1,4 +1,4 @@
-import { login, signup } from '@/lib/auth-actions';
+import { login } from '@/lib/auth-actions';
 
 export default function LoginBox() {
   return (
@@ -32,13 +32,6 @@ export default function LoginBox() {
           formAction={login}
         >
           Log in
-        </button>
-        <button
-          type="submit"
-          className="cursor-pointer py-2 w-full font-semibold text-white bg-gray-600 rounded transition hover:bg-gray-700"
-          formAction={signup}
-        >
-          Sign up
         </button>
       </form>
     </div>
