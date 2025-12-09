@@ -254,7 +254,9 @@ export async function adminJoinCompany(companyId: number, userId: number): Promi
 
     const result = await response.json();
     revalidatePath('/admin/company');
-    
+
+    await supabase.auth.refreshSession();
+
     return {
       success: true,
       data: result.data,
@@ -304,6 +306,8 @@ export async function workerRequestJoinCompany(companyId: number, userId: number
 
     const result = await response.json();
     revalidatePath('/onboarding');
+
+    await supabase.auth.refreshSession();
     
     return {
       success: true,
@@ -355,6 +359,8 @@ export async function clientRequestJoinCompany(companyId: number, userId: number
 
     const result = await response.json();
     revalidatePath('/onboarding');
+
+    await supabase.auth.refreshSession();
     
     return {
       success: true,
