@@ -52,7 +52,7 @@ export default function TeamManagementPage() {
       if (!result.success) {
         throw new Error(result.error);
       }
-      return result.data as Worker[];
+      return result.data as unknown as Worker[];
     },
     refetchInterval: 5000, // Refetch every 5 seconds for near real-time updates
   });

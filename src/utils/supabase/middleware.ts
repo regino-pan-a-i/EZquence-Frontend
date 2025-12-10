@@ -3,11 +3,33 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { getRoleFromToken, decodeToken } from '@/lib/auth-utils';
 import { UserRole, ApiResponse, ApprovalStatus } from './schema';
 import { getApiBaseUrl } from '@/utils/apiConfig'
-import { useQuery } from '@tanstack/react-query';
 import { getCompanyById } from '@/lib/company-actions';
 
 const fetchCompanyDetails = async () => {
   return await getCompanyById()
+}
+
+const fetchWorkerApprovalStatus = async (userId: string, token: string): Promise<ApprovalStatus | null> => {
+  try {
+    const res = await fetch(
+      `${getApiBaseUrl()}/customer/user/${userId}/approvalStatus`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (!res.ok) {
+      console.log('Failed to fetch approval status', res);
+      return null;
+    }
+    const response: ApiResponse<ApprovalStatus> = await res.json();
+    return response.data || null;
+  } catch (error) {
+    console.error('Error fetching approval status:', error);
+    return null;
+  }
 }
 
 export async function updateSession(request: NextRequest) {
@@ -97,29 +119,6 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  const { data: workerApprovalStatus } = useQuery<ApiResponse<ApprovalStatus>>({
-    queryKey: ['approval'],
-    queryFn: async () => {
-      // Get the session token
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      const decoded = decodeToken(token || '');
-      const userId = decoded?.sub || '';
-      const res = await fetch(
-        `${getApiBaseUrl()}/customer/user/${userId}/approvalStatus}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      if (!res.ok) console.log('Failed to fetch approval status', res);
-      return res.json();
-    },
-  });
   // If authenticated, check role-based access and approval status
   if (user && isProtectedRoute) {
     const {
@@ -128,7 +127,11 @@ export async function updateSession(request: NextRequest) {
 
     if (session?.access_token) {
       const userRole = getRoleFromToken(session.access_token);
-      const approvalStatus = workerApprovalStatus?.data;
+      const decoded = decodeToken(session.access_token);
+      const userId = decoded?.sub || '';
+      
+      // Fetch approval status for workers
+      const approvalStatus = await fetchWorkerApprovalStatus(userId, session.access_token);
       const companyDetails = await fetchCompanyDetails();
       const hasCompany = !!companyDetails;
 
@@ -201,7 +204,11 @@ export async function updateSession(request: NextRequest) {
 
     if (session?.access_token) {
       const userRole = getRoleFromToken(session.access_token);
-      const approvalStatus = workerApprovalStatus?.data;
+      const decoded = decodeToken(session.access_token);
+      const userId = decoded?.sub || '';
+      
+      // Fetch approval status and company details
+      const approvalStatus = await fetchWorkerApprovalStatus(userId, session.access_token);
       const companyDetails = await fetchCompanyDetails();
       const hasCompany = !!companyDetails;
       const dashboardUrl = request.nextUrl.clone();
