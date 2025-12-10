@@ -173,7 +173,7 @@ export async function getCompanyById(): Promise<ApiResponse<Company>> {
  * Get all workers in the current company
  * @returns ApiResponse with array of workers
  */
-export async function getCompanyWorkers(): Promise<ApiResponse<any[]>> {
+export async function getCompanyWorkers(): Promise<ApiResponse<Worker[]>> {
   try {
     const supabase = await createClient();
     const {
@@ -223,7 +223,7 @@ export async function getCompanyWorkers(): Promise<ApiResponse<any[]>> {
  * @param companyId - The ID of the company to join
  * @returns ApiResponse indicating success or failure
  */
-export async function adminJoinCompany(companyId: number, userId: number): Promise<ApiResponse<any>> {
+export async function adminJoinCompany(companyId: number, userId: number): Promise<ApiResponse<Worker>> {
   try {
     const supabase = await createClient();
     const {
@@ -275,7 +275,7 @@ export async function adminJoinCompany(companyId: number, userId: number): Promi
  * @param companyId - The ID of the company to join
  * @returns ApiResponse indicating success or failure
  */
-export async function workerRequestJoinCompany(companyId: number, userId: number): Promise<ApiResponse<any>> {
+export async function workerRequestJoinCompany(companyId: number, userId: number): Promise<ApiResponse<Worker>> {
   try {
     const supabase = await createClient();
     const {
@@ -327,7 +327,7 @@ export async function workerRequestJoinCompany(companyId: number, userId: number
  * @param companyId - The ID of the company to join
  * @returns ApiResponse indicating success or failure
  */
-export async function clientRequestJoinCompany(companyId: number, userId: number): Promise<ApiResponse<any>> {
+export async function clientRequestJoinCompany(companyId: number, userId: number): Promise<ApiResponse<Worker>> {
   try {
     const supabase = await createClient();
     const {
