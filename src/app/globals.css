@@ -25,6 +25,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+button {
+  cursor: pointer;
+}
+
 /* Mobile optimizations */
 @supports (padding: env(safe-area-inset-bottom)) {
   .safe-area-inset-bottom {
@@ -78,8 +82,4 @@ body {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-button {
-  cursor: pointer;
 }
