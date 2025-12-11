@@ -1,7 +1,11 @@
 import { signup } from '@/lib/auth-actions';
 import { UserRole } from '@/utils/supabase/schema';
 
-export default function SignupBox() {
+interface SignupBoxProps {
+  returnTo?: string;
+}
+
+export default function SignupBox({ returnTo }: SignupBoxProps) {
   const handleSubmit = async (formData: FormData) => {
     'use server';
 
@@ -26,6 +30,9 @@ export default function SignupBox() {
     <div className="m-5">
       <h2 className="mb-4 text-2xl font-bold">Enter Credentials</h2>
       <form className="p-8 mx-auto space-y-6 max-w-lg bg-white rounded-lg shadow-lg dark:bg-neutral-900">
+        {returnTo && (
+          <input type="hidden" name="returnTo" value={returnTo} />
+        )}
         <label className="mb-1 text-sm font-medium" htmlFor="firstName">
           First Name:
         </label>

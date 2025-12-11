@@ -122,6 +122,12 @@ export default function Home() {
             {/* Navigation Links */}
             <div className="flex items-center gap-4">
               <Link
+                href="/marketplace"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+              >
+                Marketplace
+              </Link>
+              <Link
                 href="/login"
                 className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
               >

@@ -1,10 +1,17 @@
 import { login } from '@/lib/auth-actions';
 
-export default function LoginBox() {
+interface LoginBoxProps {
+  returnTo?: string;
+}
+
+export default function LoginBox({ returnTo }: LoginBoxProps) {
   return (
     <div className="m-5">
       <h2 className="mb-4 text-2xl font-bold">Enter Credentials</h2>
       <form className="p-8 mx-auto space-y-6 max-w-lg bg-white rounded-lg shadow-lg dark:bg-neutral-900">
+        {returnTo && (
+          <input type="hidden" name="returnTo" value={returnTo} />
+        )}
         <label className="mb-1 text-sm font-medium" htmlFor="email">
           Email:
         </label>

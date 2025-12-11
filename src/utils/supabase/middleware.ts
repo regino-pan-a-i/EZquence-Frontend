@@ -91,6 +91,9 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
+  // Public routes - accessible without authentication
+  const isPublicRoute = pathname.startsWith('/marketplace');
+
   // Onboarding routes (accessible to authenticated users without company setup)
   const isOnboardingRoute = pathname.startsWith('/onboarding');
 
@@ -111,6 +114,11 @@ export async function updateSession(request: NextRequest) {
 
   // Customer routes
   const isCustomerRoute = pathname.startsWith('/customer');
+
+  // Skip authentication checks for public routes
+  if (isPublicRoute) {
+    return response;
+  }
 
   // If not authenticated and trying to access protected route, redirect to login
   if (!user && isProtectedRoute) {

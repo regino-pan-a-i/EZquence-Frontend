@@ -374,3 +374,68 @@ export async function clientRequestJoinCompany(companyId: number, userId: number
     };
   }
 }
+
+/**
+ * Get all companies (public - no authentication required)
+ * @returns ApiResponse with array of companies
+ */
+export async function getPublicCompanies(): Promise<ApiResponse<Company[]>> {
+  try {
+    const response = await fetch(getApiUrl('/company'), {
+      method: 'GET',
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: `Failed to fetch companies: ${response.statusText}`,
+      };
+    }
+
+    const result = await response.json();
+    return {
+      success: true,
+      data: result.data || [],
+    };
+  } catch (error) {
+    console.error('Error fetching public companies:', error);
+    return {
+      success: false,
+      error: 'An unexpected error occurred while fetching companies',
+    };
+  }
+}
+
+/**
+ * Get company by ID (public - no authentication required)
+ * @param companyId - The ID of the company to fetch
+ * @returns ApiResponse with company data
+ */
+export async function getPublicCompanyById(companyId: string | number): Promise<ApiResponse<Company>> {
+  try {
+    const response = await fetch(getApiUrl(`/company/${companyId}`), {
+      method: 'GET',
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: `Failed to fetch company: ${response.statusText}`,
+      };
+    }
+
+    const result = await response.json();
+    return {
+      success: true,
+      data: result.data,
+    };
+  } catch (error) {
+    console.error('Error fetching public company:', error);
+    return {
+      success: false,
+      error: 'An unexpected error occurred while fetching company',
+    };
+  }
+}

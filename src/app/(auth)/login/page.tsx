@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 interface LoginPageProps {
   searchParams: Promise<{
     mode?: string;
+    returnTo?: string;
   }>;
 }
 
@@ -20,10 +21,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   // Await searchParams in Next.js 15
   const params = await searchParams;
   const isSignupMode = params.mode === 'signup';
+  const returnTo = params.returnTo;
 
   return (
     <>
-      {isSignupMode ? <SignupBox /> : <LoginBox />}
+      {isSignupMode ? <SignupBox returnTo={returnTo} /> : <LoginBox returnTo={returnTo} />}
     </>
   );
 }
