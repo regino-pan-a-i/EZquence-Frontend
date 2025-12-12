@@ -15,6 +15,13 @@ export interface CompanyCreateData {
   logoURL: string;
 }
 
+export interface CompanyUpdateData {
+  name?: string;
+  description?: string;
+  industry?: string;
+  logoURL?: string;
+}
+
 /**
  * Create a new company
  * @param companyData - Company information including name, description, industry, and logoURL
@@ -436,6 +443,70 @@ export async function getPublicCompanyById(companyId: string | number): Promise<
     return {
       success: false,
       error: 'An unexpected error occurred while fetching company',
+    };
+  }
+}
+
+/**
+ * Update company information
+ * @param companyData - Company information to update
+ * @returns ApiResponse with updated company data
+ */
+export async function updateCompany(
+  companyData: CompanyUpdateData
+): Promise<ApiResponse<Company>> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.access_token) {
+      return {
+        success: false,
+        error: 'Not authenticated',
+      };
+    }
+
+    const decodedToken = jwtDecode<DecodedToken>(session.access_token || '');
+    const companyId = decodedToken.user_company;
+
+    if (!companyId) {
+      return {
+        success: false,
+        error: 'No company associated with user',
+      };
+    }
+
+    const response = await fetch(getApiUrl(`/company/${companyId}`), {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(companyData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return {
+        success: false,
+        error: errorData.message || `Failed to update company: ${response.statusText}`,
+      };
+    }
+
+    const result = await response.json();
+    revalidatePath('/account');
+    
+    return {
+      success: true,
+      data: result.data,
+    };
+  } catch (error) {
+    console.error('Error updating company:', error);
+    return {
+      success: false,
+      error: 'An unexpected error occurred while updating the company',
     };
   }
 }

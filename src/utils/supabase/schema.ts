@@ -252,3 +252,12 @@ export type cartItem = {
   companyId: number;
   product : Product
 }
+
+export type customerFeedback = {
+  feedbackId: number,
+  userId: number,
+  companyId: number,
+  message: string,
+  dateCreated: Date,
+  resolved: boolean
+}
