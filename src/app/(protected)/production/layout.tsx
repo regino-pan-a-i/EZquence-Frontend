@@ -1,8 +1,12 @@
 import Sidebar from '@/components/sidebar/Sidebar';
 import { redirect } from 'next/navigation';
 import { getUserRole } from '@/lib/auth-utils';
+import { getCompanyById } from '@/lib/company-actions';
 
 export default async function ProductionLayout({ children }: { children: React.ReactNode }) {
+  
+  const company = await getCompanyById()
+  
   const userRole = await getUserRole();
 
   // Redirect if not authenticated
@@ -15,7 +19,7 @@ export default async function ProductionLayout({ children }: { children: React.R
 
   return (
     <div className="flex h-screen">
-      <Sidebar variant="production" />
+      <Sidebar variant="production" company={company.data} />
       <main className="flex-1 overflow-auto m-4">{children}</main>
     </div>
   );

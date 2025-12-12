@@ -96,3 +96,21 @@ export function getRoleFromToken(token: string): UserRole | null {
   const decoded = decodeToken(token);
   return decoded?.user_role || null;
 }
+
+/**
+ * Gets user role from a specific token (used in middleware)
+ */
+export function getCompanyIdFromToken(token: string): number | null {
+  const decoded = decodeToken(token);
+  return decoded?.user_company || null;
+}
+
+/**
+ * Gets user role from a specific token (used in middleware)
+ */
+export function getUserIdFromToken(token: string): number | null {
+  const decoded = decodeToken(token);
+  return decoded?.usr_id || null;
+}
+
+

@@ -9,12 +9,16 @@ import {
   OrderDetailsResponse,
   OrderProductList,
   OrderStatus,
+  Product,
+  ProductInStock,
+  ProductListResponse,
+  ProductInStockResponse,
 } from '@/utils/supabase/schema';
 import { getApiBaseUrl } from '@/utils/apiConfig';
 import DateFilter from '@/components/filters/DateFilter';
 import OrderCard from '@/components/orders/OrderCard';
 import ScoreCard from '@/components/scorecard/ScoreCard';
-import { FaShoppingCart, FaSearch, FaDollarSign, FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
+import { FaShoppingCart, FaSearch, FaDollarSign, FaCheckCircle, FaTimesCircle, FaSpinner, FaBoxOpen } from 'react-icons/fa';
 
 
 // Helper function to get first day of current month
@@ -38,6 +42,7 @@ export default function ProductionOrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'ALL'>('ALL');
   const [ordersWithProducts, setOrdersWithProducts] = useState<OrderWithProducts[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   const handleDateRangeChange = (start: string, end: string) => {
     setDateRange({ start, end });
@@ -64,6 +69,68 @@ export default function ProductionOrdersPage() {
       return res.json();
     },
   });
+
+  const { data: prodResponse } = useQuery<ProductListResponse>({
+    queryKey: ['products'],
+    queryFn: async () => {
+      // Get the session token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(`${getApiBaseUrl()}/product`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) console.log('Failed to fetch orders', res);
+      return res.json();
+    },
+  });
+
+  // Fetch stock data for all products
+  const { data: productStockData, isLoading: loadingStock } = useQuery<Map<number, ProductInStock>>({
+    queryKey: ['product-stock-all', prodResponse?.data],
+    queryFn: async () => {
+      if (!prodResponse?.data || prodResponse.data.length === 0) {
+        return new Map();
+      }
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      const stockPromises = prodResponse.data.map(async (product) => {
+        try {
+          const res = await fetch(`${getApiBaseUrl()}/inventory/stock/${product.productId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+          if (!res.ok) throw new Error(`Failed to fetch stock for product ${product.productId}`);
+          const response: ProductInStockResponse = await res.json();
+          return [product.productId, response.data] as [number, ProductInStock];
+        } catch (error) {
+          console.error(`Error fetching stock for product ${product.productId}:`, error);
+          return [product.productId, { productId: product.productId, productName: product.name, totalStock: 0 }] as [number, ProductInStock];
+        }
+      });
+
+      const stockResults = await Promise.all(stockPromises);
+      return new Map(stockResults);
+    },
+    enabled: !!prodResponse?.data && prodResponse.data.length > 0,
+  });
+
+  // Use useEffect to set products when data is fetched
+  useEffect(() => {
+    if (prodResponse && prodResponse.success === true) {
+      setProducts(prodResponse.data);
+    }
+  }, [prodResponse]);
 
   // Fetch individual order details with products
   useEffect(() => {
@@ -191,7 +258,39 @@ export default function ProductionOrdersPage() {
           />
         )}
       </div>
+      {/* Stock Overview Scorecard */}
+      {products && products.length > 0 && (
+        <div className="mb-6 mx-4">
+          {loadingStock ? (
+            <ScoreCard title="Product Stock Overview" data={[]} isLoading={true} skeletonCount={3} />
+          ) : (
+            <ScoreCard
+              title="Product Stock Overview"
+              data={products.map((product) => {
+                const stock = productStockData?.get(product.productId);
+                const stockValue = stock?.totalStock ?? 0;
+                
+                // Determine color based on stock level
+                let stockColor: 'green' | 'yellow' | 'red' | 'gray' = 'gray';
+                if (stockValue === 0) {
+                  stockColor = 'red';
+                } else if (stockValue < 10) {
+                  stockColor = 'yellow';
+                } else {
+                  stockColor = 'green';
+                }
 
+                return {
+                  value: stockValue,
+                  label: product.name,
+                  color: stockColor,
+                  icon: <FaBoxOpen />,
+                };
+              })}
+            />
+          )}
+        </div>
+      )}
       {/* Search and Filter Controls */}
       <div className="mb-6 flex flex-col md:flex-row gap-4">
         {/* Search Input */}

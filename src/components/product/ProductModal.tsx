@@ -217,6 +217,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
   };
 
   const handleEdit = () => {
+    console.log(editedProduct)
     setIsEditing(true);
     setEditedProduct(product);
 
@@ -270,7 +271,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
           imageURL: editedProduct.productImage[0]?.imageURL || 'https://placehold.co/600x400',
         };
 
-        const productRes = await fetch(`${getApiBaseUrl()}/product`, {
+        const productRes = await fetch(`${getApiBaseUrl()}/product/createProduct`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -281,6 +282,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
         if (!productRes.ok) throw new Error('Failed to create product');
         const productData = await productRes.json();
+        console.log(productData.data)
         const newProductId = productData.data.productId;
 
         // Step 2: Create Process (if defined)
@@ -292,7 +294,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
             productsPerBatch: editedProcess.productsPerBatch,
           };
 
-          const processRes = await fetch(`${getApiBaseUrl()}/product/${newProductId}/process`, {
+          const processRes = await fetch(`${getApiBaseUrl()}/product/${newProductId}/createProcess`, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -734,7 +736,8 @@ const ProductModal: React.FC<ProductCardProps> = ({
                 alt={product?.name || 'Product Image'}
                 fill
                 className="object-cover"
-                onError={() => setImagePreview('/placeholder-product.png')}
+                unoptimized
+                onError={() => setImagePreview('https://via.placeholder.com/600x400/e5e7eb/6b7280?text=No+Image')}
               />
             ) : (
               <div className="relative w-full h-full flex items-center justify-center">
@@ -743,12 +746,13 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   alt={editedProduct?.name || 'Product Image'}
                   fill
                   className="object-cover opacity-50"
-                  onError={() => setImagePreview('/placeholder-product.png')}
+                  unoptimized
+                  onError={() => setImagePreview('https://via.placeholder.com/600x400/e5e7eb/6b7280?text=No+Image')}
                 />
                 <div className="absolute inset-0 flex items-center justify-center p-4">
                   <input
                     type="text"
-                    value={editedProduct?.productImage[0].imageURL}
+                    value={editedProduct?.productImage[0]?.imageURL}
                     onChange={handleImageChange}
                     placeholder="Image URL"
                     className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"

@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { Product } from '@/utils/supabase/schema';
 import { useGetCart, useAddToCart } from '@/hooks/useCart';
 import { FiShoppingCart, FiPackage } from 'react-icons/fi';
+import { supabase } from '@/utils/supabase/supabaseClient';
+import { useRouter } from 'next/navigation';
 
 export interface CustomerProductCardProps {
   product: Product;
@@ -13,11 +15,28 @@ export interface CustomerProductCardProps {
 
 const CustomerProductCard: React.FC<CustomerProductCardProps> = ({ product, className = '' }) => {
   const [imagePreview, setImagePreview] = useState<string>(product.productImage[0]?.imageURL);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const { data: cartData } = useGetCart();
   const addToCart = useAddToCart();
   const cartId = cartData?.data?.cartId;
+  const router = useRouter();
+
+  // Check authentication status
+  React.useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+  }, [supabase]);
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      // Redirect to login with return URL
+      router.push(`/login?returnTo=/customer/products`);
+      return;
+    }
+    
     if (cartId) {
       addToCart.mutate({ cartId, productId: product.productId, quantity: 1 });
     }
@@ -64,11 +83,15 @@ const CustomerProductCard: React.FC<CustomerProductCardProps> = ({ product, clas
         {/* Add to Cart Button - Large touch target for mobile */}
         <button
           onClick={handleAddToCart}
-          disabled={addToCart.isPending || !cartId}
-          className="w-full py-3 min-h-[48px] bg-blue-600  disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 active:scale-98 disabled:cursor-not-allowed"
+          disabled={addToCart.isPending}
+          className="w-full py-3 min-h-[48px] bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 active:scale-98 disabled:cursor-not-allowed"
         >
           <FiShoppingCart size={20} />
-          {addToCart.isPending ? 'Adding...' : 'Add to Cart'}
+          {addToCart.isPending 
+            ? 'Adding...' 
+            : isAuthenticated === false 
+              ? 'Sign in to Purchase' 
+              : 'Add to Cart'}
         </button>
       </div>
     </div>

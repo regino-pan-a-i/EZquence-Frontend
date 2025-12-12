@@ -89,7 +89,6 @@ export default function InventoryPage() {
   // Use useEffect to set products when data is fetched
   useEffect(() => {
     if (inventoryNeededResponse && inventoryNeededResponse.success === true) {
-      console.log(inventoryNeededResponse.data);
       setInventoryNeeded(inventoryNeededResponse.data);
     }
   }, [inventoryNeededResponse]);

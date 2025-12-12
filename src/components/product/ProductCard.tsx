@@ -26,11 +26,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDetailsClick, clas
       {/* Product Image Section */}
       <div className="relative w-full h-64 bg-gray-100">
         <Image
-          src={imagePreview || '/placeholder-product.png'}
+          src={imagePreview || 'https://placehold.co/600x400'}
           alt={product.name}
           fill
           className="object-cover"
-          onError={() => setImagePreview('/placeholder-product.png')}
+          unoptimized
+          onError={() => setImagePreview('https://via.placeholder.com/600x400/e5e7eb/6b7280?text=No+Image')}
         />
       </div>
 
