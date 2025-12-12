@@ -3,9 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { jwtDecode } from 'jwt-decode';
-
 import { createClient } from '@/utils/supabase/supabaseServer';
 import { DecodedToken } from '@/utils/supabase/schema';
+import { getApiBaseUrl } from '@/utils/apiConfig';
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
@@ -57,20 +57,98 @@ export async function signup(formData: FormData) {
         firstName: firstName,
         lastName: lastName,
         email: formData.get('email') as string,
-        role: role,
       },
     },
   };
 
-  const { error } = await supabase.auth.signUp(data);
+  const { data: authData, error } = await supabase.auth.signUp(data);
 
   if (error) {
     console.log(error);
     redirect(`/error`);
   }
 
+
+  const userId = authData.user?.id;
+  // If no session, sign in immediately to get a token
+  let token = authData?.session?.access_token;
+  
+  if (!token) {
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
+    });
+    
+    if (signInError) {
+      console.log('Failed to sign in after signup:', signInError);
+      redirect('/error');
+    }
+    
+    token = signInData?.session?.access_token;
+  }
+
+  if (!token) {
+    console.log('No token available - email confirmation may be required');
+    redirect('/error');
+  }
+
+  
+  const response = await fetch(`${getApiBaseUrl()}/company/user/${userId}/role`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ role })
+  });
+
+  if (!response.ok) {
+    console.log(`Failed to set user role: ${response.statusText}`);
+    throw new Error(`Failed to set user role: ${response.statusText}`);
+  }
+
+  // refresh session to have the right role
+
+  const { data: newData, error: newError } = await supabase.auth.refreshSession();
+
+  if (newError) console.error(newError);
+
+  // Updated JWT & user:
+  const newToken = newData.session?.access_token;
+
+
+
+  if (role === 'WORKER') {
+    // Set initial approval status for workers    
+    const response = await fetch(`${getApiBaseUrl()}/company/user/${userId}/pending`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${newToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      console.log(`Failed to set initial approval status: ${response.statusText}`);
+      throw new Error(`Failed to set initial approval status: ${response.statusText}`);
+    }
+  
+  }
+
+  // Role-based redirect after signup
   revalidatePath('/', 'layout');
-  redirect('/login');
+  
+  // Redirect based on role
+  if (role === 'ADMIN') {
+    // Admins need to create their company first
+    redirect('/admin/company/create');
+  } else if (role === 'WORKER' || role === 'CLIENT') {
+    // Workers and clients need to select a company
+    redirect('/onboarding/select-company');
+  } else {
+    // Fallback to login
+    redirect('/login');
+  }
 }
 
 export async function signout() {
