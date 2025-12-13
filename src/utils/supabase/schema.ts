@@ -81,6 +81,7 @@ export type Order = {
   notes: string;
   userId: number;
   dateDelivered: Date;
+  expectedDeliveryDate: Date;
   companyId: number;
 };
 

@@ -184,11 +184,9 @@ export default function DashboardPage() {
 
   // Helper function to calculate stock status (same logic as MaterialsInventory)
   const getStockStatus = (material: InventoryItem, needs: InventoryNeed[]) => {
-    console.log('quantityNeeded');
     const quantityNeeded = needs.find(
       (need) => need.materialId === material.materialId
     )?.quantityNeeded || 0;
-    console.log(quantityNeeded);
     if (quantityNeeded === 0) return 'in-stock'; // No need for this material today
 
     const ratio = material.quantityInStock / quantityNeeded;
@@ -199,16 +197,12 @@ export default function DashboardPage() {
 
   // Calculate low stock materials
   const getLowStockMaterials = () => {
-    console.log(inventoryData);
-    console.log('Getting stock status on this material');
     if (!inventoryData?.data || !inventoryNeeds?.data) return [];
 
     
     return inventoryData.data.filter((material) => {
-      console.log('Getting stock status on this material');
-      console.log(material);
       const status = getStockStatus(material, inventoryNeeds.data);
-      return status === 'low-stock' || status === 'out-of-stock';
+      return status === 'low-stock' || status === 'out-of-stock' || material.quantityInStock === 0;
     });
   };
 
@@ -235,7 +229,6 @@ export default function DashboardPage() {
   };
 
   const lowStockMaterials = getLowStockMaterials();
-  console.log(lowStockMaterials);
   const delayedOrders = getDelayedOrders();
 
   return (
@@ -397,7 +390,7 @@ export default function DashboardPage() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {delayedOrders.map((order) => {
                     const today = new Date();
-                    const deliveryDate = new Date(order.dateDelivered);
+                    const deliveryDate = new Date(order.expectedDeliveryDate);
                     const daysOverdue = Math.floor((today.getTime() - deliveryDate.getTime()) / (1000 * 60 * 60 * 24));
                     
                     return (
@@ -418,7 +411,7 @@ export default function DashboardPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {new Date(order.dateDelivered).toLocaleDateString('en-US', {
+                          {new Date(order.expectedDeliveryDate).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',
