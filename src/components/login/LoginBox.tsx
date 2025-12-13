@@ -1,4 +1,5 @@
 import { login } from '@/lib/auth-actions';
+import Link from 'next/link';
 
 interface LoginBoxProps {
   returnTo?: string;
@@ -40,6 +41,18 @@ export default function LoginBox({ returnTo }: LoginBoxProps) {
         >
           Log in
         </button>
+
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Don't have an account?{' '}
+            <Link
+              href="/login?mode=signup"
+              className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   );
