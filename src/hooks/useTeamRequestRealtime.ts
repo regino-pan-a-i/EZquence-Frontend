@@ -34,7 +34,6 @@ export function useTeamRequestRealtime({
           event: 'INSERT',
           schema: 'public',
           table: 'user',
-          filter: `companyId=eq.${companyId}`,
         },
         (payload) => {
           console.log('New user joined company:', payload);
@@ -70,7 +69,6 @@ export function useTeamRequestRealtime({
           event: 'UPDATE',
           schema: 'public',
           table: 'user',
-          filter: `companyId=eq.${companyId}`,
         },
         (payload) => {
           console.log('User updated in company:', payload);

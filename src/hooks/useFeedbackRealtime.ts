@@ -36,8 +36,8 @@ export function useFeedbackRealtime({
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'customer_feedback',
-          filter,
+          table: 'customerFeedback',
+          
         },
         (payload) => {
           console.log('Feedback created:', payload);
@@ -63,8 +63,8 @@ export function useFeedbackRealtime({
         {
           event: 'UPDATE',
           schema: 'public',
-          table: 'customer_feedback',
-          filter,
+          table: 'customerFeedback',
+          
         },
         (payload) => {
           console.log('Feedback updated:', payload);

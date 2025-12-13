@@ -25,7 +25,7 @@ type OrderWithProducts = {
 export default function OrdersPage() {
   const [dateRange, setDateRange] = useState({
     start: getFirstDayOfMonth(),
-    end: new Date().toISOString().split('T')[0],
+    end: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
   });
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersWithProducts, setOrdersWithProducts] = useState<OrderWithProducts[]>([]);

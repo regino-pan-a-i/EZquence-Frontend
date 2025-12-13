@@ -81,6 +81,7 @@ export type Order = {
   notes: string;
   userId: number;
   dateDelivered: Date;
+  expectedDeliveryDate: Date;
   companyId: number;
 };
 
@@ -260,4 +261,31 @@ export type customerFeedback = {
   message: string,
   dateCreated: Date,
   resolved: boolean
+}
+
+
+export type materialTransaction = {
+  materialTransactionId: number;
+  materialId: number;
+  companyId: number;
+  cost: number;
+  dateCreated: Date;
+  quantity: number;
+  units: string
+}
+
+export type materialTransactionResponse = {
+  materialTransactionId: number;
+  materialId: number;
+  companyId: number;
+  cost: number;
+  dateCreated: Date;
+  quantity: number;
+  units: string
+  material: {
+    materialId: number;
+    name: string;
+    quantityInStock: number;
+    units: string;
+  }
 }

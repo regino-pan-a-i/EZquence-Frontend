@@ -1,11 +1,11 @@
 'use client';
 import ScoreCard from '@/components/scorecard/ScoreCard';
 import ProductionGoalsManager from '@/components/admin/ProductionGoalsManager';
-import { FaDollarSign, FaReceipt, FaTachometerAlt, FaExclamationTriangle, FaBoxes, FaClock } from 'react-icons/fa';
+import { FaDollarSign, FaReceipt, FaTachometerAlt, FaExclamationTriangle, FaBoxes, FaClock, FaMoneyBillWave, FaChartLine } from 'react-icons/fa';
 import { getApiBaseUrl } from '@/utils/apiConfig';
 import DateFilter from '@/components/filters/DateFilter';
 import { useQuery } from '@tanstack/react-query';
-import { Order, OrdersByDateRangeResponse, OrderStatus, InventoryResponse, InventoryNeedResponse, InventoryItem, InventoryNeed } from '@/utils/supabase/schema';
+import { Order, OrdersByDateRangeResponse, OrderStatus, InventoryResponse, InventoryNeedResponse, InventoryItem, InventoryNeed, ApiResponse, materialTransactionResponse } from '@/utils/supabase/schema';
 import { useState } from 'react';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import RevenueChart from '@/components/charts/RevenueChart';
@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
   const [dateRange, setDateRange] = useState({
     start: getFirstDayOfMonth(), // First day of current month
-    end: new Date().toISOString().split('T')[0], // Today's date by default
+    end: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Tomorrow's date by default
   });
 
   const handleDateRangeChange = (start: string, end: string) => {
@@ -94,6 +94,29 @@ export default function DashboardPage() {
     },
   });
 
+  // Fetch material transactions for expense tracking
+  const { data: materialTransactions, isLoading: loadingTransactions } = useQuery<ApiResponse<materialTransactionResponse[]>>({
+    queryKey: ['materialTransactions', dateRange.start, dateRange.end],
+    queryFn: async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      const res = await fetch(
+        `${getApiBaseUrl()}/materialTransaction/dateRange?startDate=${dateRange.start}&endDate=${dateRange.end}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (!res.ok) throw new Error('Failed to fetch material transactions');
+      return res.json();
+    },
+  });
+
   const OrdersTotal = (orderList: OrdersByDateRangeResponse) => {
     return orderList.data.length;
   };
@@ -150,13 +173,20 @@ export default function DashboardPage() {
     return data.length;
   };
 
+  const TotalExpenses = (transactions: ApiResponse<materialTransactionResponse[]>) => {
+    if (!transactions?.data) return 0;
+    return transactions.data.reduce((sum, txn) => sum + txn.cost, 0);
+  };
+
+  const TotalProfit = (revenue: number, expenses: number) => {
+    return revenue - expenses;
+  };
+
   // Helper function to calculate stock status (same logic as MaterialsInventory)
   const getStockStatus = (material: InventoryItem, needs: InventoryNeed[]) => {
-    console.log('quantityNeeded');
     const quantityNeeded = needs.find(
       (need) => need.materialId === material.materialId
     )?.quantityNeeded || 0;
-    console.log(quantityNeeded);
     if (quantityNeeded === 0) return 'in-stock'; // No need for this material today
 
     const ratio = material.quantityInStock / quantityNeeded;
@@ -167,16 +197,12 @@ export default function DashboardPage() {
 
   // Calculate low stock materials
   const getLowStockMaterials = () => {
-    console.log(inventoryData);
-    console.log('Getting stock status on this material');
     if (!inventoryData?.data || !inventoryNeeds?.data) return [];
 
     
     return inventoryData.data.filter((material) => {
-      console.log('Getting stock status on this material');
-      console.log(material);
       const status = getStockStatus(material, inventoryNeeds.data);
-      return status === 'low-stock' || status === 'out-of-stock';
+      return status === 'low-stock' || status === 'out-of-stock' || material.quantityInStock === 0;
     });
   };
 
@@ -203,7 +229,6 @@ export default function DashboardPage() {
   };
 
   const lowStockMaterials = getLowStockMaterials();
-  console.log(lowStockMaterials);
   const delayedOrders = getDelayedOrders();
 
   return (
@@ -365,7 +390,7 @@ export default function DashboardPage() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {delayedOrders.map((order) => {
                     const today = new Date();
-                    const deliveryDate = new Date(order.dateDelivered);
+                    const deliveryDate = new Date(order.expectedDeliveryDate);
                     const daysOverdue = Math.floor((today.getTime() - deliveryDate.getTime()) / (1000 * 60 * 60 * 24));
                     
                     return (
@@ -386,7 +411,7 @@ export default function DashboardPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {new Date(order.dateDelivered).toLocaleDateString('en-US', {
+                          {new Date(order.expectedDeliveryDate).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',
@@ -414,23 +439,35 @@ export default function DashboardPage() {
       )}
 
       <div className="w-full">
-        {loadingOrders && (
+        {(loadingOrders || loadingTransactions) && (
           <ScoreCard
             title="Key Primary Indicators"
             data={[]}
-            isLoading={loadingOrders}
-            skeletonCount={4}
+            isLoading={true}
+            skeletonCount={6}
           />
         )}
-        {orders && (
+        {orders && materialTransactions && (
           <ScoreCard
             title="Key Primary Indicators"
             data={[
               {
-                value: `${TotalRevenue(orders)}`,
+                value: `$${TotalRevenue(orders).toFixed(2)}`,
                 label: 'Total Revenue',
                 color: 'green',
                 icon: <FaDollarSign />,
+              },
+              {
+                value: `$${TotalExpenses(materialTransactions).toFixed(2)}`,
+                label: 'Total Expenses',
+                color: 'red',
+                icon: <FaMoneyBillWave />,
+              },
+              {
+                value: `$${TotalProfit(TotalRevenue(orders), TotalExpenses(materialTransactions)).toFixed(2)}`,
+                label: 'Net Profit',
+                color: TotalProfit(TotalRevenue(orders), TotalExpenses(materialTransactions)) >= 0 ? 'green' : 'red',
+                icon: <FaChartLine />,
               },
               {
                 value: `${OrdersTotal(orders)}`,
@@ -439,20 +476,20 @@ export default function DashboardPage() {
                 icon: <FaReceipt />,
               },
               {
-                value: `${AvgOrderValue(orders) || 0}`,
+                value: `$${AvgOrderValue(orders).toFixed(2) || '0.00'}`,
                 label: 'Avg Order Value',
-                color: 'green',
-                icon: <FaReceipt />,
+                color: 'blue',
+                icon: <FaDollarSign />,
               },
               {
                 value: `${PendingOrders(orders)}`,
                 label: 'Pending Orders',
-                color: 'green',
-                icon: <FaReceipt />,
+                color: 'purple',
+                icon: <FaClock />,
               },
             ]}
-            isLoading={loadingOrders}
-            skeletonCount={4}
+            isLoading={loadingOrders || loadingTransactions}
+            skeletonCount={6}
           />
         )}
       </div>

@@ -13,6 +13,7 @@ import {
   ProductListResponse,
   ProductInStock,
   ProductInStockResponse,
+  ProductionGoal,
 } from '@/utils/supabase/schema';
 import { getApiBaseUrl } from '@/utils/apiConfig';
 import ScoreCard from '@/components/scorecard/ScoreCard';
@@ -172,7 +173,6 @@ export default function ProductionDashboard() {
     enabled: !!productionGoalsResponse?.data && productionGoalsResponse.data.length > 0,
   });
 
-
   // Calculate order counts by status
   const getOrderCountByStatus = (status: OrderStatus) => {
     if (!ordersResponse?.data) return 0;
@@ -185,29 +185,15 @@ export default function ProductionDashboard() {
   ) || [];
 
   // Calculate production progress
-  const calculateProgress = (productId: number) => {
-    if (!ordersWithProducts || !productionGoalsResponse?.data) {
-      return { completed: 0, goal: 0, percentage: 0, stockAvailable: 0, stockStatus: 'unknown' as const };
+  const calculateProgress = (goal: ProductionGoal) => {
+    if (!productionGoalsResponse?.data) {
+      return { goal: 0, percentage: 0, stockAvailable: 0, stockStatus: 'unknown' as const };
     }
-
-    const goal = productionGoalsResponse.data.find((g) => g.productId === productId);
-    if (!goal) {
-      return { completed: 0, goal: 0, percentage: 0, stockAvailable: 0, stockStatus: 'unknown' as const };
-    }
-
-    // Count completed products for today
-    const completed = ordersWithProducts
-      .filter((ow) => ow.order.status === OrderStatus.COMPLETED)
-      .flatMap((ow) => ow.products)
-      .filter((p) => p.productId === productId)
-      .reduce((sum, p) => sum + p.quantity, 0);
-
-    const percentage = goal.goalValue > 0 ? Math.round((completed / goal.goalValue) * 100) : 0;
-
     // Get stock information
-    const stock = productStockData?.get(productId);
+    const stock = productStockData?.get(goal.productId);
     const stockAvailable = stock?.totalStock ?? 0;
-    const remaining = goal.goalValue - completed;
+    const percentage = goal.goalValue > 0 ? Math.round((stockAvailable / goal.goalValue) * 100) : 0;
+    const remaining = goal.goalValue - stockAvailable;
     
     // Determine stock status
     let stockStatus: 'sufficient' | 'low' | 'out' | 'unknown' = 'unknown';
@@ -221,7 +207,7 @@ export default function ProductionDashboard() {
       }
     }
 
-    return { completed, goal: goal.goalValue, percentage, stockAvailable, stockStatus };
+    return { goal: goal.goalValue, percentage, stockAvailable, stockStatus };
   };
 
   return (
@@ -289,7 +275,7 @@ export default function ProductionDashboard() {
               title="Production Goals (Today)"
               data={productionGoalsResponse.data.map((goal) => {
                 const product = productsResponse?.data.find((p) => p.productId === goal.productId);
-                const progress = calculateProgress(goal.productId);
+                const progress = calculateProgress(goal);
                 
                 // Determine color based on progress and stock status
                 let cardColor: 'green' | 'blue' | 'yellow' | 'red' = 'yellow';
@@ -304,16 +290,12 @@ export default function ProductionDashboard() {
                 }
 
                 // Build value string with stock info
-                const valueString = `${progress.completed}/${progress.goal} (Stock: ${progress.stockAvailable})`;
+                const valueString = `${progress.stockAvailable} of ${progress.goal} completed`;
 
                 return {
                   value: valueString,
                   label: product?.name || `Product ${goal.productId}`,
                   color: cardColor,
-                  trend: {
-                    value: progress.percentage,
-                    isPositive: progress.percentage >= 50,
-                  },
                 };
               })}
             />
