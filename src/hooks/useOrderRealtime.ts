@@ -24,8 +24,7 @@ export function useOrderRealtime({ userId, enabled = true }: UseOrderRealtimePro
         {
           event: 'UPDATE',
           schema: 'public',
-          table: 'order',
-          filter: `userId=eq.${userId}`,
+          table: 'order'
         },
         (payload) => {
           console.log('Order updated:', payload);

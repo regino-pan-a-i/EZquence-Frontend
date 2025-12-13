@@ -6,7 +6,7 @@ import { supabase } from '@/utils/supabase/supabaseClient';
 import { ApprovalStatus, Company, DecodedToken } from '@/utils/supabase/schema';
 import { FaClock, FaSpinner, FaCheckCircle } from 'react-icons/fa';
 import { getCompanyById } from '@/lib/company-actions'
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getApiBaseUrl } from '@/utils/apiConfig';
 import { jwtDecode } from 'jwt-decode';
 
@@ -28,6 +28,7 @@ export default function PendingApprovalPage() {
   }, [])
 
   useEffect(() => {
+    const queryClient = useQueryClient();
     const setupRealtimeListener = async () => {
       // Get current user ID
       const { data: { session } } = await supabase.auth.getSession();
@@ -42,11 +43,12 @@ export default function PendingApprovalPage() {
             event: 'UPDATE',
             schema: 'public',
             table: 'user',
-            filter: `usr_id=eq.${decoded.usr_id}`, // Only listen for current user's updates
+
           },
           (payload) => {
             console.log('User approval status updated:', payload);
             // The useQuery will automatically refetch, or we can force it
+            queryClient.invalidateQueries({ queryKey: ['my-approval'] });
           }
         )
         .subscribe();
