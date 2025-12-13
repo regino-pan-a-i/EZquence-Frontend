@@ -1,9 +1,14 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 import {
   FaChartLine,
   FaBoxes,
   FaShoppingCart,
   FaSyncAlt,
+  FaBars,
+  FaTimes,
 } from 'react-icons/fa';
 
 // ==========================================
@@ -89,6 +94,8 @@ const getIcon = (iconName: string) => {
 };
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-neutral-950">
       {/* Navigation Bar */}
@@ -119,8 +126,8 @@ export default function Home() {
               </span>
             </Link>
 
-            {/* Navigation Links */}
-            <div className="flex items-center gap-4">
+            {/* Desktop Navigation Links */}
+            <div className="hidden md:flex items-center gap-4">
               <Link
                 href="/marketplace"
                 className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
@@ -140,7 +147,49 @@ export default function Home() {
                 Sign Up
               </Link>
             </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <FaTimes className="h-6 w-6" />
+              ) : (
+                <FaBars className="h-6 w-6" />
+              )}
+            </button>
           </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden py-4 border-t border-gray-200 dark:border-neutral-800">
+              <div className="flex flex-col gap-3">
+                <Link
+                  href="/marketplace"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors py-2"
+                >
+                  Marketplace
+                </Link>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors py-2"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/login?mode=signup"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 font-medium transition-colors text-center"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
