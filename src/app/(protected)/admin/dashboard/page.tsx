@@ -1,11 +1,11 @@
 'use client';
 import ScoreCard from '@/components/scorecard/ScoreCard';
 import ProductionGoalsManager from '@/components/admin/ProductionGoalsManager';
-import { FaDollarSign, FaReceipt, FaTachometerAlt, FaExclamationTriangle, FaBoxes, FaClock } from 'react-icons/fa';
+import { FaDollarSign, FaReceipt, FaTachometerAlt, FaExclamationTriangle, FaBoxes, FaClock, FaMoneyBillWave, FaChartLine } from 'react-icons/fa';
 import { getApiBaseUrl } from '@/utils/apiConfig';
 import DateFilter from '@/components/filters/DateFilter';
 import { useQuery } from '@tanstack/react-query';
-import { Order, OrdersByDateRangeResponse, OrderStatus, InventoryResponse, InventoryNeedResponse, InventoryItem, InventoryNeed } from '@/utils/supabase/schema';
+import { Order, OrdersByDateRangeResponse, OrderStatus, InventoryResponse, InventoryNeedResponse, InventoryItem, InventoryNeed, ApiResponse, materialTransactionResponse } from '@/utils/supabase/schema';
 import { useState } from 'react';
 import { supabase } from '@/utils/supabase/supabaseClient';
 import RevenueChart from '@/components/charts/RevenueChart';
@@ -94,6 +94,29 @@ export default function DashboardPage() {
     },
   });
 
+  // Fetch material transactions for expense tracking
+  const { data: materialTransactions, isLoading: loadingTransactions } = useQuery<ApiResponse<materialTransactionResponse[]>>({
+    queryKey: ['materialTransactions', dateRange.start, dateRange.end],
+    queryFn: async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      const res = await fetch(
+        `${getApiBaseUrl()}/materialTransaction/dateRange?startDate=${dateRange.start}&endDate=${dateRange.end}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (!res.ok) throw new Error('Failed to fetch material transactions');
+      return res.json();
+    },
+  });
+
   const OrdersTotal = (orderList: OrdersByDateRangeResponse) => {
     return orderList.data.length;
   };
@@ -148,6 +171,15 @@ export default function DashboardPage() {
       );
     });
     return data.length;
+  };
+
+  const TotalExpenses = (transactions: ApiResponse<materialTransactionResponse[]>) => {
+    if (!transactions?.data) return 0;
+    return transactions.data.reduce((sum, txn) => sum + txn.cost, 0);
+  };
+
+  const TotalProfit = (revenue: number, expenses: number) => {
+    return revenue - expenses;
   };
 
   // Helper function to calculate stock status (same logic as MaterialsInventory)
@@ -414,23 +446,35 @@ export default function DashboardPage() {
       )}
 
       <div className="w-full">
-        {loadingOrders && (
+        {(loadingOrders || loadingTransactions) && (
           <ScoreCard
             title="Key Primary Indicators"
             data={[]}
-            isLoading={loadingOrders}
-            skeletonCount={4}
+            isLoading={true}
+            skeletonCount={6}
           />
         )}
-        {orders && (
+        {orders && materialTransactions && (
           <ScoreCard
             title="Key Primary Indicators"
             data={[
               {
-                value: `${TotalRevenue(orders)}`,
+                value: `$${TotalRevenue(orders).toFixed(2)}`,
                 label: 'Total Revenue',
                 color: 'green',
                 icon: <FaDollarSign />,
+              },
+              {
+                value: `$${TotalExpenses(materialTransactions).toFixed(2)}`,
+                label: 'Total Expenses',
+                color: 'red',
+                icon: <FaMoneyBillWave />,
+              },
+              {
+                value: `$${TotalProfit(TotalRevenue(orders), TotalExpenses(materialTransactions)).toFixed(2)}`,
+                label: 'Net Profit',
+                color: TotalProfit(TotalRevenue(orders), TotalExpenses(materialTransactions)) >= 0 ? 'green' : 'red',
+                icon: <FaChartLine />,
               },
               {
                 value: `${OrdersTotal(orders)}`,
@@ -439,20 +483,20 @@ export default function DashboardPage() {
                 icon: <FaReceipt />,
               },
               {
-                value: `${AvgOrderValue(orders) || 0}`,
+                value: `$${AvgOrderValue(orders).toFixed(2) || '0.00'}`,
                 label: 'Avg Order Value',
-                color: 'green',
-                icon: <FaReceipt />,
+                color: 'blue',
+                icon: <FaDollarSign />,
               },
               {
                 value: `${PendingOrders(orders)}`,
                 label: 'Pending Orders',
-                color: 'green',
-                icon: <FaReceipt />,
+                color: 'purple',
+                icon: <FaClock />,
               },
             ]}
-            isLoading={loadingOrders}
-            skeletonCount={4}
+            isLoading={loadingOrders || loadingTransactions}
+            skeletonCount={6}
           />
         )}
       </div>

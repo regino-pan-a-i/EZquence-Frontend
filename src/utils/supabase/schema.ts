@@ -261,3 +261,30 @@ export type customerFeedback = {
   dateCreated: Date,
   resolved: boolean
 }
+
+
+export type materialTransaction = {
+  materialTransactionId: number;
+  materialId: number;
+  companyId: number;
+  cost: number;
+  dateCreated: Date;
+  quantity: number;
+  units: string
+}
+
+export type materialTransactionResponse = {
+  materialTransactionId: number;
+  materialId: number;
+  companyId: number;
+  cost: number;
+  dateCreated: Date;
+  quantity: number;
+  units: string
+  material: {
+    materialId: number;
+    name: string;
+    quantityInStock: number;
+    units: string;
+  }
+}
