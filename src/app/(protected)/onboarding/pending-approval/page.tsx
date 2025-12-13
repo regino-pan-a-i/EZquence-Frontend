@@ -17,6 +17,8 @@ export default function PendingApprovalPage() {
   const [companyDetails, setCompanyDetails] = useState<Company | null>(null);
   const [approvalStatus, setApprovalStatus] = useState<ApprovalStatus | null>(null);
 
+  const queryClient = useQueryClient();
+  
   useEffect(() => {
     const fetchCompanyDetails = async () => {
       const details = await getCompanyById();
@@ -28,7 +30,6 @@ export default function PendingApprovalPage() {
   }, [])
 
   useEffect(() => {
-    const queryClient = useQueryClient();
     const setupRealtimeListener = async () => {
       // Get current user ID
       const { data: { session } } = await supabase.auth.getSession();
