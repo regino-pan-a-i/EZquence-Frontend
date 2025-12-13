@@ -136,7 +136,7 @@ export default function MaterialTransactionModal({
       if (isCreatingNewMaterial) {
         const materialPayload = {
           name: formData.newMaterialName.trim(),
-          quantityInStock: parseFloat(formData.quantity),
+          quantityInStock: 0,
           units: formData.newMaterialUnits,
           expirationDate: null,
         };
