@@ -27,7 +27,7 @@ export default function CheckoutPage() {
   const tax = subtotal * 0.08;
   const total = subtotal + tax;
 
-  const handleSubmitOrder = async () => {
+  const submitOrder = async () => {
     if (!cart || items.length === 0) return;
     if (!deliveryDate) {
       setError('Please select a delivery date');
@@ -74,9 +74,6 @@ export default function CheckoutPage() {
         cartId: cart.cartId,
         status: CartStatus.COMPLETED,
       });
-
-      // Redirect to success page with order ID
-      router.push(`/customer/orders?success=true&orderId=${orderId}`);
     } catch (err) {
       console.error('Checkout error:', err);
       setError(err instanceof Error ? err.message : 'Failed to place order');
@@ -215,26 +212,9 @@ export default function CheckoutPage() {
                 currency: "usd",
               }}
             >
-              <PaymentCard amount={total} />
+              <PaymentCard amount={total} placeOrder={submitOrder} />
             </Elements>
 
-            <button
-              onClick={handleSubmitOrder}
-              disabled={isSubmitting || !deliveryDate}
-              className="w-full py-3 md:py-4 min-h-[52px] bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold text-lg rounded-lg transition-colors flex items-center justify-center gap-2 active:scale-98 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <FiCheck size={24} />
-                  Place Order
-                </>
-              )}
-            </button>
 
 
           </div>

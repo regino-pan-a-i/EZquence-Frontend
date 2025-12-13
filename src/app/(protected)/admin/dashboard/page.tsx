@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
   const [dateRange, setDateRange] = useState({
     start: getFirstDayOfMonth(), // First day of current month
-    end: new Date().toISOString().split('T')[0], // Today's date by default
+    end: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Tomorrow's date by default
   });
 
   const handleDateRangeChange = (start: string, end: string) => {

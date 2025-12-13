@@ -15,7 +15,7 @@ type PaymentIntentResponse = {
   }
 };
 
-export default function PaymentCard({ amount }: { amount: number }) {
+export default function PaymentCard({ amount, placeOrder }: { amount: number, placeOrder: () => void }) {
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -68,7 +68,7 @@ export default function PaymentCard({ amount }: { amount: number }) {
       setLoading(false);
       return;
     }
-
+    await placeOrder()
     const { error } = await stripe.confirmPayment({
       elements,
       clientSecret,
@@ -85,7 +85,6 @@ export default function PaymentCard({ amount }: { amount: number }) {
       // The payment UI automatically closes with a success animation.
       // Your customer is redirected to your `return_url`.
     }
-
     setLoading(false);
   };
 
