@@ -128,16 +128,16 @@ export default function TeamManagementPage() {
   const getRoleBadge = (role: UserRole) => {
     const colors = {
       [UserRole.ADMIN]: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      [UserRole.WORKER]: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      [UserRole.WORKER]: 'bg-accent/10 text-link',
       [UserRole.CLIENT]: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
     };
-    return colors[role] || 'bg-gray-100 text-gray-800';
+    return colors[role] || 'bg-background text-foreground';
   };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <FaSpinner className="animate-spin text-4xl text-blue-600" />
+        <FaSpinner className="animate-spin text-4xl text-link" />
       </div>
     );
   }
@@ -145,10 +145,10 @@ export default function TeamManagementPage() {
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center gap-3 mb-8">
-        <FaUsers className="text-3xl text-blue-600" />
+        <FaUsers className="text-3xl text-link" />
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Team Management</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Team Management</h1>
+          <p className="text-muted mt-1">
             Manage your team members and approve join requests
           </p>
         </div>
@@ -159,43 +159,43 @@ export default function TeamManagementPage() {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <FaClock className="text-yellow-600" />
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-semibold text-foreground">
               Pending Requests ({pendingWorkers.length})
             </h2>
           </div>
 
-          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden">
+          <div className="bg-surface rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-neutral-800">
+                <thead className="bg-background bg-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Role
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                <tbody className="divide-y divide-border">
                   {pendingWorkers.map((worker) => (
                     <tr
                       key={worker.userId}
-                      className="hover:bg-gray-50 dark:hover:bg-neutral-800 transition"
+                      className="hover:bg-background hover:bg-border transition"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-foreground">
                           {worker.firstName} {worker.lastName}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-muted">
                           {worker.email}
                         </div>
                       </td>
@@ -211,7 +211,7 @@ export default function TeamManagementPage() {
                           <button
                             onClick={() => handleApprove(worker.userId)}
                             disabled={approvingUserId === worker.userId}
-                            className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+                            className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-muted disabled:cursor-not-allowed transition"
                           >
                             {approvingUserId === worker.userId ? (
                               <FaSpinner className="animate-spin" />
@@ -223,7 +223,7 @@ export default function TeamManagementPage() {
                           <button
                             onClick={() => handleReject(worker.userId)}
                             disabled={rejectingUserId === worker.userId}
-                            className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+                            className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-muted disabled:cursor-not-allowed transition"
                           >
                             {rejectingUserId === worker.userId ? (
                               <FaSpinner className="animate-spin" />
@@ -247,41 +247,41 @@ export default function TeamManagementPage() {
       <div>
         <div className="flex items-center gap-2 mb-4">
           <FaCheckCircle className="text-green-600" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-xl font-semibold text-foreground">
             Current Team ({approvedWorkers.length})
           </h2>
         </div>
 
         {approvedWorkers.length > 0 ? (
-          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden">
+          <div className="bg-surface rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-neutral-800">
+                <thead className="bg-background bg-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Role
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Status
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                <tbody className="divide-y divide-border">
                   {approvedWorkers.map((worker) => (
                     <tr key={worker.userId}>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-foreground">
                           {worker.firstName} {worker.lastName}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-muted">
                           {worker.email}
                         </div>
                       </td>
@@ -304,8 +304,8 @@ export default function TeamManagementPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-8 text-center">
-            <p className="text-gray-600 dark:text-gray-400">No team members yet</p>
+          <div className="bg-surface rounded-lg shadow-md p-8 text-center">
+            <p className="text-muted">No team members yet</p>
           </div>
         )}
       </div>

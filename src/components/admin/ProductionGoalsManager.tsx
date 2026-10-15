@@ -232,20 +232,20 @@ export default function ProductionGoalsManager() {
 
   if (loadingGoals) {
     return (
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-surface rounded-lg shadow-sm p-6">
         <div className="flex items-center gap-2 mb-4">
-          <FaSpinner className="animate-spin text-blue-600 text-xl" />
-          <h2 className="text-xl font-bold text-gray-900">Loading Production Goals...</h2>
+          <FaSpinner className="animate-spin text-link text-xl" />
+          <h2 className="text-xl font-bold text-foreground">Loading Production Goals...</h2>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="bg-surface rounded-lg shadow-sm p-6">
       <div className="flex items-center gap-2 mb-6">
-        <FaBullseye className="text-blue-600 text-2xl" />
-        <h2 className="text-2xl font-bold text-gray-900">Production Goals Management</h2>
+        <FaBullseye className="text-link text-2xl" />
+        <h2 className="text-2xl font-bold text-foreground">Production Goals Management</h2>
       </div>
 
       {/* Active Goals */}
@@ -256,18 +256,18 @@ export default function ProductionGoalsManager() {
             const isEditing = editingGoal?.productionGoalId === goal.productionGoalId;
 
             return (
-              <div key={goal.productionGoalId} className="border border-gray-200 rounded-lg p-4">
+              <div key={goal.productionGoalId} className="border border-border rounded-lg p-4">
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-foreground">
                       {product?.name || `Product ${goal.productId}`}
                     </h3>
-                    <p className="text-sm text-gray-500">Goal ID: {goal.productionGoalId}</p>
+                    <p className="text-sm text-muted">Goal ID: {goal.productionGoalId}</p>
                   </div>
                   {!isEditing && (
                     <button
                       onClick={() => handleStartEdit(goal)}
-                      className="flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 bg-primary hover:bg-primary-hover text-primary-foreground text-sm font-medium rounded-md transition-colors"
                     >
                       <FaEdit />
                       Edit Goal
@@ -278,16 +278,16 @@ export default function ProductionGoalsManager() {
                 {!isEditing ? (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Daily Goal</p>
-                      <p className="text-xl font-bold text-blue-600">{goal.goalValue} units</p>
+                      <p className="text-xs text-muted uppercase tracking-wide mb-1">Daily Goal</p>
+                      <p className="text-xl font-bold text-link">{goal.goalValue} units</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Effective Date</p>
-                      <p className="text-sm text-gray-700">{formatDate(goal.effectiveDate)}</p>
+                      <p className="text-xs text-muted uppercase tracking-wide mb-1">Effective Date</p>
+                      <p className="text-sm text-foreground">{formatDate(goal.effectiveDate)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">End Date</p>
-                      <p className="text-sm text-gray-700">{formatDate(goal.endDate)}</p>
+                      <p className="text-xs text-muted uppercase tracking-wide mb-1">End Date</p>
+                      <p className="text-sm text-foreground">{formatDate(goal.endDate)}</p>
                     </div>
                   </div>
                 ) : (
@@ -299,7 +299,7 @@ export default function ProductionGoalsManager() {
                         </p>
                         <div className="flex items-center gap-3">
                           <div className="flex-1">
-                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-medium text-foreground mb-1">
                               New End Date
                             </label>
                             <input
@@ -308,7 +308,7 @@ export default function ProductionGoalsManager() {
                               onChange={(e) =>
                                 setEditingGoal({ ...editingGoal, newEndDate: e.target.value })
                               }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                             />
                           </div>
                           <button
@@ -321,7 +321,7 @@ export default function ProductionGoalsManager() {
                           </button>
                           <button
                             onClick={handleCancelEdit}
-                            className="flex items-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-md transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-panel hover:opacity-90 text-white text-sm font-medium rounded-md transition-colors"
                           >
                             <FaTimes />
                             Cancel
@@ -337,7 +337,7 @@ export default function ProductionGoalsManager() {
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-medium text-foreground mb-1">
                               Goal Value (units/day)
                             </label>
                             <input
@@ -349,12 +349,12 @@ export default function ProductionGoalsManager() {
                                   newGoalValue: parseInt(e.target.value) || 0,
                                 })
                               }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                               min="0"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-medium text-foreground mb-1">
                               Effective Date
                             </label>
                             <input
@@ -363,11 +363,11 @@ export default function ProductionGoalsManager() {
                               onChange={(e) =>
                                 setEditingGoal({ ...editingGoal, newEffectiveDate: e.target.value })
                               }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-medium text-foreground mb-1">
                               End Date
                             </label>
                             <input
@@ -376,7 +376,7 @@ export default function ProductionGoalsManager() {
                               onChange={(e) =>
                                 setEditingGoal({ ...editingGoal, newGoalEndDate: e.target.value })
                               }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                             />
                           </div>
                         </div>
@@ -391,7 +391,7 @@ export default function ProductionGoalsManager() {
                           </button>
                           <button
                             onClick={handleCancelEdit}
-                            className="flex items-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-md transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-panel hover:opacity-90 text-white text-sm font-medium rounded-md transition-colors"
                           >
                             <FaTimes />
                             Cancel
@@ -410,12 +410,12 @@ export default function ProductionGoalsManager() {
       {/* Products without goals */}
       {productsWithoutGoals.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Products Without Goals</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-3">Products Without Goals</h3>
           <div className="space-y-3">
             {productsWithoutGoals.map((product) => (
-              <div key={product.productId} className="border border-gray-200 rounded-lg p-4">
+              <div key={product.productId} className="border border-border rounded-lg p-4">
                 <div className="flex justify-between items-center mb-3">
-                  <h4 className="text-md font-medium text-gray-900">{product.name}</h4>
+                  <h4 className="text-md font-medium text-foreground">{product.name}</h4>
                   {creatingGoalForProduct !== product.productId ? (
                     <button
                       onClick={() => setCreatingGoalForProduct(product.productId)}
@@ -427,7 +427,7 @@ export default function ProductionGoalsManager() {
                   ) : (
                     <button
                       onClick={() => setCreatingGoalForProduct(null)}
-                      className="flex items-center gap-2 px-3 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-md transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 bg-panel hover:opacity-90 text-white text-sm font-medium rounded-md transition-colors"
                     >
                       <FaTimes />
                       Cancel
@@ -436,10 +436,10 @@ export default function ProductionGoalsManager() {
                 </div>
 
                 {creatingGoalForProduct === product.productId && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="bg-accent/10 border border-accent/30 rounded-lg p-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-foreground mb-1">
                           Goal Value (units/day)
                         </label>
                         <input
@@ -448,12 +448,12 @@ export default function ProductionGoalsManager() {
                           onChange={(e) =>
                             setNewGoalForm({ ...newGoalForm, goalValue: parseInt(e.target.value) || 0 })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                           min="0"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-foreground mb-1">
                           Effective Date
                         </label>
                         <input
@@ -462,18 +462,18 @@ export default function ProductionGoalsManager() {
                           onChange={(e) =>
                             setNewGoalForm({ ...newGoalForm, effectiveDate: e.target.value })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-foreground mb-1">
                           End Date
                         </label>
                         <input
                           type="date"
                           value={newGoalForm.endDate}
                           onChange={(e) => setNewGoalForm({ ...newGoalForm, endDate: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                         />
                       </div>
                     </div>
@@ -494,7 +494,7 @@ export default function ProductionGoalsManager() {
       )}
 
       {!productionGoalsResponse?.data?.length && !productsWithoutGoals.length && (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-muted">
           <FaBullseye className="mx-auto text-4xl mb-2" />
           <p>No products available to set goals</p>
         </div>

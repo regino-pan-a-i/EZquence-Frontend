@@ -81,16 +81,16 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
 
   return (
     <div
-      className={`bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ${className}`}
+      className={`bg-surface border border-border rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ${className}`}
     >
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 rounded-t-lg">
+      <div className="bg-gradient-to-r from-primary to-primary-hover px-6 py-4 rounded-t-lg">
         <div className="flex justify-between items-start">
           <div>
             <h3 className="text-xl font-bold text-white">Order #{order.orderId}</h3>
             <div className="flex items-center gap-2 mt-1">
-              <FaCalendar className="text-blue-200 text-sm" />
-              <span className="text-blue-100 text-sm">{formatDate(order.dateCreated)}</span>
+              <FaCalendar className="text-link text-sm" />
+              <span className="text-link text-sm">{formatDate(order.dateCreated)}</span>
             </div>
           </div>
           <OrderStatusBadge status={order.status} />
@@ -106,8 +106,8 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
               <FaDollarSign className="text-green-600 text-lg" />
             </div>
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Total</p>
-              <p className="text-lg font-bold text-gray-900">{formatCurrency(order.orderTotal)}</p>
+              <p className="text-xs text-muted uppercase tracking-wide">Total</p>
+              <p className="text-lg font-bold text-foreground">{formatCurrency(order.orderTotal)}</p>
             </div>
           </div>
 
@@ -120,7 +120,7 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
               )}
             </div>
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Payment</p>
+              <p className="text-xs text-muted uppercase tracking-wide">Payment</p>
               <p className={`text-sm font-semibold ${order.paid ? 'text-green-600' : 'text-red-600'}`}>
                 {order.paid ? 'Paid' : 'Unpaid'}
               </p>
@@ -129,10 +129,10 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
         </div>
 
         {/* Delivery Date */}
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mb-4 p-3 bg-accent/10 border border-accent/30 rounded-lg">
           <div className="flex items-center gap-2">
-            <FaCalendar className="text-blue-600 text-sm" />
-            <span className="text-sm text-gray-700">
+            <FaCalendar className="text-link text-sm" />
+            <span className="text-sm text-foreground">
               {order.dateDelivered ? (
                 <>
                   <span className="font-medium">Delivery Date:</span> {formatDate(order.dateDelivered)}
@@ -150,13 +150,13 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
         <div className="mb-4">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-link hover:text-link transition-colors"
           >
             <FaBox />
             <span>
               {products.length} Product{products.length !== 1 ? 's' : ''}
             </span>
-            <span className="text-gray-400">{isExpanded ? '▼' : '▶'}</span>
+            <span className="text-muted">{isExpanded ? '▼' : '▶'}</span>
           </button>
 
           {isExpanded && (
@@ -164,15 +164,15 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
               {products.map((product, index) => (
                 <div
                   key={`${product.productId}-${index}`}
-                  className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200"
+                  className="flex justify-between items-center p-3 bg-background rounded-lg border border-border"
                 >
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">{product.productName.name}</p>
-                    <p className="text-sm text-gray-500">Quantity: {product.quantity}</p>
+                    <p className="font-medium text-foreground">{product.productName.name}</p>
+                    <p className="text-sm text-muted">Quantity: {product.quantity}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-600">{formatCurrency(product.unitPrice)} each</p>
-                    <p className="font-semibold text-gray-900">{formatCurrency(product.total)}</p>
+                    <p className="text-sm text-muted">{formatCurrency(product.unitPrice)} each</p>
+                    <p className="font-semibold text-foreground">{formatCurrency(product.total)}</p>
                   </div>
                 </div>
               ))}
@@ -184,23 +184,23 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
         <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-xs font-semibold text-yellow-800 uppercase tracking-wide mb-1">Notes</p>
           {order.notes && order.notes.trim() !== '' ? (
-            <p className="text-sm text-gray-700 whitespace-pre-wrap">{order.notes}</p>
+            <p className="text-sm text-foreground whitespace-pre-wrap">{order.notes}</p>
           ) : (
-            <p className="text-sm text-gray-700 whitespace-pre-wrap">N/A</p>
+            <p className="text-sm text-foreground whitespace-pre-wrap">N/A</p>
           )}
         </div>
 
         {/* Status Action Buttons */}
         {showStatusActions && order.status !== OrderStatus.COMPLETED && (
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Update Status</p>
+          <div className="mt-4 pt-4 border-t border-border">
+            <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Update Status</p>
             <div className="flex flex-col md:flex-row justify-evenly gap-2">
               
               {order.status != OrderStatus.IN_PROGRESS && (
                 <button
                   onClick={() => handleStatusChange(OrderStatus.IN_PROGRESS)}
                   disabled={updateStatusMutation.isPending}
-                  className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white text-sm font-medium rounded-md transition-colors duration-200"
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover disabled:bg-accent/30 text-primary-foreground text-sm font-medium rounded-md transition-colors duration-200"
                 >
                   {updateStatusMutation.isPending ? <FaSpinner className="animate-spin" /> : null}
                   In Progress
@@ -233,10 +233,10 @@ export default function OrderCard({ order, products, onViewDetails, showStatusAc
 
       {/* Footer Section - Optional View Details Button */}
       {onViewDetails && (
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+        <div className="px-6 py-3 bg-background border-t border-border rounded-b-lg">
           <button
             onClick={() => onViewDetails(order.orderId)}
-            className="w-full px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200"
+            className="w-full px-4 py-2 text-sm font-medium text-link hover:text-link hover:bg-accent/10 rounded-md transition-colors duration-200"
           >
             View Full Details
           </button>

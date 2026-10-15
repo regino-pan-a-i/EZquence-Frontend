@@ -28,7 +28,7 @@ export default function Tooltip({ content, children, show = true, position = 'ri
       {shouldShow && (
         <span
           role="tooltip"
-          className={`z-50 pointer-events-none absolute whitespace-nowrap bg-gray-900 text-white text-xs rounded px-2 py-1 shadow-md transform transition-opacity duration-150 ${
+          className={`z-50 pointer-events-none absolute whitespace-nowrap bg-panel text-white text-xs rounded px-2 py-1 shadow-md transform transition-opacity duration-150 ${
             position === 'right'
               ? 'left-full ml-2 top-1/2 -translate-y-1/2'
               : 'bottom-full mb-2 left-1/2 -translate-x-1/2'

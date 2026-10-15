@@ -20,11 +20,11 @@ export default function SidebarButton({
 }: Props) {
   const content = (
     <div
-      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-sm hover:bg-gray-100 dark:hover:bg-neutral-800 ${
-        active ? 'bg-gray-200 dark:bg-neutral-800' : ''
+      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-sm hover:bg-background hover:bg-border ${
+        active ? 'bg-border bg-surface' : ''
       }`}
     >
-      <span className="shrink-0 h-6 w-6 flex items-center justify-center text-gray-700 dark:text-gray-200">
+      <span className="shrink-0 h-6 w-6 flex items-center justify-center text-foreground">
         {icon}
       </span>
       {!collapsed && <span className="truncate">{label}</span>}

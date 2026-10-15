@@ -23,7 +23,7 @@ const ChecklistItem: React.FC<ChecklistItemProps> = ({
       className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${
         checked
           ? 'bg-green-50 border-green-200'
-          : 'bg-white border-gray-200 hover:bg-gray-50'
+          : 'bg-surface border-border hover:bg-background'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
       <div className="flex items-center h-6">
@@ -37,19 +37,19 @@ const ChecklistItem: React.FC<ChecklistItemProps> = ({
         {checked ? (
           <FaCheckCircle className="text-green-600 text-xl" />
         ) : (
-          <FaCircle className="text-gray-300 text-xl" />
+          <FaCircle className="text-muted text-xl" />
         )}
       </div>
       <div className="flex-1 min-w-0">
         <span
           className={`block text-sm font-medium ${
-            checked ? 'line-through text-gray-500' : 'text-gray-900'
+            checked ? 'line-through text-muted' : 'text-foreground'
           }`}
         >
           {label}
         </span>
         {subtitle && (
-          <span className="block text-xs text-gray-600 mt-1">{subtitle}</span>
+          <span className="block text-xs text-muted mt-1">{subtitle}</span>
         )}
       </div>
     </label>

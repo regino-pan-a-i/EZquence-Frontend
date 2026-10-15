@@ -15,11 +15,11 @@ export interface RevenueChartData {
 
 const RevenueChart = ({ data }: { data: RevenueChartData[] }) => {
   return (
-    <div className="w-full h-80 bg-white rounded-2xl shadow p-4">
+    <div className="w-full h-80 bg-surface rounded-2xl shadow p-4">
       <h2 className="text-lg font-semibold mb-4">Revenue by Date Range</h2>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3" />
           <XAxis dataKey="date" />
           <YAxis dataKey="revenue" />
           <Tooltip />

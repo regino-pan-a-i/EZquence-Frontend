@@ -126,15 +126,15 @@ export default function CreateCompanyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-2xl bg-surface rounded-lg shadow-lg p-8">
         <div className="flex items-center gap-3 mb-6">
-          <FaBuilding className="text-3xl text-blue-600" />
+          <FaBuilding className="text-3xl text-link" />
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               Create Your Company
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-muted mt-1">
               Set up your company profile to get started
             </p>
           </div>
@@ -145,7 +145,7 @@ export default function CreateCompanyPage() {
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-foreground text-muted mb-2"
             >
               Company Name <span className="text-red-500">*</span>
             </label>
@@ -156,7 +156,7 @@ export default function CreateCompanyPage() {
               value={formData.name}
               onChange={handleInputChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-800 dark:text-white"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-surface text-foreground"
               placeholder="Enter your company name"
             />
           </div>
@@ -165,7 +165,7 @@ export default function CreateCompanyPage() {
           <div>
             <label
               htmlFor="industry"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-foreground text-muted mb-2"
             >
               Industry <span className="text-red-500">*</span>
             </label>
@@ -175,7 +175,7 @@ export default function CreateCompanyPage() {
               value={formData.industry}
               onChange={handleInputChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-800 dark:text-white"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-surface text-foreground"
             >
               <option value="">Select an industry</option>
               <option value="Manufacturing">Manufacturing</option>
@@ -195,7 +195,7 @@ export default function CreateCompanyPage() {
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-foreground text-muted mb-2"
             >
               Description <span className="text-red-500">*</span>
             </label>
@@ -206,21 +206,21 @@ export default function CreateCompanyPage() {
               onChange={handleInputChange}
               required
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-800 dark:text-white resize-none"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-surface text-foreground resize-none"
               placeholder="Describe your company and what you do..."
             />
           </div>
 
           {/* Logo Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Company Logo <span className="text-gray-400 text-xs">(optional)</span>
+            <label className="block text-sm font-medium text-foreground text-muted mb-2">
+              Company Logo <span className="text-muted text-xs">(optional)</span>
             </label>
             <div className="flex items-start gap-4">
               {/* Preview */}
               <div className="flex-shrink-0">
                 {logoPreview ? (
-                  <div className="relative w-32 h-32 border-2 border-gray-300 dark:border-neutral-700 rounded-lg overflow-hidden">
+                  <div className="relative w-32 h-32 border-2 border-border rounded-lg overflow-hidden">
                     <Image
                       src={logoPreview}
                       alt="Logo preview"
@@ -229,8 +229,8 @@ export default function CreateCompanyPage() {
                     />
                   </div>
                 ) : (
-                  <div className="w-32 h-32 border-2 border-dashed border-gray-300 dark:border-neutral-700 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-neutral-800">
-                    <FaImage className="text-4xl text-gray-400" />
+                  <div className="w-32 h-32 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-background bg-surface">
+                    <FaImage className="text-4xl text-muted" />
                   </div>
                 )}
               </div>
@@ -246,11 +246,11 @@ export default function CreateCompanyPage() {
                 />
                 <label
                   htmlFor="logo"
-                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition"
+                  className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-lg cursor-pointer hover:bg-primary-hover transition"
                 >
                   Choose Logo
                 </label>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                <p className="text-sm text-muted mt-2">
                   Upload a JPG, PNG, SVG, or WebP image (max 5MB)
                 </p>
               </div>
@@ -262,7 +262,7 @@ export default function CreateCompanyPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition font-semibold"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover disabled:bg-muted disabled:cursor-not-allowed transition font-semibold"
             >
               {isSubmitting ? (
                 <>

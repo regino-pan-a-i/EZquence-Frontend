@@ -52,11 +52,11 @@ export default function PeriodComparisonFilter({
   };
 
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 shadow-sm p-4 ${className}`}>
+    <div className={`bg-surface rounded-lg border border-border shadow-sm p-4 ${className}`}>
       <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
         {/* Period 1 */}
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             <FaCalendarAlt className="inline mr-2" />
             Period 1 (Previous)
           </label>
@@ -65,26 +65,26 @@ export default function PeriodComparisonFilter({
               type="date"
               value={p1Start}
               onChange={handlePeriod1StartChange}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             />
-            <span className="text-gray-500">to</span>
+            <span className="text-muted">to</span>
             <input
               type="date"
               value={p1End}
               onChange={handlePeriod1EndChange}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
         </div>
 
         {/* Comparison Icon */}
         <div className="hidden lg:flex items-center justify-center pt-6">
-          <FaExchangeAlt className="text-blue-600 text-xl" />
+          <FaExchangeAlt className="text-link text-xl" />
         </div>
 
         {/* Period 2 */}
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             <FaCalendarAlt className="inline mr-2" />
             Period 2 (Current)
           </label>
@@ -93,14 +93,14 @@ export default function PeriodComparisonFilter({
               type="date"
               value={p2Start}
               onChange={handlePeriod2StartChange}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             />
-            <span className="text-gray-500">to</span>
+            <span className="text-muted">to</span>
             <input
               type="date"
               value={p2End}
               onChange={handlePeriod2EndChange}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
         </div>

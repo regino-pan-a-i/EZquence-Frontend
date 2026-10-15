@@ -26,18 +26,18 @@ export default function FeedbackCard({
   };
 
   return (
-    <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-lg shadow-sm hover:shadow-md transition-shadow p-4">
+    <div className="bg-surface border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow p-4">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
-          <FaCommentDots className="text-blue-600 text-lg" />
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+          <FaCommentDots className="text-link text-lg" />
+          <span className="text-xs text-muted">
             {formatDate(feedback.dateCreated)}
           </span>
         </div>
         <FeedbackStatusBadge resolved={feedback.resolved} />
       </div>
 
-      <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+      <p className="text-foreground text-muted leading-relaxed mb-4">
         {feedback.message}
       </p>
 
@@ -46,7 +46,7 @@ export default function FeedbackCard({
           <button
             onClick={() => onResolve(feedback.feedbackId)}
             disabled={isResolving}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition text-sm font-semibold"
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-muted disabled:cursor-not-allowed transition text-sm font-semibold"
           >
             <FaCheck />
             {isResolving ? 'Resolving...' : 'Mark as Resolved'}

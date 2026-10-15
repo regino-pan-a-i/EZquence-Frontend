@@ -98,7 +98,7 @@ export default function MaterialTransactionModal({
       return false;
     }
 
-    if (!formData.cost || parseFloat(formData.cost) <= 0) {
+    if (!formData.cost || parseFloat(formData.cost) < 0) {
       toast.error('Please enter a valid cost');
       return false;
     }
@@ -205,17 +205,17 @@ export default function MaterialTransactionModal({
 
   return (
     <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-surface rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FaBoxOpen className="text-blue-600" />
-            <h2 className="text-xl font-semibold text-gray-800">Record Material Transaction</h2>
+            <FaBoxOpen className="text-link" />
+            <h2 className="text-xl font-semibold text-foreground">Record Material Transaction</h2>
           </div>
           <button
             onClick={onClose}
             disabled={isSaving}
-            className="text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
+            className="text-muted hover:text-muted transition-colors disabled:opacity-50"
           >
             <FaTimes size={20} />
           </button>
@@ -225,7 +225,7 @@ export default function MaterialTransactionModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Material Selection */}
           <div className="relative">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Material <span className="text-red-500">*</span>
             </label>
             <input
@@ -239,23 +239,23 @@ export default function MaterialTransactionModal({
               }}
               onFocus={() => setShowMaterialDropdown(true)}
               placeholder="Search or create material..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
               disabled={isSaving}
             />
 
             {/* Dropdown */}
             {showMaterialDropdown && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+              <div className="absolute z-10 w-full mt-1 bg-surface border border-border rounded-md shadow-lg max-h-60 overflow-y-auto">
                 {filteredMaterials.length > 0 && (
                   <div>
                     {filteredMaterials.map((mat) => (
                       <div
                         key={mat.materialId}
                         onClick={() => handleMaterialSelect(mat)}
-                        className="px-3 py-2 hover:bg-blue-50 cursor-pointer flex justify-between items-center"
+                        className="px-3 py-2 hover:bg-accent/10 cursor-pointer flex justify-between items-center"
                       >
-                        <span className="font-medium text-gray-800">{mat.name}</span>
-                        <span className="text-sm text-gray-500">{mat.units}</span>
+                        <span className="font-medium text-foreground">{mat.name}</span>
+                        <span className="text-sm text-muted">{mat.units}</span>
                       </div>
                     ))}
                   </div>
@@ -265,7 +265,7 @@ export default function MaterialTransactionModal({
                 {showCreateOption && (
                   <div
                     onClick={handleCreateNewMaterial}
-                    className="px-3 py-2 hover:bg-green-50 cursor-pointer border-t border-gray-200 flex items-center gap-2 text-green-600"
+                    className="px-3 py-2 hover:bg-green-50 cursor-pointer border-t border-border flex items-center gap-2 text-green-600"
                   >
                     <FaPlus size={14} />
                     <span className="font-medium">Create new: &quot;{materialSearchTerm}&quot;</span>
@@ -273,7 +273,7 @@ export default function MaterialTransactionModal({
                 )}
 
                 {filteredMaterials.length === 0 && !showCreateOption && (
-                  <div className="px-3 py-2 text-gray-500 text-sm">
+                  <div className="px-3 py-2 text-muted text-sm">
                     No materials found
                   </div>
                 )}
@@ -284,13 +284,13 @@ export default function MaterialTransactionModal({
           {/* New Material Units (shown only when creating new) */}
           {isCreatingNewMaterial && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Units <span className="text-red-500">*</span>
               </label>
               <select
                 value={formData.newMaterialUnits}
                 onChange={(e) => setFormData({ ...formData, newMaterialUnits: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                 disabled={isSaving}
               >
                 <option value="">Select unit</option>
@@ -308,7 +308,7 @@ export default function MaterialTransactionModal({
 
           {/* Quantity */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Quantity <span className="text-red-500">*</span>
             </label>
             <input
@@ -318,26 +318,26 @@ export default function MaterialTransactionModal({
               value={formData.quantity}
               onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
               placeholder="Enter quantity purchased"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
               disabled={isSaving}
             />
           </div>
 
           {/* Cost */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Cost <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-2 text-gray-500">$</span>
+              <span className="absolute left-3 top-2 text-muted">$</span>
               <input
                 type="number"
                 step="0.01"
-                min="0"
+                min="-1"
                 value={formData.cost}
                 onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
                 placeholder="0.00"
-                className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-7 pr-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                 disabled={isSaving}
               />
             </div>
@@ -345,7 +345,7 @@ export default function MaterialTransactionModal({
 
           {/* Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Transaction Date <span className="text-red-500">*</span>
             </label>
             <input
@@ -353,7 +353,7 @@ export default function MaterialTransactionModal({
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               max={new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
               disabled={isSaving}
             />
           </div>
@@ -364,14 +364,14 @@ export default function MaterialTransactionModal({
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-2 border border-border text-foreground rounded-md hover:bg-background transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSaving ? 'Recording...' : 'Record Transaction'}
             </button>

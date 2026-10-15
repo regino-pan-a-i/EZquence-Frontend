@@ -55,16 +55,16 @@ const ProductSalesChart = ({
   };
 
   return (
-    <div className="w-full h-96 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <h2 className="text-lg font-semibold mb-4 text-gray-900">{title}</h2>
+    <div className="w-full h-96 bg-surface rounded-2xl shadow-sm border border-border p-6">
+      <h2 className="text-lg font-semibold mb-4 text-foreground">{title}</h2>
       {sortedData.length === 0 ? (
-        <div className="flex items-center justify-center h-full text-gray-500">
+        <div className="flex items-center justify-center h-full text-muted">
           No product data available for the selected period
         </div>
       ) : (
         <ResponsiveContainer width="100%" height="90%">
           <BarChart data={sortedData} layout="vertical" margin={{ left: 20, right: 30 }}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3" />
             <XAxis type="number" />
             <YAxis 
               dataKey="productName" 

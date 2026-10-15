@@ -92,7 +92,7 @@ export default function CheckoutPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-accent"></div>
       </div>
     );
   }
@@ -103,23 +103,23 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 p-4 md:p-6">
+    <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900 dark:text-white">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-foreground">
           Checkout
         </h1>
 
         <div className="space-y-6">
           {/* Order Items Summary */}
-          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border border-gray-200 dark:border-neutral-800 p-4 md:p-6">
-            <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-4 md:p-6">
+            <h2 className="text-xl font-bold mb-4 text-foreground flex items-center gap-2">
               <FiPackage size={24} />
               Order Items
             </h2>
             <div className="space-y-3">
               {items.map((item) => (
                 <div key={item.productId} className="flex gap-3 items-center">
-                  <div className="relative w-16 h-16 flex-shrink-0 bg-gray-100 dark:bg-neutral-800 rounded overflow-hidden">
+                  <div className="relative w-16 h-16 flex-shrink-0 bg-background bg-surface rounded overflow-hidden">
                     {item.product.productImage ? (
                       <Image
                         src={item.product.productImage[0].imageURL}
@@ -129,19 +129,19 @@ export default function CheckoutPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <FiPackage className="text-gray-400" size={24} />
+                        <FiPackage className="text-muted" size={24} />
                       </div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 dark:text-white truncate">
+                    <p className="font-semibold text-foreground truncate">
                       {item.product.name}
                     </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted">
                       ${item.product.price.toFixed(2)} × {item.quantity}
                     </p>
                   </div>
-                  <p className="font-bold text-gray-900 dark:text-white">
+                  <p className="font-bold text-foreground">
                     ${(item.product.price * item.quantity).toFixed(2)}
                   </p>
                 </div>
@@ -150,8 +150,8 @@ export default function CheckoutPage() {
           </div>
 
           {/* Delivery Date */}
-          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border border-gray-200 dark:border-neutral-800 p-4 md:p-6">
-            <label htmlFor="deliveryDate" className="block text-lg font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-4 md:p-6">
+            <label htmlFor="deliveryDate" className="block text-lg font-bold mb-4 text-foreground flex items-center gap-2">
               <FiCalendar size={24} />
               Delivery Date
             </label>
@@ -162,36 +162,36 @@ export default function CheckoutPage() {
               onChange={(e) => setDeliveryDate(e.target.value)}
               min={today}
               max={maxDate}
-              className="w-full px-4 py-3 min-h-[52px] border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-800 dark:text-white text-lg"
+              className="w-full px-4 py-3 min-h-[52px] border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-accent bg-surface text-foreground text-lg"
               required
             />
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-sm text-muted mt-2">
               Select your preferred delivery date (within 7 days)
             </p>
           </div>
 
           {/* Order Notes */}
           {cart.notes && (
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border border-gray-200 dark:border-neutral-800 p-4 md:p-6">
-              <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">Order Notes</h3>
-              <p className="text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{cart.notes}</p>
+            <div className="bg-surface rounded-lg shadow-sm border border-border p-4 md:p-6">
+              <h3 className="text-lg font-bold mb-2 text-foreground">Order Notes</h3>
+              <p className="text-muted whitespace-pre-wrap">{cart.notes}</p>
             </div>
           )}
 
           {/* Order Total */}
-          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border border-gray-200 dark:border-neutral-800 p-4 md:p-6">
-            <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Order Total</h2>
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-4 md:p-6">
+            <h2 className="text-xl font-bold mb-4 text-foreground">Order Total</h2>
             <div className="space-y-2 mb-4">
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">
+              <div className="flex justify-between text-muted">
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">
+              <div className="flex justify-between text-muted">
                 <span>Tax (8%)</span>
                 <span>${tax.toFixed(2)}</span>
               </div>
-              <div className="border-t border-gray-200 dark:border-neutral-800 pt-2 mt-2">
-                <div className="flex justify-between text-2xl font-bold text-gray-900 dark:text-white">
+              <div className="border-t border-border pt-2 mt-2">
+                <div className="flex justify-between text-2xl font-bold text-foreground">
                   <span>Total</span>
                   <span>${total.toFixed(2)}</span>
                 </div>

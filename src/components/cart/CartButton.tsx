@@ -13,7 +13,7 @@ export default function CartButton() {
   return (
     <Link 
       href="/customer/cart"
-      className="relative inline-flex items-center justify-center min-w-[44px] min-h-[44px] p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors active:scale-95"
+      className="relative inline-flex items-center justify-center min-w-[44px] min-h-[44px] p-2 text-foreground text-muted hover:text-link transition-colors active:scale-95"
       aria-label={`Shopping cart with ${itemCount} items`}
     >
       <FiShoppingCart size={24} />

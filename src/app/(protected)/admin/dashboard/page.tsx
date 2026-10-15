@@ -235,8 +235,8 @@ export default function DashboardPage() {
     <>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center m-4 gap-4">
         <div className="flex items-center gap-3">
-          <FaTachometerAlt className="text-blue-600 text-3xl" />
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <FaTachometerAlt className="text-link text-3xl" />
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
         </div>
         <DateFilter
           type="range"
@@ -286,31 +286,31 @@ export default function DashboardPage() {
         <div className="mt-6 mx-4">
           <div className="flex items-center gap-2 mb-4">
             <FaExclamationTriangle className="text-yellow-600 text-2xl" />
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-foreground">
               Low Stock Materials ({lowStockMaterials.length})
             </h2>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-surface rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-background">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Material
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Current Stock
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Needed Today
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Status
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-surface divide-y divide-border">
                   {lowStockMaterials.map((material) => {
                     const need = inventoryNeeds?.data.find(n => n.materialId === material.materialId);
                     const status = getStockStatus(material, inventoryNeeds?.data || []);
@@ -320,16 +320,16 @@ export default function DashboardPage() {
                     return (
                       <tr 
                         key={material.materialId} 
-                        className="hover:bg-gray-50 cursor-pointer"
+                        className="hover:bg-background cursor-pointer"
                         onClick={() => router.push('/admin/inventory')}
                       >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                           {material.name}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           {material.quantityInStock} {material.units}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           {need?.quantityNeeded || 0} {material.units}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -343,10 +343,10 @@ export default function DashboardPage() {
                 </tbody>
               </table>
             </div>
-            <div className="bg-gray-50 px-6 py-3 border-t border-gray-200">
+            <div className="bg-background px-6 py-3 border-t border-border">
               <button
                 onClick={() => router.push('/admin/inventory')}
-                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                className="text-sm text-link hover:text-link font-medium"
               >
                 View All Inventory →
               </button>
@@ -360,34 +360,34 @@ export default function DashboardPage() {
         <div className="mt-6 mx-4 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <FaExclamationTriangle className="text-red-600 text-2xl" />
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-foreground">
               Delayed Orders ({delayedOrders.length})
             </h2>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-surface rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-background">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Order ID
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Order Total
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Expected Delivery
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Days Overdue
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-surface divide-y divide-border">
                   {delayedOrders.map((order) => {
                     const today = new Date();
                     const deliveryDate = new Date(order.expectedDeliveryDate);
@@ -396,13 +396,13 @@ export default function DashboardPage() {
                     return (
                       <tr 
                         key={order.orderId}
-                        className="hover:bg-gray-50 cursor-pointer"
+                        className="hover:bg-background cursor-pointer"
                         onClick={() => router.push('/admin/orders')}
                       >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                           #{order.orderId}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           ${order.orderTotal.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -410,7 +410,7 @@ export default function DashboardPage() {
                             {order.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           {new Date(order.expectedDeliveryDate).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'short',
@@ -426,10 +426,10 @@ export default function DashboardPage() {
                 </tbody>
               </table>
             </div>
-            <div className="bg-gray-50 px-6 py-3 border-t border-gray-200">
+            <div className="bg-background px-6 py-3 border-t border-border">
               <button
                 onClick={() => router.push('/admin/orders')}
-                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                className="text-sm text-link hover:text-link font-medium"
               >
                 View All Orders →
               </button>

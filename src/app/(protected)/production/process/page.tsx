@@ -68,7 +68,7 @@ export default function ProcessPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center h-64">
-          <div className="text-lg text-gray-600">Loading processes...</div>
+          <div className="text-lg text-muted">Loading processes...</div>
         </div>
       </div>
     );
@@ -89,10 +89,10 @@ export default function ProcessPage() {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
-          <FaSyncAlt className="text-blue-600 text-3xl" />
-          <h1 className="text-3xl font-bold text-gray-900">Production Processes</h1>
+          <FaSyncAlt className="text-link text-3xl" />
+          <h1 className="text-3xl font-bold text-foreground">Production Processes</h1>
         </div>
-        <p className="text-gray-600">
+        <p className="text-muted">
           Select a process to view details and complete a production batch
         </p>
       </div>
@@ -100,13 +100,13 @@ export default function ProcessPage() {
       {/* Search Bar */}
       <div className="mb-6">
         <div className="relative max-w-md">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
           <input
             type="text"
             placeholder="Search processes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
           />
         </div>
       </div>
@@ -114,8 +114,8 @@ export default function ProcessPage() {
       {/* Process Grid */}
       {filteredProcesses.length === 0 ? (
         <div className="text-center py-12">
-          <FaSyncAlt className="mx-auto text-gray-300 text-6xl mb-4" />
-          <p className="text-gray-500 text-lg">
+          <FaSyncAlt className="mx-auto text-muted text-6xl mb-4" />
+          <p className="text-muted text-lg">
             {searchTerm ? 'No processes found matching your search' : 'No processes available'}
           </p>
         </div>

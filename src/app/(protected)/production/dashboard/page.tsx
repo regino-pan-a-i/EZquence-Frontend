@@ -215,8 +215,8 @@ export default function ProductionDashboard() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div className="flex items-center gap-3">
-          <FaTachometerAlt className="text-blue-600 text-3xl" />
-          <h1 className="text-3xl font-bold text-gray-900">Production Dashboard</h1>
+          <FaTachometerAlt className="text-link text-3xl" />
+          <h1 className="text-3xl font-bold text-foreground">Production Dashboard</h1>
         </div>
         <DateFilter
           type="range"
@@ -307,19 +307,19 @@ export default function ProductionDashboard() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-4">
           <FaBoxOpen className="text-purple-600 text-2xl" />
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-foreground">
             Received Orders ({receivedOrders.length})
           </h2>
         </div>
 
         {loadingOrderDetails ? (
           <div className="flex justify-center items-center py-12">
-            <FaSpinner className="animate-spin text-blue-600 text-4xl" />
+            <FaSpinner className="animate-spin text-link text-4xl" />
           </div>
         ) : receivedOrders.length === 0 ? (
-          <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
-            <FaBoxOpen className="mx-auto text-gray-400 text-5xl mb-4" />
-            <p className="text-gray-600 text-lg">No received orders for the selected date range</p>
+          <div className="bg-background border-2 border-dashed border-border rounded-lg p-12 text-center">
+            <FaBoxOpen className="mx-auto text-muted text-5xl mb-4" />
+            <p className="text-muted text-lg">No received orders for the selected date range</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

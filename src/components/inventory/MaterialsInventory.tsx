@@ -49,7 +49,7 @@ export default function MaterialsInventory({
       case 'out-of-stock':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-background text-foreground border-border';
     }
   };
 
@@ -122,10 +122,10 @@ export default function MaterialsInventory({
     if (sortField !== field) {
       return (
         <svg
-          className="w-4 h-4 text-gray-400"
+          className="w-4 h-4 text-muted"
           fill="none"
           stroke="currentColor"
-          viewBox="0 0 24 24"
+          viewBox="0 24"
         >
           <path
             strokeLinecap="round"
@@ -137,11 +137,11 @@ export default function MaterialsInventory({
       );
     }
     return sortDirection === 'asc' ? (
-      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 text-link" fill="none" stroke="currentColor" viewBox="0 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
       </svg>
     ) : (
-      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 text-link" fill="none" stroke="currentColor" viewBox="0 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
       </svg>
     );
@@ -158,13 +158,13 @@ export default function MaterialsInventory({
               placeholder="Search materials..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 pl-10 border border-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
             />
             <svg
-              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+              className="absolute left-3 top-2.5 h-5 w-5 text-muted"
               fill="none"
               stroke="currentColor"
-              viewBox="0 0 24 24"
+              viewBox="0 24"
             >
               <path
                 strokeLinecap="round"
@@ -186,7 +186,7 @@ export default function MaterialsInventory({
                 <svg
                   className="h-6 w-6 text-white"
                   fill="none"
-                  viewBox="0 0 24 24"
+                  viewBox="0 24"
                   stroke="currentColor"
                 >
                   <path
@@ -212,7 +212,7 @@ export default function MaterialsInventory({
                 <svg
                   className="h-6 w-6 text-white"
                   fill="none"
-                  viewBox="0 0 24 24"
+                  viewBox="0 24"
                   stroke="currentColor"
                 >
                   <path
@@ -238,7 +238,7 @@ export default function MaterialsInventory({
                 <svg
                   className="h-6 w-6 text-white"
                   fill="none"
-                  viewBox="0 0 24 24"
+                  viewBox="0 24"
                   stroke="currentColor"
                 >
                   <path
@@ -260,19 +260,19 @@ export default function MaterialsInventory({
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 border-b border-blue-800">
+      <div className="bg-surface rounded-lg shadow-md overflow-hidden">
+        <div className="px-6 py-4 bg-gradient-to-r from-primary to-primary-hover border-b border-accent/30">
           <h2 className="text-2xl font-bold text-white">Materials Inventory</h2>
-          <p className="text-blue-100 text-sm mt-1">Total Materials: {materials.length}</p>
+          <p className="text-link text-sm mt-1">Total Materials: {materials.length}</p>
         </div>
 
         {materials.length === 0 ? (
           <div className="px-6 py-12 text-center">
-            <div className="text-gray-400 mb-2">
+            <div className="text-muted mb-2">
               <svg
                 className="mx-auto h-12 w-12"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewBox="0 24"
                 stroke="currentColor"
               >
                 <path
@@ -283,18 +283,18 @@ export default function MaterialsInventory({
                 />
               </svg>
             </div>
-            <p className="text-gray-500 text-lg">No materials in inventory</p>
-            <p className="text-gray-400 text-sm mt-1">
+            <p className="text-muted text-lg">No materials in inventory</p>
+            <p className="text-muted text-sm mt-1">
               Add materials to start tracking your inventory
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-background">
                 <tr>
                   <th
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider cursor-pointer hover:bg-background"
                     onClick={() => handleSort('name')}
                   >
                     <div className="flex items-center gap-2">
@@ -303,7 +303,7 @@ export default function MaterialsInventory({
                     </div>
                   </th>
                   <th
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider cursor-pointer hover:bg-background"
                     onClick={() => handleSort('quantityInStock')}
                   >
                     <div className="flex items-center gap-2">
@@ -311,14 +311,14 @@ export default function MaterialsInventory({
                       <SortIcon field="quantityInStock" />
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                     Quantity Needed
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                     Units
                   </th>
                   <th
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider cursor-pointer hover:bg-background"
                     onClick={() => handleSort('status')}
                   >
                     <div className="flex items-center gap-2">
@@ -327,7 +327,7 @@ export default function MaterialsInventory({
                     </div>
                   </th>
                   <th
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider cursor-pointer hover:bg-background"
                     onClick={() => handleSort('expirationDate')}
                   >
                     <div className="flex items-center gap-2">
@@ -336,33 +336,33 @@ export default function MaterialsInventory({
                     </div>
                   </th>
                   {isAdminView && (
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Actions
                     </th>
                   )}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-surface divide-y divide-border">
                 {sortedMaterials.map((material) => {
                   const status = getStockStatus(material);
 
                   return (
-                    <tr key={material.materialId} className="hover:bg-gray-50 transition-colors">
+                    <tr key={material.materialId} className="hover:bg-background transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{material.name}</div>
+                        <div className="text-sm font-medium text-foreground">{material.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-foreground">
                           {material.quantityInStock.toLocaleString()}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-foreground">
                           {getQuantityNeeded(material).toLocaleString()}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted">
                           {material.units || material.units}
                         </div>
                       </td>
@@ -376,7 +376,7 @@ export default function MaterialsInventory({
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted">
                           {formatDate(material.expirationDate)}
                         </div>
                       </td>
@@ -385,7 +385,7 @@ export default function MaterialsInventory({
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => onEdit?.(material)}
-                              className="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors duration-200"
+                              className="px-3 py-1 text-sm font-medium text-link hover:text-link hover:bg-accent/10 rounded transition-colors duration-200"
                               title="Edit material"
                             >
                               Edit

@@ -24,12 +24,12 @@ export interface ScoreCardProps {
 }
 
 const colorVariants = {
-  blue: 'bg-blue-50 border-blue-200 text-blue-900',
+  blue: 'bg-accent/10 border-accent/30 text-link',
   green: 'bg-green-50 border-green-200 text-green-900',
   red: 'bg-red-50 border-red-200 text-red-900',
   yellow: 'bg-yellow-50 border-yellow-200 text-yellow-900',
   purple: 'bg-purple-50 border-purple-200 text-purple-900',
-  gray: 'bg-gray-50 border-gray-200 text-gray-900',
+  gray: 'bg-background border-border text-foreground',
 };
 
 const trendColors = {
@@ -51,25 +51,25 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
     return (
       <div
         key={`skeleton-${index}`}
-        className={`p-4 rounded-lg border bg-gray-50 border-gray-200 animate-pulse min-w-3xs ${
+        className={`p-4 rounded-lg border bg-background border-border animate-pulse min-w-3xs ${
           variant === 'compact' ? 'p-3' : ''
         }`}
       >
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-5 h-5 bg-gray-300 rounded"></div>
-              <div className="h-4 bg-gray-300 rounded w-20"></div>
+              <div className="w-5 h-5 bg-border rounded"></div>
+              <div className="h-4 bg-border rounded w-20"></div>
             </div>
 
             <div
-              className={`bg-gray-300 rounded ${variant === 'compact' ? 'h-7 w-24' : 'h-8 w-32'}`}
+              className={`bg-border rounded ${variant === 'compact' ? 'h-7 w-24' : 'h-8 w-32'}`}
             ></div>
 
             {variant !== 'compact' && (
               <div className="mt-2 flex items-center gap-2">
-                <div className="h-4 bg-gray-300 rounded w-16"></div>
-                <div className="h-4 bg-gray-300 rounded w-12"></div>
+                <div className="h-4 bg-border rounded w-16"></div>
+                <div className="h-4 bg-border rounded w-12"></div>
               </div>
             )}
           </div>
@@ -119,9 +119,9 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
 
   if (variant === 'compact') {
     return (
-      <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>
-        <div className="p-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+      <div className={`bg-surface rounded-lg border border-border shadow-sm ${className}`}>
+        <div className="p-4 border-b border-border">
+          <h3 className="text-lg font-semibold text-foreground">{title}</h3>
         </div>
         <div className="p-4 space-y-3">
           {dataArray.map((item, index) => renderDataItem(item, index))}
@@ -132,9 +132,9 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
 
   if (variant === 'detailed') {
     return (
-      <div className={`bg-white rounded-xl border border-gray-200 shadow-lg ${className}`}>
-        <div className="p-6 border-b border-gray-100">
-          <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+      <div className={`bg-surface rounded-xl border border-border shadow-lg ${className}`}>
+        <div className="p-6 border-b border-border">
+          <h3 className="text-xl font-bold text-foreground">{title}</h3>
         </div>
         <div className="p-6">
           <div className="grid gap-4">
@@ -147,12 +147,12 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
 
   // Default variant
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>
-      <div className="p-4 border-b border-gray-100">
+    <div className={`bg-surface rounded-lg border border-border shadow-sm ${className}`}>
+      <div className="p-4 border-b border-border">
         {isLoading ? (
-          <div className="h-6 bg-gray-300 rounded w-32 animate-pulse"></div>
+          <div className="h-6 bg-border rounded w-32 animate-pulse"></div>
         ) : (
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+          <h3 className="text-lg font-semibold text-foreground">{title}</h3>
         )}
       </div>
       <div className="p-4">

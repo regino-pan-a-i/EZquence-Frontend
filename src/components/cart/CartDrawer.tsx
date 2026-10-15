@@ -46,17 +46,17 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
       {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white dark:bg-neutral-900 shadow-xl transform transition-transform duration-300 ease-in-out z-50 ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-surface bg-surface shadow-xl transform transition-transform duration-300 ease-in-out z-50 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-neutral-800">
+          <div className="flex items-center justify-between p-4 border-b border-border">
             <h2 className="text-xl font-bold">Shopping Cart</h2>
             <button
               onClick={onClose}
-              className="p-2 min-w-[44px] min-h-[44px] rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors active:scale-95"
+              className="p-2 min-w-[44px] min-h-[44px] rounded-full hover:bg-background hover:bg-border transition-colors active:scale-95"
               aria-label="Close cart"
             >
               <FiX size={24} />
@@ -67,22 +67,22 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           <div className="flex-1 overflow-y-auto p-4">
             {isLoading ? (
               <div className="flex items-center justify-center h-full">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
               </div>
             ) : items.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
-                <FiX size={64} className="text-gray-300 dark:text-neutral-700 mb-4" />
-                <p className="text-gray-500 dark:text-gray-400">Your cart is empty</p>
+                <FiX size={64} className="text-muted mb-4" />
+                <p className="text-muted">Your cart is empty</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {items.map((item) => (
                   <div
                     key={item.productId}
-                    className="flex gap-3 p-3 bg-gray-50 dark:bg-neutral-800 rounded-lg"
+                    className="flex gap-3 p-3 bg-background bg-surface rounded-lg"
                   >
                     {/* Product Image */}
-                    <div className="relative w-20 h-20 flex-shrink-0 bg-gray-200 dark:bg-neutral-700 rounded overflow-hidden">
+                    <div className="relative w-20 h-20 flex-shrink-0 bg-border rounded overflow-hidden">
                       {item.product.productImage ? (
                         <Image
                           src={item.product.productImage[0].imageURL}
@@ -91,7 +91,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           className="object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <div className="w-full h-full flex items-center justify-center text-muted">
                           <FiX size={32} />
                         </div>
                       )}
@@ -100,7 +100,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-sm truncate">{item.product.name}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      <p className="text-sm text-muted mt-1">
                         ${item.product.price.toFixed(2)}
                       </p>
 
@@ -109,7 +109,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         <button
                           onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
                           disabled={updateItem.isPending}
-                          className="p-1.5 min-w-[36px] min-h-[36px] bg-white dark:bg-neutral-700 rounded border border-gray-300 dark:border-neutral-600 hover:bg-gray-50 dark:hover:bg-neutral-600 disabled:opacity-50 active:scale-95"
+                          className="p-1.5 min-w-[36px] min-h-[36px] bg-surface bg-border rounded border border-border hover:bg-background hover:bg-border disabled:opacity-50 active:scale-95"
                           aria-label="Decrease quantity"
                         >
                           <FiMinus size={16} />
@@ -118,7 +118,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         <button
                           onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
                           disabled={updateItem.isPending}
-                          className="p-1.5 min-w-[36px] min-h-[36px] bg-white dark:bg-neutral-700 rounded border border-gray-300 dark:border-neutral-600 hover:bg-gray-50 dark:hover:bg-neutral-600 disabled:opacity-50 active:scale-95"
+                          className="p-1.5 min-w-[36px] min-h-[36px] bg-surface bg-border rounded border border-border hover:bg-background hover:bg-border disabled:opacity-50 active:scale-95"
                           aria-label="Increase quantity"
                         >
                           <FiPlus size={16} />
@@ -143,7 +143,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
           {/* Footer with Total and Checkout */}
           {items.length > 0 && (
-            <div className="border-t border-gray-200 dark:border-neutral-800 p-4 space-y-3">
+            <div className="border-t border-border p-4 space-y-3">
               <div className="flex justify-between items-center text-lg font-bold">
                 <span>Total:</span>
                 <span>${total.toFixed(2)}</span>
@@ -153,7 +153,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   onClose();
                   window.location.href = '/customer/checkout';
                 }}
-                className="w-full py-3 min-h-[48px] bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors active:scale-98"
+                className="w-full py-3 min-h-[48px] bg-primary hover:bg-primary-hover text-primary-foreground font-semibold rounded-lg transition-colors active:scale-98"
               >
                 Proceed to Checkout
               </button>

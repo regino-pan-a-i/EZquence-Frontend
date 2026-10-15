@@ -191,12 +191,12 @@ export default function AnalysisPage() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-background min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Sales Analysis</h1>
-          <p className="text-gray-600">Compare sales performance across different time periods</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Sales Analysis</h1>
+          <p className="text-muted">Compare sales performance across different time periods</p>
         </div>
 
         {/* Period Comparison Filter */}
@@ -315,14 +315,14 @@ export default function AnalysisPage() {
         {/* Product Performance Section */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">Product Performance (Period 2)</h2>
+            <h2 className="text-2xl font-bold text-foreground">Product Performance (Period 2)</h2>
             <div className="flex gap-2">
               <button
                 onClick={() => setSelectedMetric('orderCount')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   selectedMetric === 'orderCount'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-border text-foreground hover:bg-border'
                 }`}
               >
                 Orders
@@ -331,8 +331,8 @@ export default function AnalysisPage() {
                 onClick={() => setSelectedMetric('totalRevenue')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   selectedMetric === 'totalRevenue'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-border text-foreground hover:bg-border'
                 }`}
               >
                 Revenue
@@ -341,8 +341,8 @@ export default function AnalysisPage() {
                 onClick={() => setSelectedMetric('unitsSold')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   selectedMetric === 'unitsSold'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-border text-foreground hover:bg-border'
                 }`}
               >
                 Units Sold
@@ -358,55 +358,55 @@ export default function AnalysisPage() {
         </div>
 
         {/* Product Performance Table */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Detailed Product Breakdown</h3>
+        <div className="bg-surface rounded-lg border border-border shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-border">
+            <h3 className="text-lg font-semibold text-foreground">Detailed Product Breakdown</h3>
           </div>
           <div className="overflow-x-auto">
             {productSalesData.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
+              <div className="p-8 text-center text-muted">
                 <FaBox className="mx-auto text-4xl mb-2 opacity-50" />
                 <p>No product data available for Period 2</p>
               </div>
             ) : (
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-background">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Product Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Orders
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Units Sold
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Total Revenue
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Avg Revenue/Order
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-surface divide-y divide-border">
                   {[...productSalesData]
                     .sort((a, b) => b[selectedMetric] - a[selectedMetric])
                     .map((product, index) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <tr key={index} className="hover:bg-background">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                           {product.productName}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           {product.orderCount}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           {product.unitsSold}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           ${product.totalRevenue.toFixed(2)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           ${(product.totalRevenue / product.orderCount).toFixed(2)}
                         </td>
                       </tr>

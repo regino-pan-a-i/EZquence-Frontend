@@ -140,7 +140,7 @@ export default function InventoryPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center h-64">
-          <div className="text-lg text-gray-600">Loading inventory...</div>
+          <div className="text-lg text-muted">Loading inventory...</div>
         </div>
       </div>
     );
@@ -162,10 +162,10 @@ export default function InventoryPage() {
         <div className="flex flex-col md:flex-row md:items-center gap-3">
           <div>
             <div className="flex items-center gap-3">
-              <FaBoxes className="text-blue-600 text-3xl" />
-              <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
+              <FaBoxes className="text-link text-3xl" />
+              <h1 className="text-3xl font-bold text-foreground">Inventory Management</h1>
             </div>
-            <p className="text-gray-600 mt-2">
+            <p className="text-muted mt-2">
               The status is based on the amount of materials in stock compared to the required
               quantity for today&apos;s production.
             </p>
@@ -174,7 +174,7 @@ export default function InventoryPage() {
         <div className="flex gap-3">
           <button
             onClick={() => router.push('/admin/inventory/transactions')}
-            className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center gap-2"
+            className="px-6 py-2 bg-primary text-primary-foreground font-medium rounded-md hover:bg-primary-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 flex items-center gap-2"
           >
             <FaReceipt className="w-5 h-5" />
             Transactions
@@ -183,7 +183,7 @@ export default function InventoryPage() {
             onClick={handleCreateNew}
             className="px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-2"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             Add Material

@@ -97,11 +97,11 @@ const ProcessDetailModal: React.FC<ProcessDetailModalProps> = ({
       }}
     >
       <div
-        className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl"
+        className="bg-surface rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
+        <div className="bg-gradient-to-r from-primary to-primary-hover text-primary-foreground p-6">
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold mb-2">{process.name}</h2>
@@ -114,7 +114,7 @@ const ProcessDetailModal: React.FC<ProcessDetailModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-colors"
+              className="text-white hover:bg-surface hover:bg-opacity-20 rounded-full p-2 transition-colors"
             >
               <FaTimes className="text-xl" />
             </button>
@@ -128,15 +128,15 @@ const ProcessDetailModal: React.FC<ProcessDetailModalProps> = ({
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <FaCubes className="text-green-600 text-2xl" />
-                <h3 className="text-xl font-bold text-gray-900">Ingredients</h3>
+                <h3 className="text-xl font-bold text-foreground">Ingredients</h3>
               </div>
-              <span className="text-sm font-medium text-gray-600">
+              <span className="text-sm font-medium text-muted">
                 {materialProgress} / {process.materials.length} checked
               </span>
             </div>
             <div className="space-y-2">
               {process.materials.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">No ingredients required</p>
+                <p className="text-muted text-center py-4">No ingredients required</p>
               ) : (
                 process.materials.map((material, index) => (
                   <ChecklistItem
@@ -156,15 +156,15 @@ const ProcessDetailModal: React.FC<ProcessDetailModalProps> = ({
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <FaTasks className="text-purple-600 text-2xl" />
-                <h3 className="text-xl font-bold text-gray-900">Process Steps</h3>
+                <h3 className="text-xl font-bold text-foreground">Process Steps</h3>
               </div>
-              <span className="text-sm font-medium text-gray-600">
+              <span className="text-sm font-medium text-muted">
                 {stepProgress} / {steps.length} checked
               </span>
             </div>
             <div className="space-y-2">
               {steps.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">No steps defined</p>
+                <p className="text-muted text-center py-4">No steps defined</p>
               ) : (
                 steps.map((step, index) => (
                   <ChecklistItem
@@ -180,11 +180,11 @@ const ProcessDetailModal: React.FC<ProcessDetailModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 p-6 bg-gray-50">
+        <div className="border-t border-border p-6 bg-background">
           <div className="flex justify-between items-center gap-4">
             <button
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+              className="px-6 py-2 border border-border rounded-lg text-foreground hover:bg-background transition-colors"
             >
               Cancel
             </button>
@@ -194,7 +194,7 @@ const ProcessDetailModal: React.FC<ProcessDetailModalProps> = ({
               className={`px-6 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
                 allItemsChecked && !isCompleting
                   ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-border text-muted cursor-not-allowed'
               }`}
             >
               <FaCheckCircle />

@@ -94,7 +94,7 @@ export default function CompanyForm({
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          className="block text-sm font-medium text-foreground text-muted mb-2"
         >
           Company Name <span className="text-red-500">*</span>
         </label>
@@ -106,7 +106,7 @@ export default function CompanyForm({
           onChange={handleInputChange}
           required
           disabled={!isEditing}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-neutral-900 disabled:cursor-not-allowed"
+          className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-surface text-foreground disabled:bg-background disabled:bg-surface disabled:cursor-not-allowed"
           placeholder="Enter your company name"
         />
       </div>
@@ -115,7 +115,7 @@ export default function CompanyForm({
       <div>
         <label
           htmlFor="industry"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          className="block text-sm font-medium text-foreground text-muted mb-2"
         >
           Industry <span className="text-red-500">*</span>
         </label>
@@ -126,7 +126,7 @@ export default function CompanyForm({
           onChange={handleInputChange}
           required
           disabled={!isEditing}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-neutral-900 disabled:cursor-not-allowed"
+          className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-surface text-foreground disabled:bg-background disabled:bg-surface disabled:cursor-not-allowed"
         >
           <option value="">Select an industry</option>
           <option value="Manufacturing">Manufacturing</option>
@@ -146,7 +146,7 @@ export default function CompanyForm({
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          className="block text-sm font-medium text-foreground text-muted mb-2"
         >
           Description <span className="text-red-500">*</span>
         </label>
@@ -158,21 +158,21 @@ export default function CompanyForm({
           required
           rows={4}
           disabled={!isEditing}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-800 dark:text-white resize-none disabled:bg-gray-100 dark:disabled:bg-neutral-900 disabled:cursor-not-allowed"
+          className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-surface text-foreground resize-none disabled:bg-background disabled:bg-surface disabled:cursor-not-allowed"
           placeholder="Describe your company and what you do..."
         />
       </div>
 
       {/* Logo Upload */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Company Logo <span className="text-gray-400 text-xs">(optional)</span>
+        <label className="block text-sm font-medium text-foreground text-muted mb-2">
+          Company Logo <span className="text-muted text-xs">(optional)</span>
         </label>
         <div className="flex items-start gap-4">
           {/* Preview */}
           <div className="flex-shrink-0">
             {logoPreview ? (
-              <div className="relative w-32 h-32 border-2 border-gray-300 dark:border-neutral-700 rounded-lg overflow-hidden">
+              <div className="relative w-32 h-32 border-2 border-border rounded-lg overflow-hidden">
                 <Image
                   src={logoPreview}
                   alt="Logo preview"
@@ -181,8 +181,8 @@ export default function CompanyForm({
                 />
               </div>
             ) : (
-              <div className="w-32 h-32 border-2 border-dashed border-gray-300 dark:border-neutral-700 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-neutral-800">
-                <FaImage className="text-4xl text-gray-400" />
+              <div className="w-32 h-32 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-background bg-surface">
+                <FaImage className="text-4xl text-muted" />
               </div>
             )}
           </div>
@@ -199,11 +199,11 @@ export default function CompanyForm({
               />
               <label
                 htmlFor="logo"
-                className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition"
+                className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-lg cursor-pointer hover:bg-primary-hover transition"
               >
                 Choose Logo
               </label>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              <p className="text-sm text-muted mt-2">
                 Upload a JPG, PNG, SVG, or WebP image (max 5MB)
               </p>
             </div>
@@ -219,7 +219,7 @@ export default function CompanyForm({
               type="button"
               onClick={onCancel}
               disabled={isSubmitting}
-              className="px-6 py-3 border border-gray-300 dark:border-neutral-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold"
+              className="px-6 py-3 border border-border text-foreground text-muted rounded-lg hover:bg-background hover:bg-border disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold"
             >
               Cancel
             </button>
@@ -227,7 +227,7 @@ export default function CompanyForm({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition font-semibold"
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover disabled:bg-muted disabled:cursor-not-allowed transition font-semibold"
           >
             {isSubmitting ? (
               <>

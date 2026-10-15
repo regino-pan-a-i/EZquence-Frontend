@@ -29,7 +29,7 @@ export default function SignupBox({ returnTo }: SignupBoxProps) {
   return (
     <div className="m-5">
       <h2 className="mb-4 text-2xl font-bold">Enter Credentials</h2>
-      <form className="p-8 mx-auto space-y-6 max-w-lg bg-white rounded-lg shadow-lg dark:bg-neutral-900">
+      <form className="p-8 mx-auto space-y-6 max-w-lg bg-surface rounded-lg shadow-lg">
         {returnTo && (
           <input type="hidden" name="returnTo" value={returnTo} />
         )}
@@ -37,7 +37,7 @@ export default function SignupBox({ returnTo }: SignupBoxProps) {
           First Name:
         </label>
         <input
-          className="py-2 px-3 w-full rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-neutral-700"
+          className="py-2 px-3 w-full rounded border border-border focus:ring-2 focus:ring-accent focus:outline-none"
           id="firstName"
           name="firstName"
           type="text"
@@ -48,7 +48,7 @@ export default function SignupBox({ returnTo }: SignupBoxProps) {
           Last Name:
         </label>
         <input
-          className="py-2 px-3 w-full rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-neutral-700"
+          className="py-2 px-3 w-full rounded border border-border focus:ring-2 focus:ring-accent focus:outline-none"
           id="lastName"
           name="lastName"
           type="text"
@@ -59,7 +59,7 @@ export default function SignupBox({ returnTo }: SignupBoxProps) {
           Account Type:
         </label>
         <select
-          className="py-2 px-3 w-full rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-neutral-700"
+          className="py-2 px-3 w-full rounded border border-border focus:ring-2 focus:ring-accent focus:outline-none"
           id="role"
           name="role"
           required
@@ -73,7 +73,7 @@ export default function SignupBox({ returnTo }: SignupBoxProps) {
           Email:
         </label>
         <input
-          className="py-2 px-3 w-full rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-neutral-700"
+          className="py-2 px-3 w-full rounded border border-border focus:ring-2 focus:ring-accent focus:outline-none"
           id="email"
           name="email"
           type="email"
@@ -83,7 +83,7 @@ export default function SignupBox({ returnTo }: SignupBoxProps) {
           Password:
         </label>
         <input
-          className="py-2 px-3 w-full rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-neutral-700"
+          className="py-2 px-3 w-full rounded border border-border focus:ring-2 focus:ring-accent focus:outline-none"
           id="password"
           name="password"
           type="password"
@@ -96,7 +96,7 @@ export default function SignupBox({ returnTo }: SignupBoxProps) {
           Confirm Password:
         </label>
         <input
-          className="py-2 px-3 w-full rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-neutral-700"
+          className="py-2 px-3 w-full rounded border border-border focus:ring-2 focus:ring-accent focus:outline-none"
           id="confirmPassword"
           name="confirmPassword"
           type="password"
@@ -106,7 +106,7 @@ export default function SignupBox({ returnTo }: SignupBoxProps) {
 
         <button
           type="submit"
-          className="cursor-pointer py-2 w-full font-semibold text-white bg-gray-600 rounded transition hover:bg-gray-700"
+          className="cursor-pointer py-2 w-full font-semibold text-primary-foreground bg-primary rounded transition hover:bg-primary-hover"
           formAction={handleSubmit}
         >
           Sign up

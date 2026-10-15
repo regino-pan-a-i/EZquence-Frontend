@@ -80,13 +80,13 @@ export default function Sidebar({ variant = 'admin', company }: { variant?: Side
 
   return (
     <aside
-      className={`${open ? 'w-[15%] 2xl:w-[9%]' : 'w-[6%] 2xl:w-[4%]'} h-screen bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-neutral-800 transition-all duration-200 flex flex-col justify-between`}
+      className={`${open ? 'w-[15%] 2xl:w-[9%]' : 'w-[6%] 2xl:w-[4%]'} h-screen bg-surface bg-surface border-r border-border border-border transition-all duration-200 flex flex-col justify-between`}
     >
       <div className="flex flex-col">
         {/* Logo area */}
         <div className="flex items-center gap-3 px-4 py-5">
           <div className="flex items-center gap-3 w-full">
-            <div className="shrink-0 h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-800 flex items-center justify-center">
+            <div className="shrink-0 h-10 w-10 rounded-full bg-border bg-surface flex items-center justify-center">
               {company?.logoURL ? (
                 <Image
                   src={company.logoURL}
@@ -96,7 +96,7 @@ export default function Sidebar({ variant = 'admin', company }: { variant?: Side
                   className="rounded-full"
                 />
               ) : (
-                <FaBuilding className="h-6 w-6 text-gray-700 dark:text-gray-200" />
+                <FaBuilding className="h-6 w-6 text-foreground" />
               )}
             </div>
             {!open && <div className="grow" />}
@@ -125,10 +125,10 @@ export default function Sidebar({ variant = 'admin', company }: { variant?: Side
         <button
           aria-label={open ? 'Collapse sidebar' : 'Expand sidebar'}
           onClick={() => setOpen((v) => !v)}
-          className="w-full flex items-center justify-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+          className="w-full flex items-center justify-center p-2 rounded-md hover:bg-background hover:bg-border transition-colors"
         >
           <svg
-            viewBox="0 0 24 24"
+            viewBox="0 24"
             className={`h-5 w-5 transform transition-transform ${open ? 'rotate-180' : 'rotate-0'}`}
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

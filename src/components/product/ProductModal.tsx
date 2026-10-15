@@ -724,12 +724,12 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
   return (
     <div
-      className={`bg-white border border-gray-200 h-full p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-auto ${className}`}
+      className={`bg-surface border border-border h-full p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-auto ${className}`}
     >
       <div className="flex flex-col md:flex-row gap-4 min-h-0">
         <div className="w-full md:w-1/2 overflow-y-auto">
           {/* Product Image Section */}
-          <div className="relative w-full h-64 min-h-[256px] bg-gray-100 overflow-hidden rounded-lg flex-shrink-0">
+          <div className="relative w-full h-64 min-h-[256px] bg-background overflow-hidden rounded-lg flex-shrink-0">
             {!isEditing ? (
               <Image
                 src={imagePreview || 'https://placehold.co/600x400'}
@@ -755,7 +755,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                     value={editedProduct?.productImage[0]?.imageURL}
                     onChange={handleImageChange}
                     placeholder="Image URL"
-                    className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    className="w-full max-w-md px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent bg-surface"
                   />
                 </div>
               </div>
@@ -768,7 +768,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
             <div className="mb-4">
               {!isEditing ? (
                 <>
-                  <h2 className="text-2xl font-bold text-gray-900">{product?.name}</h2>
+                  <h2 className="text-2xl font-bold text-foreground">{product?.name}</h2>
                   <p className="text-xl font-semibold text-green-600 mt-2">
                     ${product?.price.toFixed(2)}
                   </p>
@@ -784,10 +784,10 @@ const ProductModal: React.FC<ProductCardProps> = ({
                       )
                     }
                     placeholder="Product Name"
-                    className="w-full text-2xl font-bold px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full text-2xl font-bold px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                   />
                   <div className="mt-2">
-                    <label className="text-sm font-semibold text-gray-700 mb-1 block">Price</label>
+                    <label className="text-sm font-semibold text-foreground mb-1 block">Price</label>
                     <input
                       type="number"
                       step="0.01"
@@ -801,7 +801,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                         )
                       }
                       placeholder="0.00"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                     />
                   </div>
                 </>
@@ -810,9 +810,9 @@ const ProductModal: React.FC<ProductCardProps> = ({
 
             {/* Product Details */}
             <div className="mb-4">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Details</h3>
+              <h3 className="text-sm font-semibold text-foreground mb-2">Details</h3>
               {!isEditing ? (
-                <p className="text-gray-600 leading-relaxed">{product?.details}</p>
+                <p className="text-muted leading-relaxed">{product?.details}</p>
               ) : (
                 <textarea
                   value={editedProduct?.details}
@@ -823,17 +823,17 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   }
                   placeholder="Product details..."
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent resize-none"
                 />
               )}
             </div>
           </div>
           {/* Product Materials */}
           <div className="p-4 mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-3">Materials Required</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-3">Materials Required</h3>
             {!process && !editedProcess && !isEditing ? (
-              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-gray-500 text-sm text-center italic">
+              <div className="p-4 bg-background rounded-lg border border-border">
+                <p className="text-muted text-sm text-center italic">
                   No process defined - materials information unavailable
                 </p>
               </div>
@@ -843,13 +843,13 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   process?.materials.map((material, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                      className="flex items-center justify-between p-3 bg-background border border-border rounded-lg hover:bg-background transition-colors"
                     >
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">{material.name}</p>
+                        <p className="font-medium text-foreground">{material.name}</p>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <span className="font-semibold text-blue-600">
+                      <div className="flex items-center gap-2 text-sm text-muted">
+                        <span className="font-semibold text-link">
                           {material.quantityNeeded}
                         </span>
                         <span>{material.units}</span>
@@ -857,7 +857,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                     </div>
                   ))}
                 {process && process?.materials.length === 0 && (
-                  <p className="text-gray-500 text-sm italic">No materials added yet</p>
+                  <p className="text-muted text-sm italic">No materials added yet</p>
                 )}
               </div>
             ) : (
@@ -866,7 +866,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   editedProcess?.materials.map((material, index) => (
                     <div
                       key={index}
-                      className="relative flex gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg"
+                      className="relative flex gap-2 p-3 bg-background border border-border rounded-lg"
                     >
                       <div className="flex-1 relative">
                         <input
@@ -882,28 +882,28 @@ const ProductModal: React.FC<ProductCardProps> = ({
                             setMaterialSearchTerm(material.name);
                           }}
                           placeholder="Material name (type to search)"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                         />
                         {showMaterialDropdown === index && (
-                          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                          <div className="absolute z-10 w-full mt-1 bg-surface border border-border rounded-md shadow-lg max-h-60 overflow-y-auto">
                             {getFilteredMaterials(materialSearchTerm).length > 0 ? (
                               <>
                                 {getFilteredMaterials(materialSearchTerm).map((mat) => (
                                   <div
                                     key={mat.materialId}
                                     onClick={() => handleMaterialSelect(index, mat)}
-                                    className="px-3 py-2 hover:bg-blue-50 cursor-pointer flex justify-between items-center"
+                                    className="px-3 py-2 hover:bg-accent/10 cursor-pointer flex justify-between items-center"
                                   >
                                     <span className="font-medium">{mat.name}</span>
-                                    <span className="text-sm text-gray-500">{mat.units}</span>
+                                    <span className="text-sm text-muted">{mat.units}</span>
                                   </div>
                                 ))}
-                                <div className="px-3 py-2 text-xs text-gray-500 border-t border-gray-200 bg-gray-50">
+                                <div className="px-3 py-2 text-xs text-muted border-t border-border bg-background">
                                   Or type a new material name
                                 </div>
                               </>
                             ) : (
-                              <div className="px-3 py-2 text-sm text-gray-500">
+                              <div className="px-3 py-2 text-sm text-muted">
                                 No materials found. Type to create new material.
                               </div>
                             )}
@@ -921,14 +921,14 @@ const ProductModal: React.FC<ProductCardProps> = ({
                           )
                         }
                         placeholder="Qty"
-                        className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-24 px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                       />
                       <input
                         type="text"
                         value={material.units}
                         onChange={(e) => handleMaterialChange(index, 'units', e.target.value)}
                         placeholder="Units"
-                        className="w-28 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-28 px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                       />
                       <button
                         onClick={() => handleRemoveMaterial(index)}
@@ -941,7 +941,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                   ))}
                 <button
                   onClick={handleAddMaterial}
-                  className="w-full px-3 py-2 border-2 border-dashed border-gray-300 text-gray-600 rounded-md hover:border-blue-500 hover:text-blue-500 transition-colors duration-200 font-medium"
+                  className="w-full px-3 py-2 border-2 border-dashed border-border text-muted rounded-md hover:border-accent hover:text-link transition-colors duration-200 font-medium"
                 >
                   + Add Material
                 </button>
@@ -955,7 +955,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
               <div>
                 {/* Process Name */}
                 {!isEditing ? (
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">{process?.name}</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">{process?.name}</h3>
                 ) : (
                   <input
                     type="text"
@@ -966,18 +966,18 @@ const ProductModal: React.FC<ProductCardProps> = ({
                       )
                     }
                     placeholder="Process Name"
-                    className="w-full text-lg font-semibold px-3 py-2 mb-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full text-lg font-semibold px-3 py-2 mb-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                   />
                 )}
 
                 {/* Products Per Batch */}
                 {!isEditing ? (
-                  <p className="font-semibold text-gray-700 leading-relaxed mb-4">
+                  <p className="font-semibold text-foreground leading-relaxed mb-4">
                     Products Per batch: {process?.productsPerBatch}
                   </p>
                 ) : (
                   <div className="mb-4 flex items-center gap-2">
-                    <label className="font-semibold text-gray-700">Products Per batch:</label>
+                    <label className="font-semibold text-foreground">Products Per batch:</label>
                     <input
                       type="number"
                       value={editedProcess?.productsPerBatch}
@@ -989,19 +989,19 @@ const ProductModal: React.FC<ProductCardProps> = ({
                         )
                       }
                       placeholder="0"
-                      className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-24 px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                     />
                   </div>
                 )}
 
                 {/* Process Steps */}
                 <div className="space-y-2 h-fit">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Process Steps:</h4>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">Process Steps:</h4>
                   {!isEditing ? (
                     <>
                       {process &&
                         parseProcessSteps(process.details).map((step, index) => (
-                          <div key={index} className="pl-2 text-gray-600 leading-relaxed">
+                          <div key={index} className="pl-2 text-muted leading-relaxed">
                             {step.trim()}
                           </div>
                         ))}
@@ -1016,19 +1016,19 @@ const ProductModal: React.FC<ProductCardProps> = ({
                         );
                       }}
                       placeholder="Enter process steps (e.g., 1. First step 2. Second step 3. Third step)"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm overflow-hidden resize-none"
+                      className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent text-sm overflow-hidden resize-none"
                       style={{ minHeight: '100px' }}
                     />
                   )}
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <div className="flex flex-col items-center justify-center p-8 bg-background rounded-lg border-2 border-dashed border-border">
                 <svg
-                  className="w-16 h-16 text-gray-400 mb-4"
+                  className="w-16 h-16 text-muted mb-4"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  viewBox="0 24"
                 >
                   <path
                     strokeLinecap="round"
@@ -1037,8 +1037,8 @@ const ProductModal: React.FC<ProductCardProps> = ({
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">No Process Defined</h3>
-                <p className="text-sm text-gray-500 text-center mb-4">
+                <h3 className="text-lg font-semibold text-foreground mb-2">No Process Defined</h3>
+                <p className="text-sm text-muted text-center mb-4">
                   This product doesn&apos;t have a manufacturing process yet.
                 </p>
               </div>
@@ -1051,7 +1051,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
         {!isEditing ? (
           <button
             onClick={handleEdit}
-            className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full px-4 py-2 bg-primary text-primary-foreground font-medium rounded-md hover:bg-primary-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
           >
             Edit Product
           </button>
@@ -1060,7 +1060,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
             <button
               onClick={handleCancel}
               disabled={isSaving}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-border text-foreground font-medium rounded-md hover:bg-border transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-muted focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
@@ -1075,7 +1075,7 @@ const ProductModal: React.FC<ProductCardProps> = ({
                     className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
-                    viewBox="0 0 24 24"
+                    viewBox="0 24"
                   >
                     <circle
                       className="opacity-25"

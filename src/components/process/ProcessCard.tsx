@@ -25,43 +25,43 @@ const ProcessCard: React.FC<ProcessCardProps> = ({ process, onSelect }) => {
   return (
     <div
       onClick={() => onSelect(process)}
-      className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-200 cursor-pointer transform hover:-translate-y-1"
+      className="bg-surface border border-border rounded-lg p-6 hover:shadow-lg transition-all duration-200 cursor-pointer transform hover:-translate-y-1"
     >
       {/* Header with gradient */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg p-4 mb-4">
+      <div className="bg-gradient-to-r from-primary to-primary-hover text-primary-foreground rounded-lg p-4 mb-4">
         <h3 className="text-xl font-bold">{process.name}</h3>
       </div>
 
       {/* Metadata Grid */}
       <div className="space-y-3">
-        <div className="flex items-center gap-3 text-gray-700">
-          <FaBoxOpen className="text-blue-600 text-lg flex-shrink-0" />
+        <div className="flex items-center gap-3 text-foreground">
+          <FaBoxOpen className="text-link text-lg flex-shrink-0" />
           <div>
-            <p className="text-xs text-gray-500 uppercase font-medium">Products per Batch</p>
+            <p className="text-xs text-muted uppercase font-medium">Products per Batch</p>
             <p className="text-lg font-bold">{process.productsPerBatch}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 text-gray-700">
+        <div className="flex items-center gap-3 text-foreground">
           <FaCubes className="text-green-600 text-lg flex-shrink-0" />
           <div>
-            <p className="text-xs text-gray-500 uppercase font-medium">Ingredients</p>
+            <p className="text-xs text-muted uppercase font-medium">Ingredients</p>
             <p className="text-lg font-bold">{materialCount} required</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 text-gray-700">
+        <div className="flex items-center gap-3 text-foreground">
           <FaTasks className="text-purple-600 text-lg flex-shrink-0" />
           <div>
-            <p className="text-xs text-gray-500 uppercase font-medium">Process Steps</p>
+            <p className="text-xs text-muted uppercase font-medium">Process Steps</p>
             <p className="text-lg font-bold">{stepCount} steps</p>
           </div>
         </div>
       </div>
 
       {/* View Details Hint */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <p className="text-sm text-blue-600 font-medium text-center">
+      <div className="mt-4 pt-4 border-t border-border">
+        <p className="text-sm text-link font-medium text-center">
           Click to view details →
         </p>
       </div>

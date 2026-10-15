@@ -9,7 +9,11 @@ import {
   FaSyncAlt,
   FaBars,
   FaTimes,
+  FaClipboardCheck,
+  FaStopwatch,
+  FaUsers,
 } from 'react-icons/fa';
+import Image from 'next/image';
 
 // ==========================================
 // EDITABLE CONFIGURATION
@@ -21,9 +25,9 @@ import {
 const BRAND_CONFIG = {
   brandName: 'EZquence',
   // Primary color for buttons and accents (Tailwind classes)
-  primaryColor: 'bg-blue-600 hover:bg-blue-700 text-white',
+  primaryColor: 'bg-accent hover:bg-opacity-90 text-primary-foreground',
   // Secondary color for outline buttons (Tailwind classes)
-  secondaryColor: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950',
+  secondaryColor: 'border-2 border-accent text-link hover:bg-background',
   // To replace the SVG logo with an image:
   // 1. Add your logo to /public/logo.png (or .jpg, .svg)
   // 2. Uncomment the Image import at top: import Image from 'next/image';
@@ -37,6 +41,26 @@ const HERO_CONTENT = {
   description:
     'EZquence is a comprehensive manufacturing management system that helps you optimize production workflows, track inventory in real-time, and manage orders efficiently. Built for manufacturers who demand precision and control.',
 };
+
+// Highlights
+const HIGHLIGHTS = [
+  {
+    title: 'Manage Processes',
+    iconName: 'FaClipboardCheck',
+  },
+  {
+    title: 'Save Time',
+    iconName: 'FaStopwatch',
+  },
+  {
+    title: 'Increase Productivity',
+    iconName: 'FaChartLine',
+  },
+  {
+    title: 'Focus on What Matters',
+    iconName: 'FaUsers',
+  },
+];
 
 // Features Section
 // Add or remove features as needed. Each feature needs: title, description, and iconName
@@ -88,6 +112,12 @@ const getIcon = (iconName: string) => {
       return <FaShoppingCart className={iconClass} />;
     case 'FaSyncAlt':
       return <FaSyncAlt className={iconClass} />;
+    case 'FaUsers':
+      return <FaUsers className={iconClass} />;
+    case 'FaClipboardCheck':
+      return <FaClipboardCheck className={iconClass} />;
+    case 'FaStopwatch':
+      return <FaStopwatch className={iconClass} />;
     default:
       return <FaChartLine className={iconClass} />;
   }
@@ -97,18 +127,18 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950">
+    <div className="min-h-screen bg-background">
       {/* Navigation Bar */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-neutral-800">
+      <nav className="sticky top-0 z-50 bg-surface/80 bg-surface backdrop-blur-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Brand Name */}
             <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-800 flex items-center justify-center">
+              <div className="h-10 w-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                 {/* Logo SVG - Replace with Image component if you have a custom logo */}
                 <svg
-                  viewBox="0 0 24 24"
-                  className="h-6 w-6 text-gray-700 dark:text-gray-200"
+                  viewBox="0 24"
+                  className="h-6 w-6 text-foreground dark:text-secondary"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -121,7 +151,7 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <span className="font-semibold text-xl text-gray-900 dark:text-gray-100">
+              <span className="font-semibold text-xl text-foreground">
                 {BRAND_CONFIG.brandName}
               </span>
             </Link>
@@ -130,19 +160,19 @@ export default function Home() {
             <div className="hidden md:flex items-center gap-4">
               <Link
                 href="/marketplace"
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                className="text-foreground hover:text-link font-medium transition-colors"
               >
                 Marketplace
               </Link>
               <Link
                 href="/login"
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                className="text-foreground hover:text-link font-medium transition-colors"
               >
                 Login
               </Link>
               <Link
                 href="/login?mode=signup"
-                className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 font-medium transition-colors"
+                className="px-4 py-2 rounded-md bg-accent text-primary-foreground hover:bg-opacity-90 font-medium transition-colors"
               >
                 Sign Up
               </Link>
@@ -151,7 +181,7 @@ export default function Home() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+              className="md:hidden p-2 rounded-md text-foreground hover:bg-border transition-colors"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
@@ -164,26 +194,26 @@ export default function Home() {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden py-4 border-t border-gray-200 dark:border-neutral-800">
+            <div className="md:hidden py-4 border-t border-border">
               <div className="flex flex-col gap-3">
                 <Link
                   href="/marketplace"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors py-2"
+                  className="text-foreground hover:text-link font-medium transition-colors py-2"
                 >
                   Marketplace
                 </Link>
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors py-2"
+                  className="text-foreground hover:text-link font-medium transition-colors py-2"
                 >
                   Login
                 </Link>
                 <Link
                   href="/login?mode=signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 font-medium transition-colors text-center"
+                  className="px-4 py-2 rounded-md bg-accent text-primary-foreground hover:bg-opacity-90 font-medium transition-colors text-center"
                 >
                   Sign Up
                 </Link>
@@ -198,37 +228,23 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           {/* Large Logo */}
           <div className="flex justify-center mb-8">
-            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 dark:from-blue-600 dark:to-blue-800 flex items-center justify-center shadow-lg">
-              {/* Logo SVG - Replace with Image component if you have a custom logo */}
-              <svg
-                viewBox="0 0 24 24"
-                className="h-12 w-12 text-white"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 2L2 7l10 5 10-5-10-5z"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
+              <Image src="/logo.png" alt="Logo" width={500} height={500} />
+            {/* <div className="h-100 w-200 bg-gradient-to-br from-primary to-accent dark:from-secondary to-primary shadow-lg">
+            </div> */}
           </div>
 
           {/* Hero Title */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-4">
             {HERO_CONTENT.title}
           </h1>
 
           {/* Hero Subtitle */}
-          <p className="text-xl sm:text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-6">
+          <p className="text-xl sm:text-2xl text-link dark:text-secondary font-semibold mb-6">
             {HERO_CONTENT.subtitle}
           </p>
 
           {/* Hero Description */}
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
             {HERO_CONTENT.description}
           </p>
 
@@ -250,15 +266,39 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="px-4 sm:px-6 lg:px-8 py-16 bg-background">
+        <div className="max-w-7xl mx-auto">
+          {/* Highlights Grid */}
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {HIGHLIGHTS.map((highlight, index) => (
+              <div
+                key={index}
+                className="bg-surface rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow border border-border flex flex-col items-center text-center"
+              >
+                {/* Highlight Icon */}
+                <div className="mb-4 text-link dark:text-secondary">
+                  {getIcon(highlight.iconName)}
+                </div>
+
+                {/* Highlight Title */}
+                <h3 className="text-xl font-semibold text-foreground">
+                  {highlight.title}
+                </h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16 bg-white dark:bg-neutral-900">
+      <section className="px-4 sm:px-6 lg:px-8 py-16 bg-surface">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
               Powerful Features for Modern Manufacturing
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="text-lg text-muted max-w-2xl mx-auto">
               Everything you need to manage your production operations efficiently
             </p>
           </div>
@@ -268,20 +308,20 @@ export default function Home() {
             {FEATURES.map((feature, index) => (
               <div
                 key={index}
-                className="bg-gray-50 dark:bg-neutral-800 rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow border border-gray-200 dark:border-neutral-700"
+                className="bg-background rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow border border-border"
               >
                 {/* Feature Icon */}
-                <div className="mb-4 text-blue-600 dark:text-blue-400">
+                <div className="mb-4 text-link dark:text-secondary">
                   {getIcon(feature.iconName)}
                 </div>
 
                 {/* Feature Title */}
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                <h3 className="text-xl font-semibold text-foreground mb-3">
                   {feature.title}
                 </h3>
 
                 {/* Feature Description */}
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-muted leading-relaxed">
                   {feature.description}
                 </p>
               </div>
@@ -291,9 +331,9 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-100 dark:bg-neutral-950 border-t border-gray-200 dark:border-neutral-800 py-8">
+      <footer className="bg-background border-t border-border py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-gray-600 dark:text-gray-400">
+          <div className="text-center text-muted">
             <p>{FOOTER_CONTENT.copyrightText}</p>
           </div>
         </div>

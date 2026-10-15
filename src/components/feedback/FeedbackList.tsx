@@ -37,7 +37,7 @@ export default function FeedbackList({
   };
 
   const getSortIcon = (field: SortField) => {
-    if (sortField !== field) return <FaSort className="text-gray-400" />;
+    if (sortField !== field) return <FaSort className="text-muted" />;
     return sortOrder === 'asc' ? <FaSortUp /> : <FaSortDown />;
   };
 
@@ -71,21 +71,21 @@ export default function FeedbackList({
   return (
     <div className="space-y-4">
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-gray-50 dark:bg-neutral-800 p-4 rounded-lg">
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-background bg-surface p-4 rounded-lg">
         {/* Sort Controls */}
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <span className="text-sm font-medium text-foreground text-muted">
             Sort by:
           </span>
           <button
             onClick={() => handleSort('dateCreated')}
-            className="flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-800 transition text-sm"
+            className="flex items-center gap-1 px-3 py-1.5 bg-surface border border-border rounded-lg hover:bg-background hover:bg-border transition text-sm"
           >
             Date {getSortIcon('dateCreated')}
           </button>
           <button
             onClick={() => handleSort('resolved')}
-            className="flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-800 transition text-sm"
+            className="flex items-center gap-1 px-3 py-1.5 bg-surface border border-border rounded-lg hover:bg-background hover:bg-border transition text-sm"
           >
             Status {getSortIcon('resolved')}
           </button>
@@ -93,11 +93,11 @@ export default function FeedbackList({
 
         {/* Filter Controls */}
         <div className="flex items-center gap-2">
-          <FaFilter className="text-gray-500 text-sm" />
+          <FaFilter className="text-muted text-sm" />
           <select
             value={filterResolved}
             onChange={(e) => setFilterResolved(e.target.value as 'all' | 'resolved' | 'pending')}
-            className="px-3 py-1.5 bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
+            className="px-3 py-1.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none text-sm"
           >
             <option value="all">All Feedback</option>
             <option value="pending">Pending Only</option>
@@ -108,8 +108,8 @@ export default function FeedbackList({
 
       {/* Feedback List */}
       {sortedAndFilteredFeedbacks.length === 0 ? (
-        <div className="text-center py-12 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-lg">
-          <p className="text-gray-500 dark:text-gray-400">
+        <div className="text-center py-12 bg-surface border border-border rounded-lg">
+          <p className="text-muted">
             {filterResolved === 'all'
               ? 'No feedback yet'
               : filterResolved === 'resolved'
@@ -132,7 +132,7 @@ export default function FeedbackList({
       )}
 
       {/* Summary */}
-      <div className="text-sm text-gray-600 dark:text-gray-400 text-center">
+      <div className="text-sm text-muted text-center">
         Showing {sortedAndFilteredFeedbacks.length} of {feedbacks.length} feedback
         {feedbacks.length !== 1 ? 's' : ''}
       </div>

@@ -82,9 +82,9 @@ export default function OrdersPage() {
   const orders = ordersData?.data || [];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 p-4 md:p-6">
+    <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900 dark:text-white">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-foreground">
           My Orders
         </h1>
 
@@ -106,15 +106,15 @@ export default function OrdersPage() {
         {/* Orders List */}
         {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-accent"></div>
           </div>
         ) : !orders ? (
           <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-            <FiPackage size={80} className="text-gray-300 dark:text-neutral-700 mb-6" />
-            <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+            <FiPackage size={80} className="text-muted mb-6" />
+            <h2 className="text-xl font-bold mb-2 text-foreground">
               No orders yet
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-muted mb-6">
               Start shopping to place your first order
             </p>
           </div>
@@ -134,11 +134,11 @@ export default function OrdersPage() {
         )}
 
         {/* Info Banner */}
-        <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+        <div className="mt-8 p-4 bg-accent/10 border border-accent/30 rounded-lg">
+          <h3 className="font-semibold text-link mb-2">
             📱 Real-time Order Updates
           </h3>
-          <p className="text-sm text-blue-700 dark:text-blue-300">
+          <p className="text-sm text-link">
             You&apos;ll receive automatic notifications when your order status changes. Keep this page open to see updates in real-time!
           </p>
         </div>

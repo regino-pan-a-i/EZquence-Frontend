@@ -204,18 +204,18 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
 
   if (isLoading) {
     return (
-      <div className={`bg-white border border-gray-200 p-6 rounded-lg shadow-lg ${className}`}>
+      <div className={`bg-surface border border-border p-6 rounded-lg shadow-lg ${className}`}>
         <div className="flex items-center justify-center h-64">
-          <div className="text-lg text-gray-600">Loading...</div>
+          <div className="text-lg text-muted">Loading...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`bg-white border border-gray-200 p-6 rounded-lg shadow-lg ${className}`}>
+    <div className={`bg-surface border border-border p-6 rounded-lg shadow-lg ${className}`}>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">
+        <h2 className="text-2xl font-bold text-foreground">
           {isCreating ? 'Create New Material' : isEditing ? 'Edit Material' : 'Material Details'}
         </h2>
       </div>
@@ -223,18 +223,18 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
       <div className="space-y-4">
         {/* Material Name */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-foreground mb-2">
             Material Name <span className="text-red-500">*</span>
           </label>
           {!isEditing ? (
-            <p className="text-lg text-gray-900">{material?.name}</p>
+            <p className="text-lg text-foreground">{material?.name}</p>
           ) : (
             <input
               type="text"
               value={editedMaterial.name || ''}
               onChange={(e) => setEditedMaterial({ ...editedMaterial, name: e.target.value })}
               placeholder="Enter material name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
               maxLength={100}
             />
           )}
@@ -242,11 +242,11 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
 
         {/* Quantity in Stock */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-foreground mb-2">
             Quantity in Stock <span className="text-red-500">*</span>
           </label>
           {!isEditing ? (
-            <p className="text-lg text-gray-900">
+            <p className="text-lg text-foreground">
               {material?.quantityInStock} {material?.units}
             </p>
           ) : (
@@ -262,23 +262,23 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
                 })
               }
               placeholder="0"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
             />
           )}
         </div>
 
         {/* Units */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-foreground mb-2">
             Units <span className="text-red-500">*</span>
           </label>
           {!isEditing ? (
-            <p className="text-lg text-gray-900">{material?.units}</p>
+            <p className="text-lg text-foreground">{material?.units}</p>
           ) : (
             <select
               value={editedMaterial.units || ''}
               onChange={(e) => setEditedMaterial({ ...editedMaterial, units: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
             >
               <option value="">Select unit</option>
               <option value="kilograms">Kilograms (kg)</option>
@@ -298,11 +298,11 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
 
         {/* Expiration Date */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-foreground mb-2">
             Expiration Date (Optional)
           </label>
           {!isEditing ? (
-            <p className="text-lg text-gray-900">{formatDate(material?.expirationDate || null)}</p>
+            <p className="text-lg text-foreground">{formatDate(material?.expirationDate || null)}</p>
           ) : (
             <input
               type="date"
@@ -317,7 +317,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
                   expirationDate: e.target.value ? new Date(e.target.value) : null,
                 })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
             />
           )}
         </div>
@@ -329,13 +329,13 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
           <>
             <button
               onClick={handleEdit}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="flex-1 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-md hover:bg-primary-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
             >
               Edit Material
             </button>
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              className="flex-1 px-4 py-2 bg-border text-foreground font-medium rounded-md hover:bg-border transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-muted focus:ring-offset-2"
             >
               Close
             </button>
@@ -345,7 +345,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
             <button
               onClick={handleCancel}
               disabled={isSaving}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-border text-foreground font-medium rounded-md hover:bg-border transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-muted focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
@@ -360,7 +360,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
                     className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
-                    viewBox="0 0 24 24"
+                    viewBox="0 24"
                   >
                     <circle
                       className="opacity-25"

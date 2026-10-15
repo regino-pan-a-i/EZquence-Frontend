@@ -184,27 +184,27 @@ export default function AccountPage() {
   if (loadingCompany || loadingFeedback) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <FaSpinner className="animate-spin text-4xl text-blue-600" />
+        <FaSpinner className="animate-spin text-4xl text-link" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Admin View */}
         {userRole === UserRole.ADMIN && (
           <>
             {/* Company Information Section */}
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-8">
+            <div className="bg-surface rounded-lg shadow-lg p-8">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <FaBuilding className="text-3xl text-blue-600" />
+                  <FaBuilding className="text-3xl text-link" />
                   <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-3xl font-bold text-foreground">
                       Company Information
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-400 mt-1">
+                    <p className="text-muted mt-1">
                       Manage your company profile
                     </p>
                   </div>
@@ -212,7 +212,7 @@ export default function AccountPage() {
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover transition font-semibold"
                   >
                     <FaEdit />
                     Edit
@@ -230,14 +230,14 @@ export default function AccountPage() {
             </div>
 
             {/* Company Feedback Section */}
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-8">
+            <div className="bg-surface rounded-lg shadow-lg p-8">
               <div className="flex items-center gap-3 mb-6">
-                <FaCommentDots className="text-3xl text-blue-600" />
+                <FaCommentDots className="text-3xl text-link" />
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <h2 className="text-2xl font-bold text-foreground">
                     Customer Feedback
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-400 mt-1">
+                  <p className="text-muted mt-1">
                     View and manage feedback from your customers
                   </p>
                 </div>
@@ -260,10 +260,10 @@ export default function AccountPage() {
             {/* Submit Feedback Section */}
             <div>
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-3xl font-bold text-foreground">
                   Account & Feedback
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400 mt-1">
+                <p className="text-muted mt-1">
                   Share your thoughts and track your feedback
                 </p>
               </div>
@@ -275,14 +275,14 @@ export default function AccountPage() {
             </div>
 
             {/* My Feedback History Section */}
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-8">
+            <div className="bg-surface rounded-lg shadow-lg p-8">
               <div className="flex items-center gap-3 mb-6">
-                <FaCommentDots className="text-3xl text-blue-600" />
+                <FaCommentDots className="text-3xl text-link" />
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <h2 className="text-2xl font-bold text-foreground">
                     My Feedback
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-400 mt-1">
+                  <p className="text-muted mt-1">
                     View your submitted feedback and their status
                   </p>
                 </div>
@@ -298,11 +298,11 @@ export default function AccountPage() {
 
         {/* Worker View (if needed) */}
         {userRole === UserRole.WORKER && (
-          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-8 text-center">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <div className="bg-surface rounded-lg shadow-lg p-8 text-center">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
               Account Settings
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-muted">
               Worker account management features coming soon.
             </p>
           </div>

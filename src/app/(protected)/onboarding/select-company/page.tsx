@@ -83,23 +83,23 @@ export default function SelectCompanyPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-neutral-950">
-        <FaSpinner className="animate-spin text-4xl text-blue-600" />
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <FaSpinner className="animate-spin text-4xl text-link" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-8">
+        <div className="bg-surface rounded-lg shadow-lg p-8">
           <div className="flex items-center gap-3 mb-6">
-            <FaBuilding className="text-3xl text-blue-600" />
+            <FaBuilding className="text-3xl text-link" />
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-3xl font-bold text-foreground">
                 Select a Company
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-muted mt-1">
                 {userRole === UserRole.WORKER
                   ? 'Choose the company you work for (requires admin approval)'
                   : 'Choose a company to browse their products'}
@@ -110,13 +110,13 @@ export default function SelectCompanyPage() {
           {/* Search Bar */}
           <div className="mb-6">
             <div className="relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
               <input
                 type="text"
                 placeholder="Search companies by name or industry..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-800 dark:text-white"
+                className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-surface text-foreground"
               />
             </div>
           </div>
@@ -130,20 +130,20 @@ export default function SelectCompanyPage() {
                   onClick={() => setSelectedCompanyId(company.companyId)}
                   className={`relative cursor-pointer p-6 border-2 rounded-lg transition-all ${
                     selectedCompanyId === company.companyId
-                      ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-gray-200 dark:border-neutral-700 hover:border-blue-400 dark:hover:border-blue-600'
+                      ? 'border-accent bg-accent/10'
+                      : 'border-border hover:border-accent'
                   }`}
                 >
                   {/* Selected Indicator */}
                   {selectedCompanyId === company.companyId && (
                     <div className="absolute top-3 right-3">
-                      <FaCheckCircle className="text-blue-600 text-2xl" />
+                      <FaCheckCircle className="text-link text-2xl" />
                     </div>
                   )}
 
                   {/* Company Logo */}
                   <div className="flex items-center justify-center mb-4">
-                    <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-800">
+                    <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-background bg-surface">
                       
                       {company.logoURL ? (
                         <Image
@@ -153,21 +153,21 @@ export default function SelectCompanyPage() {
                           className="object-cover"
                         />
                       ) : (
-                        <div className="flex items-center justify-center w-full h-full bg-gray-200 dark:bg-neutral-700">
-                          <FaImage className="text-gray-400 dark:text-neutral-400 text-4xl" />
+                        <div className="flex items-center justify-center w-full h-full bg-border">
+                          <FaImage className="text-muted text-4xl" />
                         </div>
                       )}
                     </div>
                   </div>
 
                   {/* Company Info */}
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white text-center mb-2">
+                  <h3 className="text-lg font-semibold text-foreground text-center mb-2">
                     {company.name}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-2">
+                  <p className="text-sm text-muted text-center mb-2">
                     {company.industry}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-500 text-center line-clamp-3">
+                  <p className="text-sm text-muted text-center line-clamp-3">
                     {company.description}
                   </p>
                 </div>
@@ -175,7 +175,7 @@ export default function SelectCompanyPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted">
                 {searchQuery
                   ? 'No companies found matching your search'
                   : 'No companies available'}
@@ -189,7 +189,7 @@ export default function SelectCompanyPage() {
               <button
                 onClick={handleSelectCompany}
                 disabled={!selectedCompanyId || isJoining}
-                className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition font-semibold text-lg"
+                className="flex items-center gap-2 px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover disabled:bg-muted disabled:cursor-not-allowed transition font-semibold text-lg"
               >
                 {isJoining ? (
                   <>

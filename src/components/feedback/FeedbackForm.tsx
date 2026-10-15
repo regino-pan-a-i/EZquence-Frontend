@@ -20,10 +20,10 @@ export default function FeedbackForm({ onSubmit, isSubmitting = false }: Feedbac
   };
 
   return (
-    <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-lg shadow-sm p-6">
+    <div className="bg-surface border border-border rounded-lg shadow-sm p-6">
       <div className="flex items-center gap-2 mb-4">
-        <FaCommentDots className="text-blue-600 text-xl" />
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <FaCommentDots className="text-link text-xl" />
+        <h3 className="text-lg font-semibold text-foreground">
           Submit Feedback
         </h3>
       </div>
@@ -32,7 +32,7 @@ export default function FeedbackForm({ onSubmit, isSubmitting = false }: Feedbac
         <div>
           <label
             htmlFor="feedback-message"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            className="block text-sm font-medium text-foreground text-muted mb-2"
           >
             Your Feedback
           </label>
@@ -44,9 +44,9 @@ export default function FeedbackForm({ onSubmit, isSubmitting = false }: Feedbac
             rows={4}
             maxLength={1000}
             placeholder="Share your thoughts, suggestions, or concerns..."
-            className="w-full px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-neutral-800 dark:text-white resize-none"
+            className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-surface text-foreground resize-none"
           />
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs text-muted mt-1">
             {message.length}/1000 characters
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function FeedbackForm({ onSubmit, isSubmitting = false }: Feedbac
         <button
           type="submit"
           disabled={isSubmitting || !message.trim()}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition font-semibold"
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover disabled:bg-muted disabled:cursor-not-allowed transition font-semibold"
         >
           <FaPaperPlane />
           {isSubmitting ? 'Submitting...' : 'Submit Feedback'}

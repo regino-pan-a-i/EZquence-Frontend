@@ -209,8 +209,8 @@ export default function ProductionOrdersPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div className="flex items-center gap-3">
-          <FaShoppingCart className="text-blue-600 text-3xl" />
-          <h1 className="text-3xl font-bold text-gray-900">All Orders</h1>
+          <FaShoppingCart className="text-link text-3xl" />
+          <h1 className="text-3xl font-bold text-foreground">All Orders</h1>
         </div>
         <DateFilter
           type="range"
@@ -295,13 +295,13 @@ export default function ProductionOrdersPage() {
       <div className="mb-6 flex flex-col md:flex-row gap-4">
         {/* Search Input */}
         <div className="flex-1 relative">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
           <input
             type="text"
             placeholder="Search by Order ID, Notes, or Product Name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
           />
         </div>
 
@@ -310,7 +310,7 @@ export default function ProductionOrdersPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as OrderStatus | 'ALL')}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
           >
             <option value="ALL">All Statuses</option>
             <option value={OrderStatus.RECEIVED}>Received</option>
@@ -326,12 +326,12 @@ export default function ProductionOrdersPage() {
       {/* Orders Grid */}
       {loadingOrders ? (
         <div className="flex justify-center items-center py-12">
-          <FaSpinner className="animate-spin text-blue-600 text-4xl" />
+          <FaSpinner className="animate-spin text-link text-4xl" />
         </div>
       ) : filteredOrders.length === 0 ? (
-        <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
-          <FaShoppingCart className="mx-auto text-gray-400 text-5xl mb-4" />
-          <p className="text-gray-600 text-lg">
+        <div className="bg-background border-2 border-dashed border-border rounded-lg p-12 text-center">
+          <FaShoppingCart className="mx-auto text-muted text-5xl mb-4" />
+          <p className="text-muted text-lg">
             {searchTerm || statusFilter !== 'ALL'
               ? 'No orders match your search criteria'
               : 'No orders found for the selected date range'}

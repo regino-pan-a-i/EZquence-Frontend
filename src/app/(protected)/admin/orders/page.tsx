@@ -146,7 +146,7 @@ export default function OrdersPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center h-64">
-          <div className="text-lg text-gray-600">Loading orders...</div>
+          <div className="text-lg text-muted">Loading orders...</div>
         </div>
       </div>
     );
@@ -167,8 +167,8 @@ export default function OrdersPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center m-4 gap-4">
         <div className="flex items-center gap-3">
-          <FaShoppingCart className="text-blue-600 text-3xl" />
-          <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
+          <FaShoppingCart className="text-link text-3xl" />
+          <h1 className="text-3xl font-bold text-foreground">Orders</h1>
         </div>
         <DateFilter
           type="range"
@@ -214,18 +214,18 @@ export default function OrdersPage() {
       />
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+      <div className="bg-surface rounded-lg shadow-md p-4 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
           <div className="flex-1">
             <div className="relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
               <input
                 type="text"
                 placeholder="Search by order ID, product name, or notes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 pr-4 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
               />
             </div>
           </div>
@@ -235,7 +235,7 @@ export default function OrdersPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
             >
               <option value="all">All Statuses</option>
               <option value="RECEIVED">Received</option>
@@ -251,10 +251,10 @@ export default function OrdersPage() {
 
       {/* Orders Grid */}
       {filteredOrders.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-md p-12 text-center">
-          <FaReceipt className="mx-auto text-6xl text-gray-300 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">No Orders Found</h3>
-          <p className="text-gray-500">
+        <div className="bg-surface rounded-lg shadow-md p-12 text-center">
+          <FaReceipt className="mx-auto text-6xl text-muted mb-4" />
+          <h3 className="text-xl font-semibold text-foreground mb-2">No Orders Found</h3>
+          <p className="text-muted">
             {searchTerm || statusFilter !== 'all'
               ? 'Try adjusting your filters or search terms.'
               : 'No orders in the selected date range.'}

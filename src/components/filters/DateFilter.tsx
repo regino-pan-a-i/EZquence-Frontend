@@ -111,8 +111,8 @@ function DateFilter({
         onClick={() => handlePresetClick('today')}
         className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
           selectedPreset === 'today'
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-background text-foreground hover:bg-border bg-border text-muted'
         }`}
       >
         Today
@@ -124,8 +124,8 @@ function DateFilter({
             onClick={() => handlePresetClick('last7days')}
             className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
               selectedPreset === 'last7days'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-background text-foreground hover:bg-border bg-border text-muted'
             }`}
           >
             Last 7 Days
@@ -135,8 +135,8 @@ function DateFilter({
             onClick={() => handlePresetClick('last30days')}
             className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
               selectedPreset === 'last30days'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-background text-foreground hover:bg-border bg-border text-muted'
             }`}
           >
             Last 30 Days
@@ -148,8 +148,8 @@ function DateFilter({
         onClick={() => handlePresetClick('custom')}
         className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
           selectedPreset === 'custom'
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-background text-foreground hover:bg-border bg-border text-muted'
         }`}
       >
         Custom
@@ -161,35 +161,35 @@ function DateFilter({
     return (
       <div className={`flex flex-col space-y-2 ${className}`}>
         {label && (
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+          <label className="text-sm font-medium text-foreground text-muted">{label}</label>
         )}
         <PresetButtons />
         {selectedPreset === 'custom' && (
           <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500 dark:text-gray-400 mb-1">From</span>
+              <span className="text-xs text-muted mb-1">From</span>
               <input
                 type="date"
                 value={startDate}
                 onChange={handleStartDateChange}
-                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent bg-border text-foreground"
                 placeholder="Start date"
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500 dark:text-gray-400 mb-1">To</span>
+              <span className="text-xs text-muted mb-1">To</span>
               <input
                 type="date"
                 value={endDate}
                 onChange={handleEndDateChange}
-                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent bg-border text-foreground"
                 placeholder="End date"
               />
             </div>
           </div>
         )}
         {selectedPreset !== 'custom' && (
-          <div className="text-sm text-gray-600 dark:text-gray-400">
+          <div className="text-sm text-muted">
             {startDate && endDate && `${startDate} to ${endDate}`}
           </div>
         )}
@@ -200,7 +200,7 @@ function DateFilter({
   return (
     <div className={`flex flex-col space-y-2 ${className}`}>
       {label && (
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+        <label className="text-sm font-medium text-foreground text-muted">{label}</label>
       )}
       <PresetButtons />
       {selectedPreset === 'custom' && (
@@ -210,12 +210,12 @@ function DateFilter({
             value={selectedDate}
             onChange={handleSingleDateChange}
             placeholder={placeholder}
-            className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white flex-1"
+            className="px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent bg-border text-foreground flex-1"
           />
         </div>
       )}
       {selectedPreset !== 'custom' && selectedDate && (
-        <div className="text-sm text-gray-600 dark:text-gray-400">{selectedDate}</div>
+        <div className="text-sm text-muted">{selectedDate}</div>
       )}
     </div>
   );

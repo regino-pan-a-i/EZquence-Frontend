@@ -107,7 +107,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
       }}
     >
       <div
-        className={`bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto ${className}`}
+        className={`bg-surface rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -118,7 +118,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
                 className="h-6 w-6 text-red-600"
                 fill="none"
                 stroke="currentColor"
-                viewBox="0 0 24 24"
+                viewBox="0 24"
               >
                 <path
                   strokeLinecap="round"
@@ -129,30 +129,30 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
               </svg>
             </div>
             <div className="ml-4 flex-1">
-              <h3 className="text-lg font-semibold text-gray-900">Delete Material</h3>
-              <p className="text-sm text-gray-500 mt-1">
+              <h3 className="text-lg font-semibold text-foreground">Delete Material</h3>
+              <p className="text-sm text-muted mt-1">
                 Are you sure you want to delete this material? This action cannot be undone.
               </p>
             </div>
           </div>
 
           {/* Material Details */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-4">
+          <div className="bg-background rounded-lg p-4 mb-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-500">Material Name</p>
-                <p className="text-base font-semibold text-gray-900 mt-1">{material.name}</p>
+                <p className="text-sm font-medium text-muted">Material Name</p>
+                <p className="text-base font-semibold text-foreground mt-1">{material.name}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-500">Current Stock</p>
-                <p className="text-base font-semibold text-gray-900 mt-1">
+                <p className="text-sm font-medium text-muted">Current Stock</p>
+                <p className="text-base font-semibold text-foreground mt-1">
                   {material.quantityInStock} {material.units}
                 </p>
               </div>
               {material.expirationDate && (
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Expiration Date</p>
-                  <p className="text-base font-semibold text-gray-900 mt-1">
+                  <p className="text-sm font-medium text-muted">Expiration Date</p>
+                  <p className="text-base font-semibold text-foreground mt-1">
                     {new Date(material.expirationDate).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'short',
@@ -166,8 +166,8 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
 
           {/* Process Usage Information */}
           {isLoadingUsages ? (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-              <p className="text-sm text-blue-800">Loading process information...</p>
+            <div className="bg-accent/10 border border-accent/30 rounded-lg p-4 mb-4">
+              <p className="text-sm text-link">Loading process information...</p>
             </div>
           ) : processUsages.length > 0 ? (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
@@ -176,7 +176,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
                   className="h-5 w-5 text-yellow-600 mt-0.5 mr-2 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  viewBox="0 24"
                 >
                   <path
                     strokeLinecap="round"
@@ -194,10 +194,10 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
                     {processUsages.map((usage) => (
                       <div
                         key={usage.processId}
-                        className="bg-white rounded p-3 border border-yellow-200"
+                        className="bg-surface rounded p-3 border border-yellow-200"
                       >
-                        <p className="text-sm font-semibold text-gray-900">{usage.productName}</p>
-                        <p className="text-xs text-gray-600 mt-1">
+                        <p className="text-sm font-semibold text-foreground">{usage.productName}</p>
+                        <p className="text-xs text-muted mt-1">
                           Process: {usage.processName} • Requires: {usage.quantityNeeded}{' '}
                           {usage.units}
                         </p>
@@ -217,7 +217,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
                   className="h-5 w-5 text-green-600 mt-0.5 mr-2 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  viewBox="0 24"
                 >
                   <path
                     strokeLinecap="round"
@@ -245,7 +245,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
             <button
               onClick={onCancel}
               disabled={isDeleting}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-md hover:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-border text-foreground font-medium rounded-md hover:bg-border transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-muted focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
@@ -260,7 +260,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
                     className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
-                    viewBox="0 0 24 24"
+                    viewBox="0 24"
                   >
                     <circle
                       className="opacity-25"

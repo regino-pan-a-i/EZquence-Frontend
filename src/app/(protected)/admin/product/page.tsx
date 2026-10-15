@@ -122,14 +122,14 @@ export default function ProductsPage() {
     <div className="p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center m-4 gap-4">
         <div className="flex items-center gap-3">
-          <FaBoxOpen className="text-blue-600 text-3xl" />
-          <h1 className="text-3xl font-bold text-gray-900">Products</h1>
+          <FaBoxOpen className="text-link text-3xl" />
+          <h1 className="text-3xl font-bold text-foreground">Products</h1>
         </div>
         <button
           onClick={handleCreateNew}
           className="px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-2"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           Create Product
@@ -185,18 +185,18 @@ export default function ProductsPage() {
           onClick={handleCloseModal}
         >
           <div
-            className={`bg-white rounded-lg w-full max-w-6xl h-auto max-h-[90vh] min-h-[500px] overflow-hidden flex flex-col transform transition-transform duration-300 ease-out ${
+            className={`bg-surface rounded-lg w-full max-w-6xl h-auto max-h-[90vh] min-h-[500px] overflow-hidden flex flex-col transform transition-transform duration-300 ease-out ${
               isAnimating ? 'translate-y-0' : 'translate-y-full'
             }`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex-shrink-0 bg-white border-b px-4 py-3 flex justify-between items-center">
+            <div className="flex-shrink-0 bg-surface border-b px-4 py-3 flex justify-between items-center">
               <h2 className="text-xl font-semibold">
                 {isCreatingNew ? 'Create New Product' : 'Product Details'}
               </h2>
               <button
                 onClick={handleCloseModal}
-                className="text-gray-500 hover:text-gray-700 text-2xl"
+                className="text-muted hover:text-foreground text-2xl"
               >
                 ×
               </button>
